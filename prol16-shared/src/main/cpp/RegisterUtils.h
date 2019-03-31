@@ -31,6 +31,8 @@ void checkRegistersAreValid(Register const reg, Registers const... registers) {
 	checkRegistersAreValid(registers...);
 }
 
+bool isSpecialRegister(std::string const &registerName);
+
 Register parseRegisterNumber(std::string const &registerName);
 
 Register parseRegisterNumberChecked(std::string const &registerName);

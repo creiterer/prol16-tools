@@ -56,6 +56,20 @@ TEST(RegisterUtilsTest, testCheckRegistersAreValid) {
 	ASSERT_THROW(checkRegistersAreValid(RegisterCount, RegisterCount), RegisterError);
 }
 
+TEST(RegisterUtilsTest, testIsSpecialRegister) {
+	ASSERT_TRUE(isSpecialRegister("rsp"));
+	ASSERT_TRUE(isSpecialRegister("RSP"));
+
+	ASSERT_TRUE(isSpecialRegister("rfp"));
+	ASSERT_TRUE(isSpecialRegister("RFP"));
+
+	ASSERT_TRUE(isSpecialRegister("rra"));
+	ASSERT_TRUE(isSpecialRegister("RRA"));
+
+	ASSERT_FALSE(isSpecialRegister("rip"));
+	ASSERT_FALSE(isSpecialRegister("r5"));
+}
+
 TEST(RegisterUtilsTest, testParseRegisterNumber) {
 	ASSERT_EQ(0, parseRegisterNumber("r0"));
 	ASSERT_EQ(0, parseRegisterNumber("R0"));
@@ -65,6 +79,15 @@ TEST(RegisterUtilsTest, testParseRegisterNumber) {
 
 	ASSERT_EQ(16, parseRegisterNumber("r16"));
 	ASSERT_EQ(16, parseRegisterNumber("R16"));
+
+	ASSERT_EQ(0, parseRegisterNumber("rsp"));
+	ASSERT_EQ(0, parseRegisterNumber("RSP"));
+
+	ASSERT_EQ(1, parseRegisterNumber("rfp"));
+	ASSERT_EQ(1, parseRegisterNumber("RFP"));
+
+	ASSERT_EQ(2, parseRegisterNumber("rra"));
+	ASSERT_EQ(2, parseRegisterNumber("RRA"));
 }
 
 TEST(RegisterUtilsTest, testParseRegisterNumberChecked) {
@@ -74,6 +97,12 @@ TEST(RegisterUtilsTest, testParseRegisterNumberChecked) {
 	ASSERT_EQ(15, parseRegisterNumberChecked("r15"));
 	ASSERT_EQ(15, parseRegisterNumberChecked("R15"));
 
+	ASSERT_EQ(0, parseRegisterNumberChecked("rsp"));
+	ASSERT_EQ(0, parseRegisterNumberChecked("RSP"));
+
 	ASSERT_THROW(parseRegisterNumberChecked("r16"), RegisterError);
 	ASSERT_THROW(parseRegisterNumberChecked("R16"), RegisterError);
+
+	ASSERT_THROW(parseRegisterNumberChecked("rip"), RegisterError);
+	ASSERT_THROW(parseRegisterNumberChecked("RIP"), RegisterError);
 }

@@ -18,6 +18,7 @@ namespace PROL16 { namespace util {
 class RegisterError final : public std::exception {
 public:
 	RegisterError(Register const reg);
+	RegisterError(std::string const &registerName);
 
 	char const* what() const noexcept override;
 
