@@ -7,6 +7,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/MnemonicUtils.cpp
     ${MAIN_CPP_DIR}/NumberUtils.cpp
     ${MAIN_CPP_DIR}/RegisterUtils.cpp
+    ${MAIN_CPP_DIR}/StringUtils.cpp
     ${MAIN_CPP_DIR}/RegisterError.cpp
     ${MAIN_CPP_DIR}/OpcodeError.cpp
     ${MAIN_CPP_DIR}/InstructionDecodeError.cpp

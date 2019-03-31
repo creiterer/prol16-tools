@@ -7,6 +7,7 @@ set(TEST_CPP_SOURCES
     ${TEST_CPP_DIR}/MnemonicUtilsTest.cpp
     ${TEST_CPP_DIR}/NumberUtilsTest.cpp
     ${TEST_CPP_DIR}/RegisterUtilsTest.cpp
+    ${TEST_CPP_DIR}/StringUtilsTest.cpp
 )
 
 # add directory of main include files (needed for the test executable)
