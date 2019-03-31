@@ -17,7 +17,7 @@ namespace PROL16 { namespace util {
 
 namespace {
 
-std::unordered_map<Mnemonic, std::string> mnemonicStringTable = {
+std::unordered_map<Mnemonic, std::string> const mnemonicStringTable = {
 		{NOP, "nop"},
 		{SLEEP, "sleep"},
 		{LOADI, "loadi"},

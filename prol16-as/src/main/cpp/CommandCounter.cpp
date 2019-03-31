@@ -12,7 +12,7 @@ namespace PROL16 {
 CommandCounter& CommandCounter::operator++() {
 	// Beware that the memory has a width of 16 bit / 2 byte
 	// -> only increment by one, not by sizeof(Instruction::EncodedType), which is 2
-	counter++;
+	++counter;
 
 	return *this;
 }
