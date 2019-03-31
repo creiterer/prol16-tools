@@ -1,0 +1,119 @@
+   1  ;; gcd calculation
+   2  ;; 1/2003 markus lindorfer
+   3  
+   4  ;; registers:
+   5  ;; r0     is always 0
+   6  ;; r1-r3  won't be changed during sub calls
+   7  ;; r4, r5 hold sub parameters
+   8  ;; r6, r7 are temp registers
+   9  
+  10  equ prog_start, 0000h ; start address of program rom
+  11  equ data_start, 8000h ; start address of data ram
+  12  equ mem_dump_addr, 0ffffh
+  13  
+  14  macro write_mem_dump
+  15  
+  16      loadi r6, mem_dump_addr 
+  17      store r4, r6            ; dump memory to file
+  18  
+  19  endm
+  20  
+  21  org data_start
+  22  in1: db 81
+  23  in2: db 57
+  24  res: db 0
+  25  
+  26  org prog_start
+  27  
+  28      loadi r0, 0             ; don't use xor r0, r0!
+  29                              ; this may not work in all models
+  30      ;; load registers
+  31      loadi r6, in1
+  32      load  r1, r6
+  33      loadi r6, in2
+  34      load  r2, r6
+  35  
+  36      ;; check the larger value is in r1
+  37  loop:
+  38      comp r2, r1
+  39      loadi r6, no_xchg
+  40      jumpc r6
+  41      move r6, r1             ; xchange r1 & r2
+  42      move r1, r2
+  43      move r2, r6
+  44  
+  45      ;; check termination condition
+  46  no_xchg:
+  47      comp r2, r0
+  48      loadi r6, done
+  49      jumpz r6
+  50  
+  51      sub r1, r2              ; substract and loop again
+  52      loadi r6, loop
+  53      jump r6
+  54  
+  55      ;; store result and stop simulation
+  56  done:
+  57     loadi r6, res
+  58     store r1, r6
+  59     load r3, r6
+  60     loadi r4, data_start
+  61     write_mem_dump
+  62     sleep
+
+
+      Assembling complete : found 000 Errors
+                            found 000 Warnings
+
+      Labels              Address
+      ---------------------------
+      IN1                 0000h
+      IN2                 0001h
+      RES                 0002h
+      LOOP                0008h
+      NO_XCHG             000Fh
+      DONE                0017h
+
+      Constants           Value  
+      ---------------------------
+      PROG_START          0000h
+      DATA_START          0000h
+      MEM_DUMP_ADDR       00FFh
+
+
+      Contents of Memory: Program-Code ROM
+      ------------------------------------
+
+0000hex  LOADI   R0, 0000hex            000010_00000_00000  0000000000000000
+0002hex  LOADI   R6, 8000hex            000010_00110_00000  1000000000000000
+0004hex  LOAD    R1, R6                 000011_00001_00110
+0005hex  LOADI   R6, 8001hex            000010_00110_00000  1000000000000001
+0007hex  LOAD    R2, R6                 000011_00010_00110
+0008hex  COMP    R2, R1                 011000_00010_00001
+0009hex  LOADI   R6, 000Fhex            000010_00110_00000  0000000000001111
+000Bhex  JUMPC   R6                     001010_00110_00000
+000Chex  MOVE    R6, R1                 001100_00110_00001
+000Dhex  MOVE    R1, R2                 001100_00001_00010
+000Ehex  MOVE    R2, R6                 001100_00010_00110
+000Fhex  COMP    R2, R0                 011000_00010_00000
+0010hex  LOADI   R6, 0017hex            000010_00110_00000  0000000000010111
+0012hex  JUMPZ   R6                     001011_00110_00000
+0013hex  SUB     R1, R2                 010110_00001_00010
+0014hex  LOADI   R6, 0008hex            000010_00110_00000  0000000000001000
+0016hex  JUMP    R6                     001000_00110_00000
+0017hex  LOADI   R6, 8002hex            000010_00110_00000  1000000000000010
+0019hex  STORE   R1, R6                 000100_00001_00110
+001Ahex  LOAD    R3, R6                 000011_00011_00110
+001Bhex  LOADI   R4, 8000hex            000010_00100_00000  1000000000000000
+001Dhex  LOADI   R6, FFFFhex            000010_00110_00000  1111111111111111
+001Fhex  STORE   R4, R6                 000100_00100_00110
+0020hex  SLEEP                          000001_00000_00000
+
+
+      Contents of Memory: Working RAM
+      ---------------------------------
+
+
+8000hex  0000000001010001
+8001hex  0000000000111001
+8002hex  0000000000000000

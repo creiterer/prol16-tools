@@ -1,0 +1,24 @@
+#### TARGET SETUP ####
+
+get_filename_component(MAIN_CPP_DIR "cpp/" ABSOLUTE)
+set(MAIN_CPP_SOURCES
+    ${MAIN_CPP_DIR}/Filename.cpp
+    ${MAIN_CPP_DIR}/Instruction.cpp
+    ${MAIN_CPP_DIR}/MnemonicUtils.cpp
+    ${MAIN_CPP_DIR}/NumberUtils.cpp
+    ${MAIN_CPP_DIR}/RegisterUtils.cpp
+    ${MAIN_CPP_DIR}/RegisterError.cpp
+    ${MAIN_CPP_DIR}/OpcodeError.cpp
+    ${MAIN_CPP_DIR}/InstructionDecodeError.cpp
+    ${MAIN_CPP_DIR}/IncompleteInstructionError.cpp
+)
+
+add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})
+
+set(PROL16SHARED_INCLUDE_DIR
+    ${MAIN_CPP_DIR}
+)
+
+target_include_directories(prol16shared SYSTEM INTERFACE
+    "$<BUILD_INTERFACE:${PROL16SHARED_INCLUDE_DIR}>"
+)

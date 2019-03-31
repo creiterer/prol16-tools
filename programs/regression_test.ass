@@ -1,0 +1,486 @@
+;; regression test
+;; 2016-01-19
+;; Christopher Reiterer
+
+;; registers:
+;; r0		is always 0
+
+
+equ prog_start, 0000h
+equ data_start, 8000h 
+equ mem_dump_addr, 0ffffh
+
+org data_start
+some_test_value: db 4711
+another_test_value: db 888
+
+org prog_start
+    
+    ;; test nop instruction
+    nop
+    nop
+
+    ;; test loadi instruction
+    loadi r0, 0
+    loadi r1, 0ffffh
+    loadi r3, some_test_value
+    loadi r4, another_test_value
+    loadi r5, no_jump_error_1
+    loadi r2, 8100h
+
+    ;; test load instruction
+    load r6, r3
+    load r7, r4
+
+
+    ;;test of jump instruction
+    jump r5
+    
+jump_error:
+    loadi r5, jump_error
+    jump r5			;; not very meaningful because when jump doesn't work, this infinite loop also won't work    
+
+no_jump_error_1:
+
+    loadi r5, jump_error
+
+    ;; test of jumpc instruction, I assume that the carry flag is initialized with 0
+    jumpc r5
+
+    ;; test of jumpz instruction, I assume that the zero flag is initialized with 0
+    jumpz r5
+
+    ;; test inc instruction - set carry and zero flag to 1
+    inc r1
+    store r1, r2
+    loadi r2, 8101h
+
+    ;; the test of the following jump instruction assumes, that inc has worked correctly
+    loadi r5, no_jump_error_2
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_jump_error_2:
+
+    ;; the test of the following jump instruction assumes, that inc has worked correctly
+    loadi r5, no_jump_error_3
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+    
+no_jump_error_3:
+    
+    ;; test inc instruction - set carry and zero flag to 0
+    inc r1
+    store r1, r2
+    loadi r2, 8102h
+
+    loadi r5, jump_error
+    jumpc r5  ;; test if carry flag was set to 0
+    jumpz r5  ;; test if zero flag was set to 0
+
+    ;; test not instruction - should set the zero flag
+    loadi r1, 0ffffh
+    not r1
+    store r1, r2
+    loadi r2, 8103h
+    loadi r5, no_not_error
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5   ;; check if not has set the zero flag
+
+no_not_error:   
+
+    ;; test dec instruction - should set the zero flag to 0 and carry flag to 1
+    dec r1
+    store r1, r2
+    loadi r2, 8104h
+    loadi r5, jump_error
+    jumpz r5	;; check if dec has set the zero flag to 0
+    loadi r5, no_dec_error
+    jumpc r5   ;; check if carry flag was set
+
+    loadi r5, jump_error
+    jump r5
+
+no_dec_error:
+
+    ;; test dec instruction - should set the zero flag to 1 and carry flag to 0
+    loadi r1, 0001h
+    dec r1
+    store r1, r2
+    loadi r2, 8105h
+    loadi r5, jump_error
+    jumpc r5
+    loadi r5, no_dec_error_2
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_dec_error_2:
+
+    ;; test add instruction - should set the carry flag
+    loadi r1, 0ffffh
+    loadi r3, 0ffffh
+    add r1, r3
+    store r1, r2
+    loadi r2, 8106h
+    loadi r5, no_add_error
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_add_error:
+
+    ;; test not instruction - should set the carry flag to 0
+    not r1
+    store r1, r2
+    loadi r2, 8107h
+    loadi r5, jump_error
+    jumpc r5
+
+    ;; test add instruction - should set the zero flag
+    loadi r1, 0000h
+    add r1, r0
+    store r1, r2
+    loadi r2, 8108h
+    loadi r5, no_add_error_2
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5 
+
+no_add_error_2:
+
+    ;; test sub instruction - should set the carry flag to 1
+    loadi r1, 0005h
+    loadi r3, 0007h
+    sub r1, r3
+    store r1, r2
+    loadi r2, 8109h
+    loadi r5, no_sub_error
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_sub_error:
+
+    ;; test and instruction - should set the zero flag and carry flag to 0
+    loadi r1, 0f0f0h
+    loadi r3, 0AAAAh
+    and r1, r3
+    store r1, r2
+    loadi r2, 810Ah
+    loadi r5, jump_error
+    jumpc r5
+    jumpz r5
+
+    ;; test sub instruction - should set the zero flag to 1
+    loadi r1, 0007h
+    loadi r3, 0007h
+    sub r1, r3
+    store r1, r2
+    loadi r2, 810Bh
+    loadi r5, jump_error
+    jumpc r5	;; check if carry flag remains unset
+    loadi r5, no_sub_error_2
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_sub_error_2:
+
+    ;; test addc instruction - should set the carry flag to 1 and zero flag to 0
+    loadi r1, 0ffffh
+    loadi r3, 0ffffh
+    addc r1, r3
+    store r1, r2
+    loadi r2, 810Ch
+    loadi r5, jump_error
+    jumpz r5
+    loadi r5, no_addc_error
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_addc_error:
+
+    ;; test addc instruction - should leave the carry flag set and set zero flag to 1
+    loadi r3, 0001h
+    addc r1, r3
+    store r1, r2
+    loadi r2, 810Dh
+    loadi r5, no_addc_carry_er
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_addc_carry_er:
+    loadi r5, no_addc_zero_er
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_addc_zero_er:
+    
+    ;; test subc instruction - should leave the carry flag set and set zero flag to 0
+    loadi r1, 000Ah
+    loadi r3, 0006h
+    subc r1, r3
+    store r1, r2
+    loadi r2, 810Eh
+    loadi r5, jump_error
+    jumpc r5
+    jumpz r5
+
+    ;; test and instruction - should set the zero flag to 1
+    loadi r1, 0FFFFh
+    and r1, r0
+    store r1, r2
+    loadi r2, 810Fh
+    loadi r5, no_and_error
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_and_error:
+    
+    ;; test or instruction - should set the zero flag to 0
+    loadi r1, 0F0Fh
+    loadi r3, 5050h
+    or r1, r3
+    store r1, r2
+    loadi r2, 8110h
+    loadi r5, jump_error
+    jumpz r5
+
+    ;; test or instruction - should set the zero flag to 1
+    loadi r1, 0000h
+    or r1, r0
+    store r1, r2
+    loadi r2, 8111h
+    loadi r5, no_or_error
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_or_error:
+    
+    ;; test xor instruction - should set the zero flag to 0
+    loadi r1, 9393h
+    loadi r3, 3939h
+    xor r1, r3
+    store r1, r2
+    loadi r2, 8112h
+    loadi r5, jump_error
+    jumpz r5
+
+    ;; test xor instruction - sould set the zero flag to 1
+    loadi r1, 0F0Fh
+    loadi r3, 0F0Fh
+    xor r1, r3
+    store r1, r2
+    loadi r2, 8113h
+    loadi r5, no_xor_error
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_xor_error:
+
+    ;; test subs instruction - should set the carry flag to 1
+    loadi r1, 0000h
+    loadi r3, 000Fh
+    subc r1, r3
+    store r1, r2
+    loadi r2, 8114h
+    loadi r5, no_subc_error
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_subc_error:
+
+    ;; test shlc instruction - should set the carry flag to 0
+    loadi r1, 0000_0000_0000_0000b
+    shlc r1
+    store r1, r2
+    loadi r2, 8115h
+    loadi r5, jump_error
+    jumpc r5
+
+    ;; test shlc instruction - should set the carry flag and zero flag to 1
+    loadi r1, 1000_0000_0000_0000b
+    shlc r1
+    store r1, r2
+    loadi r2, 8116h
+    loadi r5, no_shlc_carry_er
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_shlc_carry_er:
+
+    loadi r5, no_shlc_zero_er
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_shlc_zero_er:
+
+    ;; test shl instruction - should set the carry flag and zero flag to 0
+    loadi r1, 0101_0101_0101_0101b
+    shl r1
+    store r1, r2
+    loadi r2, 8117h
+    loadi r5, jump_error
+    jumpc r5
+    jumpz r5
+
+    ;; test shl instruction - should set the carry flag to 1
+    loadi r1, 1111_1000_0000_0000b
+    shl r1
+    store r1, r2
+    loadi r2, 8118h
+    loadi r5, no_shl_error
+    jumpc r5
+        
+    loadi r5, jump_error
+    jump r5
+
+no_shl_error:
+
+    ;; test shrc instruction - should leave the carry flag set
+    loadi r1, 0000_0000_0000_0001b
+    shrc r1
+    store r1, r2
+    loadi r2, 8119h
+    loadi r5, no_shrc_error
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_shrc_error:
+
+    ;; test shr instruction - should leave the carry flag set and should set the zero flag
+    loadi r1, 0000_0000_0000_0001b
+    shr r1
+    store r1, r2
+    loadi r2, 811Ah
+    loadi r5, no_shr_error_zero
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_shr_error_zero:
+    
+    loadi r5, no_shr_error_carry
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_shr_error_carry:
+
+    ;; test shrc instruction - should set the carry flag and zero flag to 0
+    loadi r1, 1110_0000_0000_0000b
+    shrc r1
+    store r1, r2
+    loadi r2, 811Bh
+    loadi r5, jump_error
+    jumpz r5
+    jumpc r5
+
+    ;; test shr instruction - flags should remain as they are
+    loadi r1, 1010_1010_1010_1010b
+    shr r1
+    store r1, r2
+    loadi r2, 811Ch
+    loadi r5, jump_error
+    jumpz r5
+    jumpc r5
+
+    ;; test comp instruction - carry flag should be set to 1
+    loadi r1, 0FFFEh
+    loadi r3, 0FFFFh
+    comp r1, r3
+    loadi r5, no_comp_carry_er
+    jumpc r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_comp_carry_er:
+
+    ;; test comp instruction - carry flag should be cleared and zero flag should be set
+    inc r1;
+    comp r1, r3
+    loadi r5, jump_error
+    jumpc r5
+    loadi r5, no_comp_zero_er
+    jumpz r5
+
+    loadi r5, jump_error
+    jump r5
+
+no_comp_zero_er:
+	
+    ;; test move instruction
+    loadi r3, 0A0Ah
+    move r1, r3
+    store r1, r2
+    loadi r2, 811Dh
+
+    loadi r3, 0FFFFh
+    move r1, r3
+    store r1, r2
+    loadi r2, 811Eh
+
+    loadi r5, done
+    jump r5
+
+    loadi r1, 0000h
+    store r1, r2
+
+    loadi r2, 811Fh
+    store r1, r2
+
+done:
+
+    loadi r1, 0FFFFh
+    store r1, r2
+
+    loadi r2, 811Fh
+    store r1, r2
+
+    loadi r2, 8120h
+    store r6, r2
+
+    loadi r2, 8121h
+    store r7, r2
+
+    ;; write memory dump
+    loadi r4, data_start
+    loadi r6, mem_dump_addr
+    store r4, r6
+
+    sleep

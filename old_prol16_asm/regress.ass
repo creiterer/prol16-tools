@@ -1,0 +1,130 @@
+; ---------------------------------------------------------------
+; prol16 test cases
+; markus lindorfer
+; 24. 1. 2004
+; ---------------------------------------------------------------
+
+; use standard segment names
+equ text, 0
+equ data, 8000h
+
+; error checking macros ------------------------------------------
+
+macro error_if_not_carry
+	loadi r7, l2
+	jumpc r7
+	loadi r7, l1
+l1:	jump  r7
+l2:	nop
+endm
+
+macro error_if_carry
+	loadi r7, l3
+l3:	jumpc r7
+endm
+
+macro error_if_not_zero
+	loadi r7, l5
+	jumpz r7
+	loadi r7, l4
+l4:	jump r7
+l5:	nop
+endm
+
+macro error_if_zero
+	loadi r7, l6
+l6:	jumpz r7
+endm
+
+; start of data --------------------------------------------------
+org data
+
+src_table:
+	db 1, 2, 3
+dest_table:
+	db 0, 0, 0
+
+equ vec_length, 3
+equ vec_sum, 6
+
+; start of text -------------------------------------------------
+org text
+
+	; check dec & xor
+	loadi r1, 0
+	dec r1
+	error_if_not_carry
+	error_if_zero
+	xor r1, r1
+	error_if_carry
+	error_if_not_zero
+
+	; check shift
+	loadi r2, 8000h
+	shl r2
+	error_if_not_carry
+	error_if_not_zero
+	loadi r2, 1
+	shr r2
+	error_if_not_carry
+	error_if_not_zero
+	shrc r2
+	error_if_carry
+	error_if_zero
+
+	; check move
+	xor r2, r2
+	loadi r2, 1
+	move r3, r2
+	error_if_carry
+	error_if_not_zero
+
+	; subc & inc
+	xor r2, r2
+	subc r2, r3
+	subc r2, r3
+	loadi r4, 0fffdh
+	comp r2, r4
+	error_if_not_zero
+	inc r2
+	inc r2
+	inc r2
+	error_if_not_zero
+	error_if_not_carry
+
+	; load & store
+	loadi r4, vec_length
+	loadi r5, src_table
+	loadi r6, dest_table
+
+ls1:	load r0, r5
+	inc r5
+	store r0, r6
+	inc r6
+	loadi r7, ls2
+	dec r4
+	jumpz r7
+	loadi r7, ls1
+	jump r7
+
+ls2:	loadi r4, vec_length
+	loadi r6, dest_table
+	xor r1, r1
+ls3:	load r0, r6
+	inc r6
+	add r1, r0
+	loadi r7, ls4
+	dec r4
+	jumpz r7
+	loadi r7, ls3
+	jump r7
+
+ls4:	loadi r0, vec_sum
+	comp r1, r0
+	error_if_not_zero
+
+	sleep
+
+; @ 5mhz simulate up to 60us
+
+; EOF ------------------------------------------------------------

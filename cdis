@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp -f "./prol16-as/src/test/resources/${1}" "./prol16-dis/src/test/resources/"
+./prol16-dis-exe -c "./prol16-dis/src/test/resources/${1}"

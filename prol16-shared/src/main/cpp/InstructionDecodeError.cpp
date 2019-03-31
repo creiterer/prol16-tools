@@ -1,0 +1,27 @@
+/**
+ * @author		creiterer
+ * @date 		2019-03-25
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		brief description
+ */
+
+#include "InstructionDecodeError.h"
+
+#include <sstream>
+#include <ios>
+
+namespace PROL16 { namespace util {
+
+InstructionDecodeError::InstructionDecodeError(Instruction::EncodedType const encodedValue, std::string const &hint) {
+	std::ostringstream errorMessageStream;
+
+	errorMessageStream << "failed to decode instruction " << std::hex << std::showbase << encodedValue << ": " << hint;
+
+	errorMessage = errorMessageStream.str();
+}
+
+char const* InstructionDecodeError::what() const noexcept {
+	return errorMessage.c_str();
+}
+
+}}
