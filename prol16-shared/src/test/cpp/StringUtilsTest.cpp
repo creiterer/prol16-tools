@@ -7,9 +7,21 @@
 
 #include "StringUtils.h"
 
+#include <string>
+#include <stdexcept>
+
 #include "gtest/gtest.h"
 
-using util::toLower;
+using namespace util;
+
+TEST(StringUtilsTest, testCheckStringIsNotEmpty) {
+	ASSERT_NO_THROW(preconditions::checkStringIsNotEmpty("foo"));
+	ASSERT_NO_THROW(preconditions::checkStringIsNotEmpty(std::string("bar")));
+
+	ASSERT_THROW(preconditions::checkStringIsNotEmpty(""), std::invalid_argument);
+	ASSERT_THROW(preconditions::checkStringIsNotEmpty(std::string()), std::invalid_argument);
+	ASSERT_THROW(preconditions::checkStringIsNotEmpty(std::string("")), std::invalid_argument);
+}
 
 TEST(StringUtilsTest, testToLower) {
 	ASSERT_EQ("", toLower(""));
@@ -18,3 +30,17 @@ TEST(StringUtilsTest, testToLower) {
 	ASSERT_EQ("upper_case_string", toLower("UPPER_CASE_STRING"));
 }
 
+TEST(StringUtilsTest, testPrepend) {
+	std::string str("");
+
+	prepend(str, "oo");
+	ASSERT_EQ("oo", str);
+
+	prepend(str, 'f');
+	ASSERT_EQ("foo", str);
+
+	std::string const str2("oo");
+	ASSERT_EQ("foo", prepend(str2, 'f'));
+	ASSERT_EQ("toodle-oo", prepend(str2, "toodle-"));
+
+}

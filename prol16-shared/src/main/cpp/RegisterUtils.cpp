@@ -45,16 +45,37 @@ void checkRegistersAreValid(Register const reg) {
 	checkRegisterIsValid(reg);
 }
 
+std::string getCanonicalRegisterName(std::string const &registerName) {
+	::util::preconditions::checkStringIsNotEmpty(registerName);
+
+	std::string loweredRegisterName = ::util::toLower(registerName);
+
+	if ((loweredRegisterName.at(0) != 'r') || (loweredRegisterName == "ra")) {
+		::util::prepend(loweredRegisterName, 'r');
+	}
+
+	return loweredRegisterName;
+}
+
 bool isSpecialRegister(std::string const &registerName) {
-	return specialRegisterTable.find(::util::toLower(registerName)) != specialRegisterTable.cend();
+	return specialRegisterTable.find(getCanonicalRegisterName(registerName)) != specialRegisterTable.cend();
+}
+
+bool isReturnAddressRegister(std::string const &registerName) {
+	std::string const loweredRegisterName = ::util::toLower(registerName);
+
+	return (loweredRegisterName == "ra") || (loweredRegisterName == "rra");
 }
 
 Register parseRegisterNumber(std::string const &registerName) {
-	if (isSpecialRegister(registerName)) {
-		return specialRegisterTable.at(::util::toLower(registerName));
+	::util::preconditions::checkStringIsNotEmpty(registerName);
+	std::string const canonicalRegisterName = getCanonicalRegisterName(registerName);
+
+	if (isSpecialRegister(canonicalRegisterName)) {
+		return specialRegisterTable.at(::util::toLower(canonicalRegisterName));
 	}
 
-	return std::stoul(std::string(registerName.cbegin()+1, registerName.cend()));
+	return std::stoul(std::string(canonicalRegisterName.cbegin()+1, canonicalRegisterName.cend()));
 }
 
 Register parseRegisterNumberChecked(std::string const &registerName) {

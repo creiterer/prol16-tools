@@ -12,7 +12,19 @@
 
 namespace util {
 
+namespace preconditions {
+
+void checkStringIsNotEmpty(std::string const &str);
+
+}
+
 std::string toLower(std::string str);
+
+void prepend(std::string &str, char const c);
+std::string prepend(std::string const &str, char const c);
+
+void prepend(std::string &str, std::string const &prependee);
+std::string prepend(std::string const &str, std::string const &prependee);
 
 }
 
