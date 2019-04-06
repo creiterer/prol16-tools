@@ -1,334 +1,263 @@
+/**
+ * @author		creiterer
+ * @date 		2019-04-02
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		brief description
+ */
+
 #include "VirtualMachine.h"
 
-#include <cassert>
-#include <fstream>
+#include <stdexcept>
+#include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <sstream>
-#include "IVirtualDevice.h"
 
-VirtualMachine::VirtualMachine(std::string const& fileName, size_t regCount) : mInstructionMemory(nullptr), mRegCount(regCount), mPc(0) {
-	std::ifstream ifs(fileName, std::ios::binary | std::ios::ate);
-	if (!ifs.is_open()) {
-		std::cerr << "Could not open file: " << fileName << std::endl;
-		return;
+#include "OpcodeError.h"
+
+namespace PROL16 {
+
+VirtualMachine::VirtualMachine(std::string const &filename) : programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag") {
+	memory.initializeFromFile(filename);
+}
+
+void VirtualMachine::run() {
+	bool stopProgramExecution = false;
+
+	while ((programCounter < memory.getCodeSegmentSize()) && (!stopProgramExecution)) {
+		Instruction instruction = fetchAndDecodeInstruction();
+		stopProgramExecution = executeInstruction(instruction);
 	}
-	std::streamoff fileByteCount = ifs.tellg();
-	if ((fileByteCount & 1) != 0) {
-		std::cerr << "Invalid binary" << std::endl;
-		return;
+}
+
+Instruction VirtualMachine::fetchAndDecodeInstruction() {
+	return Instruction::decode(memory[programCounter++]);
+}
+
+VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
+	return memory[programCounter++];
+}
+
+bool VirtualMachine::executeInstruction(Instruction const &instruction) {
+	using namespace util;
+
+	Register const ra = instruction.getRa();
+	Register const rb = instruction.getRb();
+
+	// FIXME: status flags update
+	switch (instruction.getMnemonic()) {
+	case NOP: 	// no operation is performed
+		break;
+
+	case SLEEP: // stop program execution
+		printInfo("stopping execution: reached 'sleep' instruction");
+		return true;
+
+	case LOADI:
+		registerFile[ra] = fetchImmediate();
+		break;
+
+	case LOAD:
+		registerFile[ra] = memory[registerFile[rb]];
+		break;
+
+	case STORE:
+		memory[registerFile[rb]] = registerFile[ra];
+		break;
+
+	case MOVE:
+		registerFile[ra] = registerFile[rb];
+		break;
+
+	case JUMP:
+		setProgramCounter(registerFile[ra]);
+		break;
+
+	case JUMPC:
+		if (carryFlag) {
+			setProgramCounter(registerFile[ra]);
+		}
+		break;
+
+	case JUMPZ:
+		if (zeroFlag) {
+			setProgramCounter(registerFile[ra]);
+		}
+		break;
+
+	case AND:
+		registerFile[ra] &= registerFile[rb];
+		setZeroFlag(registerFile[ra]);
+		carryFlag.reset();
+		break;
+
+	case OR:
+		registerFile[ra] |= registerFile[rb];
+		setZeroFlag(registerFile[ra]);
+		carryFlag.reset();
+		break;
+
+	case XOR:
+		registerFile[ra] ^= registerFile[rb];
+		setZeroFlag(registerFile[ra]);
+		carryFlag.reset();
+		break;
+
+	case NOT:
+		registerFile[ra] = ~registerFile[ra];
+		setZeroFlag(registerFile[ra]);
+		carryFlag.reset();
+		break;
+
+	case ADD:
+		executeAdd(ra, rb);
+		break;
+
+	case ADDC:
+		executeAdd(ra, rb, true);
+		break;
+
+	case SUB:
+		executeSub(ra, rb);
+		break;
+
+	case SUBC:
+		executeSub(ra, rb, true);
+		break;
+
+	case COMP:
+		executeSub(ra, rb, false, false);
+		break;
+
+	case INC:
+		executeInc(ra);
+		break;
+
+	case DEC:
+		executeDec(ra);
+		break;
+
+	case SHL:
+		executeShl(ra);
+		break;
+
+	case SHR:
+		executeShr(ra);
+		break;
+
+	case SHLC:
+		executeShl(ra, true);
+		break;
+
+	case SHRC:
+		executeShr(ra, true);
+		break;
+
+	default:
+		throw util::OpcodeError(instruction.getOpcode());
 	}
-	mInstructionSize = static_cast<size_t>(fileByteCount / Prol16::cDataIncrement);
-	ifs.seekg(0, std::ios::beg);
-	mInstructionMemory = new Prol16::TInstruction[mInstructionSize];
-	ifs.read(reinterpret_cast<char*>(mInstructionMemory), fileByteCount);
-	ifs.close();
 
-	for (size_t i = 0; i < Prol16::cRegCount; ++i) {
-		mRegisterFileWritten[i] = false;
+	return false;
+}
+
+void VirtualMachine::setProgramCounter(VirtualMemory::Address const address) {
+	if (address >= memory.getCodeSegmentSize()) {
+		std::ostringstream errorMessage;
+		errorMessage << "trying to set program counter (" << programCounter << ") ";
+		errorMessage << "to an invalid address (" << address << ")";
+		throw std::runtime_error(errorMessage.str());
 	}
-	mZeroFlagWritten = false;
-	mCarryFlagWritten = false;
+
+	programCounter = address;
 }
 
-VirtualMachine::~VirtualMachine() {
-	delete[] mInstructionMemory;
+void VirtualMachine::setZeroFlag(RegisterFile::Data const result) {
+	zeroFlag.set(result == 0);
 }
 
-bool VirtualMachine::is_ready() const {
-	return mInstructionMemory != nullptr;
+void VirtualMachine::setCarryFlag(ArithmeticResult const result) {
+	// if the 16th bit is set, there was an overflow/underflow -> set carry
+	carryFlag.set((result & (1 << BitWidth)) != 0);
 }
 
-bool VirtualMachine::RegisterDevice(IVirtualDevice* device, Prol16::TAddress begin, Prol16::TAddress end) {
-	TVirtualDeviceInsertResult result = mVirtualDeviceMap.insert(TVirtualDeviceMap::value_type(AddressRange(begin, end), device));
-	assert(result.second);
-	return result.second;
-}
-
-void VirtualMachine::PrintWarning(std::string const& message) {
-	std::cerr << "warning at pc 0x" << std::setfill('0') << std::setw(4) << std::hex << mPc << ": "
-		<< message << std::endl;
-}
-
-Prol16::TData VirtualMachine::ReadRegisterFile(size_t idx) {
-	if (idx >= mRegCount) {
-		std::ostringstream oss;
-		oss << "using higher register index than allowed index " << (mRegCount - 1);
-		PrintWarning(oss.str());
-	}
-	if (!mRegisterFileWritten[idx]) {
-		std::ostringstream oss;
-		oss << "register index " << idx << " has not been used jet and has undefined value";
-		PrintWarning(oss.str());
-	}
-	return mRegisterFile[idx];
-}
-
-void VirtualMachine::WriteRegisterFile(size_t idx, Prol16::TData const& data) {
-	if (idx >= mRegCount) {
-		std::ostringstream oss;
-		oss << "using higher register index than allowed index " << (mRegCount - 1);
-		PrintWarning(oss.str());
-	}
-	mRegisterFile[idx] = data;
-	mRegisterFileWritten[idx] = true;
-}
-
-VirtualMachine::TVirtualDeviceMap::iterator VirtualMachine::GetVirtualDevice(Prol16::TAddress address) {
-	TVirtualDeviceMap::iterator iter = mVirtualDeviceMap.lower_bound(AddressRange(address, address));
-	if (iter == mVirtualDeviceMap.end() || address < iter->first.Begin() || address > iter->first.End()) {
-		return mVirtualDeviceMap.end();
-	}
-	return iter;
-}
-
-Prol16::TData VirtualMachine::ReadMemory(Prol16::TAddress address) {
-	TVirtualDeviceMap::iterator iter = GetVirtualDevice(address);
-	if (iter == mVirtualDeviceMap.end()) {
-		std::ostringstream oss;
-		oss << "read from undefined memory address 0x" << std::setfill('0') << std::setw(4) << std::hex << address;
-		PrintWarning(oss.str());
-		return 0;
-	}
-	return iter->second->Read(address - iter->first.Begin());
-}
-
-void VirtualMachine::WriteMemory(Prol16::TAddress address, Prol16::TData const& data) {
-	TVirtualDeviceMap::iterator iter = GetVirtualDevice(address);
-	if (iter == mVirtualDeviceMap.end()) {
-		std::ostringstream oss;
-		oss << "write to undefined memory address 0x" << std::setfill('0') << std::setw(4) << std::hex << address;
-		PrintWarning(oss.str());
-		return;
-	}
-	iter->second->Write(address - iter->first.Begin(), data);
-}
-
-bool VirtualMachine::SetPc(Prol16::TAddress pc) {
-	bool pcOutOfRange = pc >= mInstructionSize;
-	if (pcOutOfRange) {
-		PrintWarning("program counter went out of range, stopping virtual machine");
+void VirtualMachine::executeAdd(Register const ra, Register const rb, bool const withCarry) {
+	ArithmeticResult result = 0;
+	if (withCarry) {
+		result = static_cast<ArithmeticResult>(registerFile[ra]) + registerFile[rb] + (carryFlag ? 1 : 0);
 	} else {
-		mPc = pc;
+		result = static_cast<ArithmeticResult>(registerFile[ra]) + registerFile[rb];
 	}
-	return !pcOutOfRange;
+
+	registerFile[ra] = static_cast<RegisterFile::Data>(result);
+	setZeroFlag(registerFile[ra]);
+	setCarryFlag(result);
 }
 
-bool VirtualMachine::ReadZeroFlag() {
-	if (!mZeroFlagWritten) {
-		PrintWarning("zero flag has not been generated yet, undefined behavior");
+void VirtualMachine::executeSub(Register const ra, Register const rb, bool const withCarry, bool const storeResult) {
+	ArithmeticResult result = 0;
+	if (withCarry) {
+		result = static_cast<ArithmeticResult>(registerFile[ra]) - registerFile[rb] - (carryFlag ? 1 : 0);
+	} else {
+		result = static_cast<ArithmeticResult>(registerFile[ra]) - registerFile[rb];
 	}
-	return mZeroFlag;
-}
 
-bool VirtualMachine::ReadCarryFlag() {
-	if (!mCarryFlagWritten) {
-		PrintWarning("carry flag has not been generated yet, undefined behavior");
+	if (storeResult) {
+		registerFile[ra] = static_cast<RegisterFile::Data>(result);
 	}
-	return mCarryFlag;
+
+	setZeroFlag(registerFile[ra]);
+	setCarryFlag(result);
 }
 
-void VirtualMachine::WriteZeroFlag(bool zero) {
-	mZeroFlag = zero;
-	mZeroFlagWritten = true;
+void VirtualMachine::executeInc(Register const ra) {
+	ArithmeticResult result = 0;
+	result = static_cast<ArithmeticResult>(registerFile[ra]) + 1;
+
+	registerFile[ra] = static_cast<RegisterFile::Data>(result);
+	setZeroFlag(registerFile[ra]);
+	setCarryFlag(result);
 }
 
-void VirtualMachine::WriteCarryFlag(bool carry) {
-	mCarryFlag = carry;
-	mCarryFlagWritten = true;
+void VirtualMachine::executeDec(Register const ra) {
+	ArithmeticResult result = 0;
+	result = static_cast<ArithmeticResult>(registerFile[ra]) - 1;
+
+	registerFile[ra] = static_cast<RegisterFile::Data>(result);
+	setZeroFlag(registerFile[ra]);
+	setCarryFlag(result);
 }
 
-void VirtualMachine::Run() {
-	while (mPc < mInstructionSize) {
-		Prol16::TInstruction inst = mInstructionMemory[mPc];
-		Prol16::TOpcode opcode = Prol16::MaskOpcode(inst);
-		switch (opcode) {
-			case Prol16::eNop:
-				break;
-			case Prol16::eSleep:
-				std::cerr << "info at pc 0x" << std::setfill('0') << std::setw(4) << std::hex << mPc << ": sleep instruction reached, ending execution" << std::endl;
-				return;
-				break;
-			case Prol16::eLoadi:
-				if (!SetPc(mPc + 1)) return;
-				WriteRegisterFile(Prol16::MaskRegRa(inst), mInstructionMemory[mPc]);
-				break;
-			case Prol16::eLoad:
-				WriteRegisterFile(Prol16::MaskRegRa(inst), ReadMemory(ReadRegisterFile(Prol16::MaskRegRb(inst))));
-				break;
-			case Prol16::eStore:
-				WriteMemory(ReadRegisterFile(Prol16::MaskRegRb(inst)), ReadRegisterFile(Prol16::MaskRegRa(inst)));
-				break;
-			case Prol16::eJump:
-				if (!SetPc(ReadRegisterFile(Prol16::MaskRegRa(inst)))) return;
-				break;
-			case Prol16::eJumpc:
-				if (ReadCarryFlag()) {
-					if (!SetPc(ReadRegisterFile(Prol16::MaskRegRa(inst)))) return;
-				} else {
-					if (!SetPc(mPc + 1)) return;
-				}
-				break;
-			case Prol16::eJumpz:
-				if (ReadZeroFlag()) {
-					if (!SetPc(ReadRegisterFile(Prol16::MaskRegRa(inst)))) return;
-				} else {
-					if (!SetPc(mPc + 1)) return;
-				}
-				break;
-			case Prol16::eMove:
-				WriteRegisterFile(Prol16::MaskRegRa(inst), ReadRegisterFile(Prol16::MaskRegRb(inst)));
-				break;
-			case Prol16::eAnd:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				WriteCarryFlag(false);
-				Prol16::TData result = ReadRegisterFile(raIdx) & ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteZeroFlag(result == 0);
-				WriteRegisterFile(raIdx, result);
-				break;
-			}
-			case Prol16::eOr:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				WriteCarryFlag(false);
-				Prol16::TData result = ReadRegisterFile(raIdx) | ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteZeroFlag(result == 0);
-				WriteRegisterFile(raIdx, result);
-				break;
-			}
-			case Prol16::eXor:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				WriteCarryFlag(false);
-				Prol16::TData result = ReadRegisterFile(raIdx) ^ ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteZeroFlag(result == 0);
-				WriteRegisterFile(raIdx, result);
-				break;
-			}
-			case Prol16::eNot:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				WriteCarryFlag(false);
-				Prol16::TData result = ~ReadRegisterFile(raIdx);
-				WriteZeroFlag(result == 0);
-				WriteRegisterFile(raIdx, result);
-				break;
-			}
-			case Prol16::eAdd: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra + ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result < ra);
-				break;
-			}
-			case Prol16::eAddc: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				bool carry = ReadCarryFlag();
-				Prol16::TData result = ra + ReadRegisterFile(Prol16::MaskRegRb(inst)) + (carry ? 1 : 0);
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result < ra || (carry && result <= ra));
-				break;
-			}
-			case Prol16::eSub: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra - ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result > ra);
-				break;
-			}
-			case Prol16::eSubc: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				bool carry = ReadCarryFlag();
-				Prol16::TData result = ra - ReadRegisterFile(Prol16::MaskRegRb(inst)) - (carry ? 1 : 0);
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result > ra || (carry && result >= ra));
-				break;
-			}
-			case Prol16::eComp: {
-				Prol16::TData ra = ReadRegisterFile(Prol16::MaskRegRa(inst));
-				Prol16::TData result = ra - ReadRegisterFile(Prol16::MaskRegRb(inst));
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result > ra);
-				break;
-			}
-			case Prol16::eInc: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra + 1;
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result < ra);
-				break;
-			}
-			case Prol16::eDec: {
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra - 1;
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag(result > ra);
-				break;
-			}
-			case Prol16::eShl:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra << 1;
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag((ra & 0x8000) != 0);
-				break;
-			}
-			case Prol16::eShr:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra >> 1;
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag((ra & 0x0001) != 0);
-				break;
-			}
-			case Prol16::eShlc:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra << 1 | (ReadCarryFlag() ? 0x0001 : 0);
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag((ra & 0x8000) != 0);
-				break;
-			}
-			case Prol16::eShrc:
-			{
-				size_t raIdx = Prol16::MaskRegRa(inst);
-				Prol16::TData ra = ReadRegisterFile(raIdx);
-				Prol16::TData result = ra >> 1 | (ReadCarryFlag() ? 0x8000 : 0);
-				WriteRegisterFile(raIdx, result);
-				WriteZeroFlag(result == 0);
-				WriteCarryFlag((ra & 0x0001) != 0);
-				break;
-			}
-			case Prol16::ePrintInt:
-				//wies
-            //std::cout << "0x" << std::setfill('0') << std::setw(4) << std::hex << ReadRegisterFile(Prol16::MaskRegRa(inst)) << std::endl;
-            std::cout << ReadRegisterFile(Prol16::MaskRegRa(inst)) << std::endl;
-				break;
-			default:
-				PrintWarning("undefined opcode");
-				break;
-		}
-		if (opcode != Prol16::eJump && opcode != Prol16::eJumpc && opcode != Prol16::eJumpz) {
-			if (!SetPc(mPc + 1)) return;
-		}
+void VirtualMachine::executeShl(Register const ra, bool const withCarry) {
+	carryFlag.set((registerFile[ra] & 0x8000) != 0);
+	registerFile[ra] <<= 1;
+
+	if (withCarry && carryFlag.isSet()) {
+		registerFile[ra] |= 0x0001;	// shift in carry from the left -> set bit 0 to carry
 	}
+
+	setZeroFlag(registerFile[ra]);
+}
+
+void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
+	carryFlag.set((registerFile[ra] & 0x0001) != 0);
+	registerFile[ra] >>= 1;
+
+	if (withCarry && carryFlag.isSet()) {
+		registerFile[ra] |= 0x8000;	// shift in carry from the right -> set bit 15 to carry
+	}
+
+	setZeroFlag(registerFile[ra]);
+}
+
+void VirtualMachine::printInfo(std::string const &message) const {
+	using namespace std;
+
+	cout << "INFO (";
+	printProgramCounter(cout);
+	cout << "): " << message << endl;
+}
+
+void VirtualMachine::printProgramCounter(std::ostream &stream) const {
+	stream << "pc = 0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << programCounter-1;
+}
+
 }

@@ -1,47 +1,66 @@
-#ifndef VIRTUAL_MACHINE_H
-#define VIRTUAL_MACHINE_H
+/**
+ * @author		creiterer
+ * @date 		2019-04-02
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		brief description
+ */
 
-#include <fstream>
-#include <map>
-#include <string>
-#include "AddressRange.h"
-#include "Prol16.h"
+#ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MACHINE_H_INCLUDED
+#define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MACHINE_H_INCLUDED
 
-class IVirtualDevice;
+#include <cstdint>
+#include <ios>
 
-class VirtualMachine final {
+#include "NonCopyable.h"
+#include "VirtualMemory.h"
+#include "RegisterFile.h"
+
+#include "Instruction.h"
+#include "RegisterUtils.h"
+#include "NumberUtils.h"
+#include "Flag.h"
+
+namespace PROL16 {
+
+class VirtualMachine final : private NonCopyable {
 public:
-	VirtualMachine(std::string const& fileName, size_t regCount);
-	~VirtualMachine();
-	bool is_ready() const;
-	bool RegisterDevice(IVirtualDevice* device, Prol16::TAddress begin, Prol16::TAddress end);
-	void Run();
+	using Register = util::Register;
+	using Immediate = util::Immediate;
+	using ArithmeticResult = uint32_t;
+
+	static uint8_t const BitWidth = 16;
+
+	VirtualMachine(std::string const &filename);
+	~VirtualMachine() = default;
+
+	void run();
 
 private:
-	typedef std::map<AddressRange, IVirtualDevice*> TVirtualDeviceMap;
-	typedef std::pair<TVirtualDeviceMap::iterator, bool> TVirtualDeviceInsertResult;
-	Prol16::TInstruction* mInstructionMemory;
-	size_t mInstructionSize;
-	TVirtualDeviceMap mVirtualDeviceMap;
-	size_t const mRegCount;
-	Prol16::TData mRegisterFile[Prol16::cRegCount];
-	bool mRegisterFileWritten[Prol16::cRegCount];
-	Prol16::TAddress mPc;
-	bool mZeroFlag;
-	bool mCarryFlag;
-	bool mZeroFlagWritten;
-	bool mCarryFlagWritten;
-	void PrintWarning(std::string const& message);
-	Prol16::TData ReadRegisterFile(size_t idx);
-	void WriteRegisterFile(size_t idx, Prol16::TData const& data);
-	TVirtualDeviceMap::iterator GetVirtualDevice(Prol16::TAddress address);
-	Prol16::TData ReadMemory(Prol16::TAddress address);
-	void WriteMemory(Prol16::TAddress address, Prol16::TData const& data);
-	bool ReadZeroFlag();
-	bool ReadCarryFlag();
-	void WriteZeroFlag(bool zero);
-	void WriteCarryFlag(bool carry);
-	bool SetPc(Prol16::TAddress pc);
+	VirtualMemory::Address programCounter;
+	VirtualMemory memory;
+	RegisterFile registerFile;
+	Flag carryFlag;
+	Flag zeroFlag;
+
+	Instruction fetchAndDecodeInstruction();
+	Immediate fetchImmediate();
+	bool executeInstruction(Instruction const &instruction);
+
+	void setProgramCounter(VirtualMemory::Address const address);
+	void setZeroFlag(RegisterFile::Data const result);
+	void setCarryFlag(ArithmeticResult const result);
+
+	void executeAdd(Register const ra, Register const rb, bool const withCarry = false);
+	void executeSub(Register const ra, Register const rb, bool const withCarry = false, bool const storeResult = true);
+	void executeInc(Register const ra);
+	void executeDec(Register const ra);
+	void executeShl(Register const ra, bool const withCarry = false);
+	void executeShr(Register const ra, bool const withCarry = false);
+
+	void printInfo(std::string const &message) const;
+	void printProgramCounter(std::ostream &stream) const;
 };
+
+}
 
 #endif
