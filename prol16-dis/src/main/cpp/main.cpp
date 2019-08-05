@@ -20,6 +20,7 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+using util::ScopedFileStream;
 
 namespace {
 
@@ -59,11 +60,11 @@ int main(int const argc, char const * const argv[]) {
 	using namespace util;
 
 	try {
-		ArgumentParser argumentParser;
+		cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addFlag("-c", "--console", false);
 
-		CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
+		cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
 
 		if (cliArguments.isSet("-c")) {
 			disassembleToConsole(cliArguments[FILENAME_ARG_NAME]);
@@ -73,7 +74,7 @@ int main(int const argc, char const * const argv[]) {
 		}
 
 		return 0;
-	} catch (util::CLIError const &e) {
+	} catch (util::cli::CLIError const &e) {
 		cerr << "CLI Error: " << e.what() << endl;
 		return 2;
 	} catch (std::ios_base::failure const &f) {
