@@ -12,7 +12,7 @@
 #include "CLIError.h"
 #include "CLIArguments.h"
 
-using namespace util;
+using namespace util::cli;
 
 TEST(ArgumentParserTest, testOnePositionalArgument) {
 	ArgumentParser argumentParser;

@@ -16,8 +16,9 @@
 #include "NonCopyable.h"
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
+#include "CLIFlags.h"
 
-namespace util {
+namespace util { namespace cli {
 
 class ArgumentParser final : private NonCopyable {
 public:
@@ -35,6 +36,7 @@ public:
 
 	ArgumentParser& addFlag(std::string const &longName, bool const defaultValue);
 	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue);
+	ArgumentParser& addFlag(flags::FlagName const &flagName, bool const defaultValue);
 
 	CLIArguments parseArguments(int const argc, char const * const argv[]) const;
 
@@ -50,6 +52,6 @@ private:
 	ArgumentMap shortToLongNameMapping;
 };
 
-}
+}}
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED */

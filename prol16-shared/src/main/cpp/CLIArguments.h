@@ -11,7 +11,9 @@
 #include <string>
 #include <unordered_map>
 
-namespace util {
+#include "CLIFlags.h"
+
+namespace util { namespace cli {
 
 class CLIArguments final {
 public:
@@ -22,6 +24,7 @@ public:
 	~CLIArguments() = default;
 
 	bool isSet(std::string const &flagName) const;
+	bool isSet(flags::FlagName const &flagName) const;
 	std::string const& operator[](std::string const &argumentName) const;
 
 private:
@@ -30,6 +33,6 @@ private:
 	ArgumentMap shortToLongNameMap;
 };
 
-}
+}}
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTS_H_INCLUDED */

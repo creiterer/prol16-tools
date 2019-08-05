@@ -9,7 +9,7 @@
 
 #include <stdexcept>
 
-namespace util {
+namespace util { namespace cli {
 
 CLIArguments::CLIArguments(ArgumentMap const &arguments, FlagMap const &flags, ArgumentMap const &shortToLongNameMap)
 : arguments(arguments), flags(flags), shortToLongNameMap(shortToLongNameMap) {}
@@ -24,6 +24,10 @@ bool CLIArguments::isSet(std::string const &flagName) const {
 	}
 }
 
+bool CLIArguments::isSet(flags::FlagName const &flagName) const {
+	return flags.at(flagName.longName);
+}
+
 std::string const& CLIArguments::operator[](std::string const &argumentName) const {
 	try {
 		// assume argumentName is the long name
@@ -34,4 +38,4 @@ std::string const& CLIArguments::operator[](std::string const &argumentName) con
 	}
 }
 
-}
+}}

@@ -18,7 +18,7 @@
 #include "CLIArgumentsBuilder.h"
 #include "CLIError.h"
 
-namespace util {
+namespace util { namespace cli {
 
 ArgumentParser& ArgumentParser::addPositionalArgument(std::string const &name) {
 	assert(!name.empty());
@@ -68,6 +68,19 @@ ArgumentParser& ArgumentParser::addFlag(std::string const &shortName, std::strin
 	assert(result.second);
 
 	auto const result2 = shortToLongNameMapping.emplace(shortName, longName);
+	assert(result2.second);
+
+	return *this;
+}
+
+ArgumentParser& ArgumentParser::addFlag(flags::FlagName const &flagName, bool const defaultValue) {
+	assert(!flagName.shortName.empty());
+	assert(!flagName.longName.empty());
+
+	auto const result = flags.emplace(flagName.longName, defaultValue);
+	assert(result.second);
+
+	auto const result2 = shortToLongNameMapping.emplace(flagName.shortName, flagName.longName);
 	assert(result2.second);
 
 	return *this;
@@ -163,4 +176,4 @@ std::string ArgumentParser::getUsageMessage(std::string const &appName) const {
 	return usageMessage.str();
 }
 
-}
+}}

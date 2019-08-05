@@ -13,7 +13,7 @@
 #include "NonCopyable.h"
 #include "CLIArguments.h"
 
-namespace util {
+namespace util { namespace cli {
 
 class CLIArgumentsBuilder final : private NonCopyable {
 public:
@@ -35,6 +35,6 @@ private:
 	ArgumentMap shortToLongNameMap;
 };
 
-}
+}}
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTBUILDER_H_INCLUDED */
