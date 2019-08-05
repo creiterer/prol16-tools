@@ -13,6 +13,9 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/OpcodeError.cpp
     ${MAIN_CPP_DIR}/InstructionDecodeError.cpp
     ${MAIN_CPP_DIR}/IncompleteInstructionError.cpp
+    ${MAIN_CPP_DIR}/CLIArguments.cpp
+    ${MAIN_CPP_DIR}/CLIArgumentsBuilder.cpp
+    ${MAIN_CPP_DIR}/ArgumentParser.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})

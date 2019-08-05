@@ -12,9 +12,10 @@
 #include "Filename.h"
 #include "ScopedFileStream.h"
 #include "CLIError.h"
+#include "CLIArguments.h"
+#include "ArgumentParser.h"
 
 #include "Disassembler.h"
-#include "CLIArguments.h"
 
 using std::cout;
 using std::cerr;
@@ -22,10 +23,10 @@ using std::endl;
 
 namespace {
 
-void printUsage(std::string const &appName) {
-	cerr << "Usage: " << appName << "[-c] PROL16_EXE_FILE" << endl;
-	cerr << "-c\t\tshow output on stdout instead of writing it to a file" << endl;
-}
+//void printUsage(std::string const &appName) {
+//	cerr << "Usage: " << appName << "[-c] PROL16_EXE_FILE" << endl;
+//	cerr << "-c\t\tshow output on stdout instead of writing it to a file" << endl;
+//}
 
 void disassemble(std::string const &filename, std::ostream &outputStream) {
 	ScopedFileStream<std::ifstream> inputFileStream(filename, std::ifstream::binary);
@@ -52,21 +53,28 @@ void disassembleToFile(util::Filename const &filename) {
 
 }
 
-int main(int const argc, char const * const argv[]) {
-	try {
-		util::CLIArguments cliArguments = util::CLIArguments::parse(argc, argv);
+static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";
 
-		if (cliArguments.shouldPrintToConsole()) {
-			disassembleToConsole(cliArguments.getFilename());
+int main(int const argc, char const * const argv[]) {
+	using namespace util;
+
+	try {
+		ArgumentParser argumentParser;
+		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
+		argumentParser.addFlag("-c", "--console", false);
+
+		CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
+
+		if (cliArguments.isSet("-c")) {
+			disassembleToConsole(cliArguments[FILENAME_ARG_NAME]);
 		} else {
-			util::Filename filename(cliArguments.getFilename());
+			Filename filename(cliArguments[FILENAME_ARG_NAME]);
 			disassembleToFile(filename);
 		}
 
 		return 0;
 	} catch (util::CLIError const &e) {
 		cerr << "CLI Error: " << e.what() << endl;
-		printUsage(argv[0]);
 		return 2;
 	} catch (std::ios_base::failure const &f) {
         cerr << "Error: Caught an ios_base::failure." << endl;

@@ -16,6 +16,7 @@ namespace util {
 class CLIError final : public std::runtime_error {
 public:
 	CLIError(std::string const &message) : runtime_error(message) {}
+	CLIError(std::string const &error, std::string const &usage) : runtime_error(error + "\n" + usage) {}
 };
 
 }
