@@ -22,7 +22,7 @@
 
 namespace PROL16 {
 
-class VirtualMachine final : private NonCopyable {
+class VirtualMachine final : private ::util::NonCopyable {
 public:
 	using Register = util::Register;
 	using Immediate = util::Immediate;
@@ -30,7 +30,7 @@ public:
 
 	static uint8_t const BitWidth = 16;
 
-	VirtualMachine(std::string const &filename);
+	VirtualMachine(std::string const &filename, bool const verboseLogging);
 	~VirtualMachine() = default;
 
 	void run();
@@ -41,6 +41,7 @@ private:
 	RegisterFile registerFile;
 	Flag carryFlag;
 	Flag zeroFlag;
+	bool const verboseLogging;
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();

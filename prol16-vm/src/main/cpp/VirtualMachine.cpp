@@ -16,7 +16,8 @@
 
 namespace PROL16 {
 
-VirtualMachine::VirtualMachine(std::string const &filename) : programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag") {
+VirtualMachine::VirtualMachine(std::string const &filename, bool const verboseLogging)
+: programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag"), verboseLogging(verboseLogging) {
 	memory.initializeFromFile(filename);
 }
 
