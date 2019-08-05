@@ -6,6 +6,8 @@
 
 #include "NonCopyable.h"
 
+namespace util {
+
 template <typename StreamType>
 class ScopedFileStream final : private NonCopyable {
 public:
@@ -28,5 +30,7 @@ private:
 	std::string const filename;
 	StreamType fileStream;
 };
+
+}
 
 #endif
