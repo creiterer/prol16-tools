@@ -1,5 +1,14 @@
-#ifndef NONCOPYABLE_H_INCLUDED
-#define NONCOPYABLE_H_INCLUDED
+/**
+ * @author		creiterer
+ * @date 		2019-08-05
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		brief description
+ */
+
+#ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_NONCOPYABLE_H_INCLUDED
+#define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_NONCOPYABLE_H_INCLUDED
+
+namespace util {
 
 class NonCopyable {
 public:
@@ -11,4 +20,6 @@ private:
 	NonCopyable& operator= (NonCopyable const &other) = delete;
 };
 
-#endif
+}
+
+#endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_NONCOPYABLE_H_INCLUDED */

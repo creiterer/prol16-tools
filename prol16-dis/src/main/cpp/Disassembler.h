@@ -18,7 +18,7 @@
 
 namespace PROL16 {
 
-class Disassembler final : private NonCopyable {
+class Disassembler final : private ::util::NonCopyable {
 public:
 	using Immediate = util::Immediate;
 

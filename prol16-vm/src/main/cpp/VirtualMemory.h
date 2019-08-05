@@ -16,7 +16,7 @@
 
 namespace PROL16 {
 
-class VirtualMemory final : private NonCopyable {
+class VirtualMemory final : private util::NonCopyable {
 public:
 	using Data = uint16_t;
 	using Address = uint16_t;

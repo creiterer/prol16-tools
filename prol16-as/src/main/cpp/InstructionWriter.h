@@ -18,7 +18,7 @@
 
 namespace PROL16 {
 
-class InstructionWriter final : private NonCopyable {
+class InstructionWriter final : private ::util::NonCopyable {
 public:
 	using Register = util::Register;
 	using Immediate = util::Immediate;
