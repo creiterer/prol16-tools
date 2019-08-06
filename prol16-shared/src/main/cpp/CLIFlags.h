@@ -17,7 +17,7 @@ struct FlagName final {
 	std::string const longName;
 };
 
-static FlagName const VERBOSE = {"-v", "--verbose"};
+static FlagName const VERBOSE{"-v", "--verbose"};
 
 }}}
 
