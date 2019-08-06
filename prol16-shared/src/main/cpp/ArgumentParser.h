@@ -31,12 +31,12 @@ public:
 
 	ArgumentParser& addPositionalArgument(std::string const &name);
 
-	ArgumentParser& addOptionalArgument(std::string const &longName);
-	ArgumentParser& addOptionalArgument(std::string const &shortName, std::string const &longName);
+	ArgumentParser& addOptionalArgument(std::string const &longName, std::string const &defaultValue);
+	ArgumentParser& addOptionalArgument(std::string const &shortName, std::string const &longName, std::string const &defaultValue);
 
-	ArgumentParser& addFlag(std::string const &longName, bool const defaultValue);
-	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue);
-	ArgumentParser& addFlag(flags::FlagName const &flagName, bool const defaultValue);
+	ArgumentParser& addFlag(std::string const &longName, bool const defaultValue = false);
+	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue = false);
+	ArgumentParser& addFlag(flags::FlagName const &flagName, bool const defaultValue = false);
 
 	CLIArguments parseArguments(int const argc, char const * const argv[]) const;
 

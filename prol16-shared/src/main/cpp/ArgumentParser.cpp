@@ -29,20 +29,20 @@ ArgumentParser& ArgumentParser::addPositionalArgument(std::string const &name) {
 	return *this;
 }
 
-ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &longName) {
+ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &longName, std::string const &defaultValue) {
 	assert(!longName.empty());
 
-	auto const result = optionalArguments.emplace(longName, "");
+	auto const result = optionalArguments.emplace(longName, defaultValue);
 	assert(result.second);
 
 	return *this;
 }
 
-ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &shortName, std::string const &longName) {
+ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &shortName, std::string const &longName, std::string const &defaultValue) {
 	assert(!shortName.empty());
 	assert(!longName.empty());
 
-	auto const result = optionalArguments.emplace(longName, "");
+	auto const result = optionalArguments.emplace(longName, defaultValue);
 	assert(result.second);
 
 	auto const result2 = shortToLongNameMapping.emplace(shortName, longName);

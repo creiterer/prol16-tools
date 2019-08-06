@@ -49,7 +49,7 @@ TEST(ArgumentParserTest, testPositionalArgumentsNotSatisfied) {
 
 TEST(ArgumentParserTest, testOneOptionalArgumentWithLongNameOnly) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("--verbosity");
+	argumentParser.addOptionalArgument("--verbosity", "1");
 
 	int const argc = 3;
 	char const * const argv[] = {"appName", "--verbosity", "2"};
@@ -60,7 +60,7 @@ TEST(ArgumentParserTest, testOneOptionalArgumentWithLongNameOnly) {
 
 TEST(ArgumentParserTest, testOneOptionalArgumentWithShortAndLongName) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("-v", "--verbosity");
+	argumentParser.addOptionalArgument("-v", "--verbosity", "1");
 
 	int const argc = 3;
 
@@ -77,7 +77,7 @@ TEST(ArgumentParserTest, testOneOptionalArgumentWithShortAndLongName) {
 
 TEST(ArgumentParserTest, testMultipleOptionalArgumentsWithLongNameOnly) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("--source").addOptionalArgument("--dest");
+	argumentParser.addOptionalArgument("--source", "./").addOptionalArgument("--dest", "./");
 
 	int const argc = 5;
 	char const * const argv[] = {"appName", "--dest", "path/to/dest", "--source", "path/to/source"};
@@ -89,7 +89,7 @@ TEST(ArgumentParserTest, testMultipleOptionalArgumentsWithLongNameOnly) {
 
 TEST(ArgumentParserTest, testMultipleOptionalArgumentsWithShortAndLongNamesMixed) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("-s", "--source").addOptionalArgument("-d", "--dest");
+	argumentParser.addOptionalArgument("-s", "--source", "./").addOptionalArgument("-d", "--dest", "./");
 
 	int const argc = 5;
 
@@ -117,33 +117,33 @@ TEST(ArgumentParserTest, testMultipleOptionalArgumentsWithShortAndLongNamesMixed
 
 TEST(ArgumentParserTest, testNotSpecifiedOptionalArguments) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("-v", "--verbosity");
+	argumentParser.addOptionalArgument("-v", "--verbosity", "1");
 
 	int const argc = 1;
 	char const * const argv[] = {"appName"};
 
 	CLIArguments cliArguments = argumentParser.parseArguments(argc, argv);
-	ASSERT_EQ("", cliArguments["-v"]);
-	ASSERT_EQ("", cliArguments["--verbosity"]);
+	ASSERT_EQ("1", cliArguments["-v"]);
+	ASSERT_EQ("1", cliArguments["--verbosity"]);
 }
 
 TEST(ArgumentParserTest, testNotAllOptionalArgumentsSpecified) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("-s", "--source").addOptionalArgument("-d", "--dest");
+	argumentParser.addOptionalArgument("-s", "--source", "./").addOptionalArgument("-d", "--dest", "./");
 
 	int const argc = 3;
 	char const * const argv[] = {"appName", "-d", "path/to/dest"};
 
 	CLIArguments cliArguments = argumentParser.parseArguments(argc, argv);
-	ASSERT_EQ("", cliArguments["-s"]);
-	ASSERT_EQ("", cliArguments["--source"]);
+	ASSERT_EQ("./", cliArguments["-s"]);
+	ASSERT_EQ("./", cliArguments["--source"]);
 	ASSERT_EQ("path/to/dest", cliArguments["-d"]);
 	ASSERT_EQ("path/to/dest", cliArguments["--dest"]);
 }
 
 TEST(ArgumentParserTest, testOptionalArgumentWithoutSpecifiedValue) {
 	ArgumentParser argumentParser;
-	argumentParser.addOptionalArgument("-v", "--verbosity");
+	argumentParser.addOptionalArgument("-v", "--verbosity", "1");
 
 	int const argc = 2;
 
@@ -251,17 +251,17 @@ TEST(ArgumentParserTest, testNotAllFlagsSpecified) {
 TEST(ArgumentParserTest, testAllArgumentVariantsCombined) {
 	ArgumentParser argumentParser;
 	argumentParser.addPositionalArgument("filename");
-	argumentParser.addOptionalArgument("-s", "--sourcedir").addOptionalArgument("-d", "--destdir");
+	argumentParser.addOptionalArgument("-s", "--sourcedir", "./").addOptionalArgument("-d", "--destdir", "./");
 	argumentParser.addFlag("-v", "--verbose", false).addFlag("-l", "--followLinks", false);
 
 	int argc = 2;
 	char const * const argvFilenameOnly[] = {"appName", "some_file.txt"};
 	CLIArguments cliArguments = argumentParser.parseArguments(argc, argvFilenameOnly);
 	ASSERT_EQ("some_file.txt", cliArguments["filename"]);
-	ASSERT_EQ("", cliArguments["-s"]);
-	ASSERT_EQ("", cliArguments["--sourcedir"]);
-	ASSERT_EQ("", cliArguments["-d"]);
-	ASSERT_EQ("", cliArguments["--destdir"]);
+	ASSERT_EQ("./", cliArguments["-s"]);
+	ASSERT_EQ("./", cliArguments["--sourcedir"]);
+	ASSERT_EQ("./", cliArguments["-d"]);
+	ASSERT_EQ("./", cliArguments["--destdir"]);
 	ASSERT_FALSE(cliArguments.isSet("-v"));
 	ASSERT_FALSE(cliArguments.isSet("--verbose"));
 	ASSERT_FALSE(cliArguments.isSet("-l"));
@@ -273,8 +273,8 @@ TEST(ArgumentParserTest, testAllArgumentVariantsCombined) {
 	ASSERT_EQ("some_file.txt", cliArguments["filename"]);
 	ASSERT_EQ("path/to/source/dir", cliArguments["-s"]);
 	ASSERT_EQ("path/to/source/dir", cliArguments["--sourcedir"]);
-	ASSERT_EQ("", cliArguments["-d"]);
-	ASSERT_EQ("", cliArguments["--destdir"]);
+	ASSERT_EQ("./", cliArguments["-d"]);
+	ASSERT_EQ("./", cliArguments["--destdir"]);
 	ASSERT_FALSE(cliArguments.isSet("-v"));
 	ASSERT_FALSE(cliArguments.isSet("--verbose"));
 	ASSERT_FALSE(cliArguments.isSet("-l"));
@@ -284,8 +284,8 @@ TEST(ArgumentParserTest, testAllArgumentVariantsCombined) {
 	char const * const argvDestVerbose[] = {"appName", "--destdir", "path/to/dest/dir", "-v", "some_file.txt"};
 	cliArguments = argumentParser.parseArguments(argc, argvDestVerbose);
 	ASSERT_EQ("some_file.txt", cliArguments["filename"]);
-	ASSERT_EQ("", cliArguments["-s"]);
-	ASSERT_EQ("", cliArguments["--sourcedir"]);
+	ASSERT_EQ("./", cliArguments["-s"]);
+	ASSERT_EQ("./", cliArguments["--sourcedir"]);
 	ASSERT_EQ("path/to/dest/dir", cliArguments["-d"]);
 	ASSERT_EQ("path/to/dest/dir", cliArguments["--destdir"]);
 	ASSERT_TRUE(cliArguments.isSet("-v"));
