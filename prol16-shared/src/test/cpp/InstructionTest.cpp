@@ -13,6 +13,7 @@
 #include "InstructionDecodeError.h"
 
 using namespace PROL16;
+using PROL16::util::InstructionDecodeError;
 
 TEST(InstructionTest, testInstructionEncoding) {
 	Instruction nop(0x0);
@@ -107,7 +108,7 @@ TEST(InstructionTest, testInstructionDecoding) {
 	 *  | 0000 | 1101 | 1101 | 0000 |
 	 *  |   0  |   D  |   D  |   0  |
 	 */
-	ASSERT_THROW(Instruction::decode(0x0DD0), util::InstructionDecodeError);
+	ASSERT_THROW(Instruction::decode(0x0DD0), InstructionDecodeError);
 
 
 	/** @test invalid ra
@@ -116,7 +117,7 @@ TEST(InstructionTest, testInstructionDecoding) {
 	 *  | 0000 | 1110 | 0000 | 1111 |
 	 *  |   0  |   E  |   0  |   F  |
 	 */
-	ASSERT_THROW(Instruction::decode(0x0E0F), util::InstructionDecodeError);
+	ASSERT_THROW(Instruction::decode(0x0E0F), InstructionDecodeError);
 
 	/** @test invalid opcode
 	 *  | opcode  |   ra   |   rb   |
@@ -124,11 +125,11 @@ TEST(InstructionTest, testInstructionDecoding) {
 	 *  | 1000 | 1101 | 1100 | 1111 |
 	 *  |   8  |   D  |   C  |   F  |
 	 */
-	ASSERT_THROW(Instruction::decode(0x8DCF), util::InstructionDecodeError);
+	ASSERT_THROW(Instruction::decode(0x8DCF), InstructionDecodeError);
 }
 
 TEST(InstructionTest, testAsString) {
-	using namespace util;
+	using namespace PROL16::util;
 
 	Instruction nop(NOP);
 	ASSERT_EQ("nop", nop.asString());
@@ -204,7 +205,7 @@ TEST(InstructionTest, testAsString) {
 }
 
 TEST(InstructionTest, testIs) {
-	using namespace util;
+	using namespace PROL16::util;
 
 	Instruction nop(0x0);
 	ASSERT_TRUE(nop.is(NOP));

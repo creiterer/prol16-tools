@@ -106,3 +106,8 @@ Instruction::Register Instruction::decodeOpcode(EncodedType const encodedValue) 
 }
 
 }
+
+util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction) {
+	logger << instruction.asString();
+	return logger;
+}

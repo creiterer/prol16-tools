@@ -13,6 +13,7 @@
 
 #include "MnemonicUtils.h"
 #include "RegisterUtils.h"
+#include "Logger.h"
 
 namespace PROL16 {
 
@@ -68,5 +69,7 @@ private:
 };
 
 }
+
+util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction);
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED */
