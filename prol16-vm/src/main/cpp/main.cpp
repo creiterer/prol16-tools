@@ -8,21 +8,28 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "CLIFlags.h"
+#include "ScopedFileStream.h"
 
 using std::cerr;
 using std::endl;
 
 static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";
+static std::string const LOGFILE_OPTION_NAME = "--log-file";
 
 int main(int const argc, char const * const argv[]) {
 	try {
 		util::cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
+		argumentParser.addOptionalArgument(LOGFILE_OPTION_NAME, "prol16-vm.log");
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
 
-		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], cliArguments.isSet(util::cli::flags::VERBOSE));
+		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[LOGFILE_OPTION_NAME], std::ofstream::out);
+
+		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
+
+		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger);
 		prol16vm.run();
 
 		return 0;

@@ -19,6 +19,7 @@
 #include "RegisterUtils.h"
 #include "NumberUtils.h"
 #include "Flag.h"
+#include "Logger.h"
 
 namespace PROL16 {
 
@@ -30,7 +31,7 @@ public:
 
 	static uint8_t const BitWidth = 16;
 
-	VirtualMachine(std::string const &filename, bool const verboseLogging);
+	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger);
 	~VirtualMachine() = default;
 
 	void run();
@@ -41,7 +42,7 @@ private:
 	RegisterFile registerFile;
 	Flag carryFlag;
 	Flag zeroFlag;
-	bool const verboseLogging;
+	::util::logging::Logger &logger;
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();

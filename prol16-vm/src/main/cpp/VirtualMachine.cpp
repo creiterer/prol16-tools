@@ -11,13 +11,14 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <functional>
 
 #include "OpcodeError.h"
 
 namespace PROL16 {
 
-VirtualMachine::VirtualMachine(std::string const &filename, bool const verboseLogging)
-: programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag"), verboseLogging(verboseLogging) {
+VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger)
+: programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag"), logger(logger) {
 	memory.initializeFromFile(filename);
 }
 
@@ -41,10 +42,12 @@ VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
 bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	using namespace util;
 
+	logger.forEachLogStream(std::bind(&VirtualMachine::printProgramCounter, this, std::placeholders::_1));
+	logger << "|z=" << zeroFlag << "|c=" << carryFlag << ": " << instruction;
+
 	Register const ra = instruction.getRa();
 	Register const rb = instruction.getRb();
 
-	// FIXME: status flags update
 	switch (instruction.getMnemonic()) {
 	case NOP: 	// no operation is performed
 		break;
@@ -53,9 +56,15 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		printInfo("stopping execution: reached 'sleep' instruction");
 		return true;
 
-	case LOADI:
-		registerFile[ra] = fetchImmediate();
+	case LOADI: {
+		Immediate const immediate = fetchImmediate();
+		registerFile[ra] = immediate;
+		logger << ", ";
+		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
+			stream << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << immediate;
+		});
 		break;
+	}
 
 	case LOAD:
 		registerFile[ra] = memory[registerFile[rb]];
@@ -156,6 +165,8 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	default:
 		throw util::OpcodeError(instruction.getOpcode());
 	}
+
+	logger << '\n';
 
 	return false;
 }
@@ -258,7 +269,7 @@ void VirtualMachine::printInfo(std::string const &message) const {
 }
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
-	stream << "pc = 0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << programCounter-1;
+	stream << "pc=0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << programCounter-1;
 }
 
 }
