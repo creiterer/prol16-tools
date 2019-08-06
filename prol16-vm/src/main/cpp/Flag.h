@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include "Logger.h"
+
 namespace PROL16 {
 
 class Flag final {
@@ -23,6 +25,8 @@ public:
 	void set(bool const value = true);
 
 	bool isSet() const;
+
+	std::string asString() const;
 
 private:
 	enum class State {
@@ -38,5 +42,7 @@ private:
 };
 
 }
+
+util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Flag const &flag);
 
 #endif /* PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAG_H_INCLUDED */
