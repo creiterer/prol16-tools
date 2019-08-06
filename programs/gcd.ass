@@ -58,5 +58,5 @@ done:
    store r1, r6
    load r3, r6
    loadi r4, data_start
-   write_mem_dump
+   write_mem_dump()
    sleep
