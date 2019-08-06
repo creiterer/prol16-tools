@@ -16,6 +16,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/CLIArguments.cpp
     ${MAIN_CPP_DIR}/CLIArgumentsBuilder.cpp
     ${MAIN_CPP_DIR}/ArgumentParser.cpp
+    ${MAIN_CPP_DIR}/Logger.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})
