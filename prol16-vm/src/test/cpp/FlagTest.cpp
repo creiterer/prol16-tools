@@ -11,10 +11,11 @@
 #include "gtest/gtest.h"
 
 using namespace PROL16;
+using PROL16::util::FlagError;
 
 TEST(FlagTest, testFlagUsage) {
 	Flag flag("test flag");
-	ASSERT_THROW(flag.isSet(), util::FlagError);
+	ASSERT_THROW(flag.isSet(), FlagError);
 
 	flag.reset();
 	ASSERT_FALSE(flag.isSet());
