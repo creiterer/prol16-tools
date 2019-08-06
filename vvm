@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./prol16-vm-exe -v "./prol16-dis/src/test/resources/${1}"
