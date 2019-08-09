@@ -13,6 +13,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_FLAGS}")
 endif()
 
+# enable support for adding tests 
+# see https://gitlab.kitware.com/cmake/community/wikis/doc/ctest/Testing-With-CTest
+enable_testing()
+
 #### GTEST SETUP ####
 
 # download and unpack googletest at configure time
