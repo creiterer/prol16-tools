@@ -55,6 +55,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/InstructionWriter.cpp
     ${MAIN_CPP_DIR}/CommandCounter.cpp
     ${MAIN_CPP_DIR}/LabelListener.cpp
+    ${MAIN_CPP_DIR}/ContextUtils.cpp
 )
 
 # add directories for generated include files
