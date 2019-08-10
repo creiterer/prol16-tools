@@ -10,12 +10,16 @@
 
 #include <cstdint>
 #include <string>
+#include <ostream>
 
 namespace PROL16 { namespace util {
 
-using Immediate = uint16_t;
+using Number = uint16_t;
+using Immediate = Number;
 
 Immediate parseNumber(std::string number);
+
+void printHexNumberFormatted(std::ostream &stream, Number const number);
 
 }}
 

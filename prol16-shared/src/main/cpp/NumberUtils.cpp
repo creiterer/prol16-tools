@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
 
 namespace PROL16 { namespace util {
 
@@ -54,6 +55,10 @@ Immediate parseNumber(std::string number) {
 	}
 
 	return std::stoul(number, nullptr, getRadix(suffix));
+}
+
+void printHexNumberFormatted(std::ostream &stream, Number const number) {
+	stream << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << number;
 }
 
 }}
