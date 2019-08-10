@@ -80,6 +80,15 @@ TEST(InstructionWriterTest, testAllInstructions) {
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeShlc(14), 0x79C0);
 
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeShrc(14), 0x7DC0);
+
+	TEST_INSTRUCTION_WRITE(instructionWriter.writePrint(14), 0xF9C0);
+
+	instructionWriter.writePrinti(0xA5A5);
+	buffer = instructionWriter.getInstructionBuffer();
+	ASSERT_EQ(2, buffer.size());
+	ASSERT_EQ(0xFC00, buffer[0]);
+	ASSERT_EQ(0XA5A5, buffer[1]);
+	instructionWriter.clearInstructionBuffer();
 }
 
 TEST(InstructionWriterTest, testWritingMultipleInstructions) {

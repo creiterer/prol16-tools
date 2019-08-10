@@ -75,6 +75,12 @@ public:
 
 	void writeShrc(Register const ra);
 
+	void writePrint(Register const ra);
+
+	void writePrinti(Immediate const immediate);
+
+//	void writePrint(std::string const &str);
+
 	void writeBufferToStream(std::ostream &stream);
 
 	inline InstructionBuffer getInstructionBuffer() const { return instructionBuffer; }

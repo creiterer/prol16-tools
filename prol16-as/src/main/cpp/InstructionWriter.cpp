@@ -15,169 +15,160 @@ namespace PROL16 {
 using namespace util;
 
 void InstructionWriter::writeNop() {
-	Instruction nop(NOP);
-	instructionBuffer.push_back(nop);
+	instructionBuffer.push_back(Instruction(NOP));
 }
 
 void InstructionWriter::writeSleep() {
-	Instruction sleep(SLEEP);
-	instructionBuffer.push_back(sleep);
+	instructionBuffer.push_back(Instruction(SLEEP));
 }
 
 void InstructionWriter::writeLoadi(Register const ra, Immediate const immediate) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction loadi(LOADI, ra);
-	instructionBuffer.push_back(loadi);
+	instructionBuffer.push_back(Instruction(LOADI, ra));
 	instructionBuffer.push_back(immediate);
 }
 
 void InstructionWriter::writeLoad(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction load(LOAD, ra, rb);
-	instructionBuffer.push_back(load);
+	instructionBuffer.push_back(Instruction(LOAD, ra, rb));
 }
 
 void InstructionWriter::writeStore(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction store(STORE, ra, rb);
-	instructionBuffer.push_back(store);
+	instructionBuffer.push_back(Instruction(STORE, ra, rb));
 }
 
 void InstructionWriter::writeMove(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction move(MOVE, ra, rb);
-	instructionBuffer.push_back(move);
+	instructionBuffer.push_back(Instruction(MOVE, ra, rb));
 }
 
 void InstructionWriter::writeJump(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction jump(JUMP, ra);
-	instructionBuffer.push_back(jump);
+	instructionBuffer.push_back(Instruction(JUMP, ra));
 }
 
 void InstructionWriter::writeJumpc(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction jumpc(JUMPC, ra);
-	instructionBuffer.push_back(jumpc);
+	instructionBuffer.push_back(Instruction(JUMPC, ra));
 }
 
 void InstructionWriter::writeJumpz(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction jumpz(JUMPZ, ra);
-	instructionBuffer.push_back(jumpz);
+	instructionBuffer.push_back(Instruction(JUMPZ, ra));
 }
 
 void InstructionWriter::writeAnd(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction _and(AND, ra, rb);
-	instructionBuffer.push_back(_and);
+	instructionBuffer.push_back(Instruction(AND, ra, rb));
 }
 
 void InstructionWriter::writeOr(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction _or(OR, ra, rb);
-	instructionBuffer.push_back(_or);
+	instructionBuffer.push_back(Instruction(OR, ra, rb));
 }
 
 void InstructionWriter::writeXor(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction _xor(XOR, ra, rb);
-	instructionBuffer.push_back(_xor);
+	instructionBuffer.push_back(Instruction(XOR, ra, rb));
 }
 
 void InstructionWriter::writeNot(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction _not(NOT, ra);
-	instructionBuffer.push_back(_not);
+	instructionBuffer.push_back(Instruction(NOT, ra));
 }
 
 void InstructionWriter::writeAdd(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction add(ADD, ra, rb);
-	instructionBuffer.push_back(add);
+	instructionBuffer.push_back(Instruction(ADD, ra, rb));
 }
 
 void InstructionWriter::writeAddc(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction addc(ADDC, ra, rb);
-	instructionBuffer.push_back(addc);
+	instructionBuffer.push_back(Instruction(ADDC, ra, rb));
 }
 
 void InstructionWriter::writeSub(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction sub(SUB, ra, rb);
-	instructionBuffer.push_back(sub);
+	instructionBuffer.push_back(Instruction(SUB, ra, rb));
 }
 
 void InstructionWriter::writeSubc(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction subc(SUBC, ra, rb);
-	instructionBuffer.push_back(subc);
+	instructionBuffer.push_back(Instruction(SUBC, ra, rb));
 }
 
 void InstructionWriter::writeComp(Register const ra, Register const rb) {
 	util::checkRegistersAreValid(ra, rb);
 
-	Instruction comp(COMP, ra, rb);
-	instructionBuffer.push_back(comp);
+	instructionBuffer.push_back(Instruction(COMP, ra, rb));
 }
 
 void InstructionWriter::writeInc(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction inc(INC, ra);
-	instructionBuffer.push_back(inc);
+	instructionBuffer.push_back(Instruction(INC, ra));
 }
 
 void InstructionWriter::writeDec(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction dec(DEC, ra);
-	instructionBuffer.push_back(dec);
+	instructionBuffer.push_back(Instruction(DEC, ra));
 }
 
 void InstructionWriter::writeShl(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction shl(SHL, ra);
-	instructionBuffer.push_back(shl);
+	instructionBuffer.push_back(Instruction(SHL, ra));
 }
 
 void InstructionWriter::writeShr(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction shr(SHR, ra);
-	instructionBuffer.push_back(shr);
+	instructionBuffer.push_back(Instruction(SHR, ra));
 }
 
 void InstructionWriter::writeShlc(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction shlc(SHLC, ra);
-	instructionBuffer.push_back(shlc);
+	instructionBuffer.push_back(Instruction(SHLC, ra));
 }
 
 void InstructionWriter::writeShrc(Register const ra) {
 	util::checkRegisterIsValid(ra);
 
-	Instruction shrc(SHRC, ra);
-	instructionBuffer.push_back(shrc);
+	instructionBuffer.push_back(Instruction(SHRC, ra));
 }
+
+void InstructionWriter::writePrint(Register const ra) {
+	util::checkRegisterIsValid(ra);
+
+	instructionBuffer.push_back(Instruction(PRINT, ra));
+}
+
+void InstructionWriter::writePrinti(Immediate const immediate) {
+	instructionBuffer.push_back(Instruction(PRINTI));
+	instructionBuffer.push_back(immediate);
+}
+
+//void InstructionWriter::writePrint(std::string const &str) {
+//
+//}
 
 void InstructionWriter::writeBufferToStream(std::ostream &stream) {
 	stream.write(reinterpret_cast<char*>(instructionBuffer.data()), instructionBuffer.size()*(sizeof(InstructionBuffer::value_type)/sizeof(char)));
