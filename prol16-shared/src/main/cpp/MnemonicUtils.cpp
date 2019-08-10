@@ -41,7 +41,9 @@ std::unordered_map<Mnemonic, std::string> const mnemonicStringTable = {
 		{SHL, "shl"},
 		{SHR, "shr"},
 		{SHLC, "shlc"},
-		{SHRC, "shrc"}
+		{SHRC, "shrc"},
+		{PRINT, "print"},
+		{PRINTI, "printi"}
 };
 
 }
@@ -80,6 +82,7 @@ uint8_t numberOfRegisterOperands(Mnemonic const mnemonic) {
 	switch (mnemonic) {
 	case NOP:
 	case SLEEP:
+	case PRINTI:
 		return 0;
 
 	case LOADI:
@@ -93,6 +96,7 @@ uint8_t numberOfRegisterOperands(Mnemonic const mnemonic) {
 	case SHR:
 	case SHLC:
 	case SHRC:
+	case PRINT:
 		return 1;
 
 	case LOAD:

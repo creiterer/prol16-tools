@@ -15,6 +15,10 @@ namespace PROL16 { namespace util {
 
 using Opcode = uint8_t;
 
+// NOTE: max. value with 6 bit is '11 1111' which is '0x3F'
+// -> specifying '0xFF' for 'PRINTI' is wrong because decoding leads to '0x3F'
+// so that decoding wouldn't find a corresponding opcode/mnemonic and result in
+// an invalid opcode error!
 enum Mnemonic : Opcode {
 	NOP = 0x0,
 	SLEEP = 0x1,
@@ -40,6 +44,8 @@ enum Mnemonic : Opcode {
 	SHR = 0x1D,
 	SHLC = 0x1E,
 	SHRC = 0x1F,
+	PRINT = 0x3E,
+	PRINTI = 0x3F,
 };
 
 bool isOpcodeValid(Opcode const opcode);
