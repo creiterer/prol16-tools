@@ -10,7 +10,6 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
-#include <iomanip>
 #include <functional>
 
 #include "OpcodeError.h"
@@ -61,7 +60,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		registerFile[ra] = immediate;
 		logger << ", ";
 		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
-			stream << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << immediate;
+			printHexNumberFormatted(stream, immediate);
 		});
 		break;
 	}
@@ -161,6 +160,20 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	case SHRC:
 		executeShr(ra, true);
 		break;
+
+	case PRINT:
+		printHexNumberFormatted(std::cout, registerFile[ra]);
+		break;
+
+	case PRINTI: {
+		Immediate const immediate = fetchImmediate();
+		printHexNumberFormatted(std::cout, immediate);
+		logger << ", ";
+		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
+			printHexNumberFormatted(stream, immediate);
+		});
+		break;
+	}
 
 	default:
 		throw util::OpcodeError(instruction.getOpcode());
@@ -269,7 +282,7 @@ void VirtualMachine::printInfo(std::string const &message) const {
 }
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
-	stream << "pc=0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << programCounter-1;
+	util::printHexNumberFormatted(stream << "pc=", programCounter-1);
 }
 
 }
