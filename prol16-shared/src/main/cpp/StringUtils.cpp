@@ -44,10 +44,7 @@ void prepend(std::string &str, std::string const &prependee) {
 }
 
 std::string prepend(std::string const &str, std::string const &prependee) {
-	std::string s(str);
-	prepend(s, prependee);
-
-	return s;
+	return prependee + str;
 }
 
 }
