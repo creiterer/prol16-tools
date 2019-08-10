@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <string>
+#include <ostream>
 
 #include "MnemonicUtils.h"
 #include "RegisterUtils.h"
@@ -69,7 +70,7 @@ private:
 };
 
 }
-
+std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction);
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction);
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED */

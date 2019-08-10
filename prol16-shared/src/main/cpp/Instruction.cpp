@@ -107,6 +107,11 @@ Instruction::Opcode Instruction::decodeOpcode(EncodedType const encodedValue) {
 
 }
 
+std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction) {
+	stream << instruction.asString();
+	return stream;
+}
+
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction) {
 	logger << instruction.asString();
 	return logger;
