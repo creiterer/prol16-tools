@@ -15,7 +15,8 @@ namespace PROL16 { namespace util {
 OpcodeError::OpcodeError(Opcode const opcode) {
 	std::ostringstream errorMessageStream;
 
-	errorMessageStream << "invalid opcode: " << std::hex << std::showbase << opcode;
+	// the cast is necessary because uint8_t is interpreted as character and not as number!
+	errorMessageStream << "invalid opcode: " << std::hex << std::showbase << static_cast<unsigned>(opcode);
 
 	errorMessage = errorMessageStream.str();
 }
