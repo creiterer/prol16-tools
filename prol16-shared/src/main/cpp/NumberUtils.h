@@ -19,7 +19,8 @@ using Immediate = Number;
 
 Immediate parseNumber(std::string number);
 
-void printHexNumberFormatted(std::ostream &stream, Number const number);
+std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number);
+std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number);
 
 }}
 

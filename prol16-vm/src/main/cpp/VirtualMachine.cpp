@@ -60,7 +60,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		registerFile[ra] = immediate;
 		logger << ", ";
 		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
-			printHexNumberFormatted(stream, immediate);
+			printHexNumberFormattedWithBase(stream, immediate);
 		});
 		break;
 	}
@@ -162,15 +162,15 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		break;
 
 	case PRINT:
-		printHexNumberFormatted(std::cout, registerFile[ra]);
+		printHexNumberFormattedWithBase(std::cout, registerFile[ra]);
 		break;
 
 	case PRINTI: {
 		Immediate const immediate = fetchImmediate();
-		printHexNumberFormatted(std::cout, immediate);
+		printHexNumberFormattedWithBase(std::cout, immediate);
 		logger << ", ";
 		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
-			printHexNumberFormatted(stream, immediate);
+			printHexNumberFormattedWithBase(stream, immediate);
 		});
 		break;
 	}
@@ -282,7 +282,7 @@ void VirtualMachine::printInfo(std::string const &message) const {
 }
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
-	util::printHexNumberFormatted(stream << "pc=", programCounter-1);
+	util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
 }
 
 }

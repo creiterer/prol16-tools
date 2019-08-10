@@ -57,8 +57,14 @@ Immediate parseNumber(std::string number) {
 	return std::stoul(number, nullptr, getRadix(suffix));
 }
 
-void printHexNumberFormatted(std::ostream &stream, Number const number) {
-	stream << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << number;
+std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number) {
+	stream << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << number;
+
+	return stream;
+}
+
+std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number) {
+	return printHexNumberFormatted(stream << "0x", number);
 }
 
 }}
