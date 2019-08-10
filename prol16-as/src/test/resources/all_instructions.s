@@ -25,3 +25,5 @@ shl r1
 shr r1
 shlc r1
 shrc r1
+print r1
+print CAFEh
