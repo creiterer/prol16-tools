@@ -75,7 +75,7 @@ std::string Instruction::asString() const {
 	switch (numberOfRegisterOperands(mnemonic)) {
 	case 0: break;
 	case 1: instructionStream << " r" << static_cast<unsigned>(ra); break;
-	case 2: instructionStream << " r" << static_cast<unsigned>(ra) << ", r" << static_cast<unsigned>(rb);
+	case 2: instructionStream << " r" << static_cast<unsigned>(ra) << ", r" << static_cast<unsigned>(rb); break;
 	}
 
 	return instructionStream.str();
@@ -101,7 +101,7 @@ Instruction::Register Instruction::decodeRa(EncodedType const encodedValue) {
 	return (encodedValue >> RegisterBitWidth) & RegisterMask;
 }
 
-Instruction::Register Instruction::decodeOpcode(EncodedType const encodedValue) {
+Instruction::Opcode Instruction::decodeOpcode(EncodedType const encodedValue) {
 	return (encodedValue >> (2*RegisterBitWidth)) & OpcodeMask;
 }
 
