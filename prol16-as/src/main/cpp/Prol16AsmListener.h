@@ -84,6 +84,8 @@ public:
 
 	void enterMacroCall(Prol16AsmParser::MacroCallContext *context) override;
 
+	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
+
 private:
 	using SymbolName = std::string;
 	using SymbolValue = util::Immediate;
@@ -94,8 +96,6 @@ private:
 	LabelTable const labelTable;
 
 	InstructionWriter::Immediate evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const;
-	bool isNumber(Prol16AsmParser::ExpressionContext const * const expression) const;
-	bool isIdentifier(Prol16AsmParser::ExpressionContext const * const expression) const;
 };
 
 }

@@ -7,6 +7,9 @@
 
 #include "LabelListener.h"
 
+#include "ContextUtils.h"
+#include "NotImplementedError.h"
+
 namespace PROL16 {
 
 void LabelListener::enterLabelStatement(Prol16AsmParser::LabelStatementContext *context) {
@@ -25,7 +28,7 @@ void LabelListener::enterSleepInstruction(Prol16AsmParser::SleepInstructionConte
 }
 
 void LabelListener::enterLoadiInstruction(Prol16AsmParser::LoadiInstructionContext *context) {
-	commandCounter += 2;	// loadi takes the space of two instructions: the instruction itself and the immediate
+	commandCounter += 2;	// 'loadi' takes the space of two instructions: the instruction itself and the immediate
 }
 
 void LabelListener::enterLoadInstruction(Prol16AsmParser::LoadInstructionContext *context) {
@@ -110,6 +113,18 @@ void LabelListener::enterShlcInstruction(Prol16AsmParser::ShlcInstructionContext
 
 void LabelListener::enterShrcInstruction(Prol16AsmParser::ShrcInstructionContext *context) {
 	++commandCounter;
+}
+
+void LabelListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) {
+	if (util::isRegister(context)) {			// PRINT
+		++commandCounter;		// 'print' needs only one instruction
+	} else if (util::isImmediate(context)) {	// PRINTI
+		commandCounter += 2;	// 'printi' takes the space of two instructions: the instruction itself and the immediate
+	} else if (util::isString(context)) {
+		throw ::util::NotImplementedError("print \"str\"");
+	} else {
+		throw std::runtime_error("invalid 'print' instruction; don't know how much the command counter needs to be incremented");
+	}
 }
 
 }

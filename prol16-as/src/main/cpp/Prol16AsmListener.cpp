@@ -11,6 +11,8 @@
 #include <sstream>
 
 #include "RegisterUtils.h"
+#include "ContextUtils.h"
+#include "NotImplementedError.h"
 
 namespace PROL16 {
 
@@ -195,10 +197,27 @@ void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext *contex
 
 }
 
+void Prol16AsmListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) {
+	if (util::isRegister(context)) {			// PRINT
+		InstructionWriter::Register const ra = util::parseRegisterNumberChecked(context->ra->getText());
+		instructionWriter.writePrint(ra);
+	} else if (util::isImmediate(context)) {	// PRINTI
+		instructionWriter.writePrinti(evaluateExpression(context->immediate));
+	} else if (util::isString(context)) {
+//		instructionWriter.writePrint(context->string->getText());
+		throw ::util::NotImplementedError("print \"str\"");
+	} else {
+		std::ostringstream errorMessage;
+		errorMessage << "argument of 'print', which is '" << context->getText() << "', is neither a register nor an immediate nor a string";
+
+		throw std::runtime_error(errorMessage.str());
+	}
+}
+
 InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
-	if (isNumber(expression)) {
+	if (util::isNumber(expression)) {
 		return util::parseNumber(expression->number->getText());
-	} else if (isIdentifier(expression)) {
+	} else if (util::isIdentifier(expression)) {
 		std::string const identifier = expression->identifier->getText();
 		try {
 			return symbolicConstantTable.at(identifier);
@@ -211,14 +230,6 @@ InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmPars
 
 		throw std::runtime_error(errorMessage.str());
 	}
-}
-
-bool Prol16AsmListener::isNumber(Prol16AsmParser::ExpressionContext const * const expression) const {
-	return expression->number != nullptr;
-}
-
-bool Prol16AsmListener::isIdentifier(Prol16AsmParser::ExpressionContext const * const expression) const {
-	return expression->identifier != nullptr;
 }
 
 }
