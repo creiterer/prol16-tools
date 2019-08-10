@@ -28,12 +28,18 @@ void Disassembler::disassemble() {
 		Instruction instruction = readAndDecodeInstruction();
 
 		while (!sourceStream.eof() && !sourceStream.fail()) {
-			destinationStream << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << address << ":\t";
-			destinationStream << instruction.asString();
+			util::printHexNumberFormatted(destinationStream, address) << ":\t";
+			destinationStream << instruction;
 
-			if (instruction.is(util::LOADI)) {
+			if (instruction.is(util::LOADI) || instruction.is(util::PRINTI)) {
 				Immediate const immediate = readImmediate();
-				destinationStream << ", " << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << immediate << 'h' << std::endl;
+
+				if (instruction.is(util::PRINTI)) {
+					util::printHexNumberFormatted(destinationStream << " ", immediate) << 'h' << std::endl;
+				} else {
+					util::printHexNumberFormatted(destinationStream << ", ", immediate) << 'h' << std::endl;
+				}
+
 				address += 2;
 			} else {
 				destinationStream << std::endl;

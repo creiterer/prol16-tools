@@ -43,7 +43,7 @@ std::unordered_map<Mnemonic, std::string> const mnemonicStringTable = {
 		{SHLC, "shlc"},
 		{SHRC, "shrc"},
 		{PRINT, "print"},
-		{PRINTI, "printi"}
+		{PRINTI, "print"}	// for convenience, also use 'print' for mnemonic/opcode 'PRINTI', like the assembler does
 };
 
 }
