@@ -73,17 +73,24 @@ TEST(RegisterUtilsTest, testGetCanonicalRegisterName) {
 	ASSERT_EQ("rra", getCanonicalRegisterName("RRA"));
 	ASSERT_EQ("rra", getCanonicalRegisterName("ra"));
 	ASSERT_EQ("rra", getCanonicalRegisterName("RA"));
+
+	ASSERT_EQ("rsp", getCanonicalRegisterName(0));
+	ASSERT_EQ("r1", getCanonicalRegisterName(1));
+	ASSERT_EQ("r15", getCanonicalRegisterName(15));
 }
 
 TEST(RegisterUtilsTest, testIsSpecialRegister) {
 	ASSERT_TRUE(isSpecialRegister("rsp"));
 	ASSERT_TRUE(isSpecialRegister("RSP"));
+	ASSERT_TRUE(isSpecialRegister(0));
 
 	ASSERT_TRUE(isSpecialRegister("rfp"));
 	ASSERT_TRUE(isSpecialRegister("RFP"));
+	ASSERT_TRUE(isSpecialRegister(1));
 
 	ASSERT_TRUE(isSpecialRegister("rra"));
 	ASSERT_TRUE(isSpecialRegister("RRA"));
+	ASSERT_TRUE(isSpecialRegister(2));
 
 	ASSERT_TRUE(isSpecialRegister("sp"));
 	ASSERT_TRUE(isSpecialRegister("SP"));
@@ -99,6 +106,8 @@ TEST(RegisterUtilsTest, testIsSpecialRegister) {
 
 	ASSERT_FALSE(isSpecialRegister("r5"));
 	ASSERT_FALSE(isSpecialRegister("r15"));
+	ASSERT_FALSE(isSpecialRegister(3));
+	ASSERT_FALSE(isSpecialRegister(15));
 }
 
 TEST(RegisterUtilsTest, testIsReturnAddressRegister) {

@@ -38,12 +38,16 @@ void checkRegistersAreValid(Register const reg, Registers const... registers) {
  */
 std::string getCanonicalRegisterName(std::string const &registerName);
 
+std::string getCanonicalRegisterName(Register const reg);
+
 /**
  * TODO
  * @param registerName
  * @return
  */
 bool isSpecialRegister(std::string const &registerName);
+
+bool isSpecialRegister(Register const reg);
 
 bool isReturnAddressRegister(std::string const &registerName);
 

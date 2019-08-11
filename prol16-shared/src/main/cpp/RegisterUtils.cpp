@@ -9,6 +9,8 @@
 
 #include <unordered_map>
 #include <stdexcept>
+#include <algorithm>
+#include <sstream>
 
 #include "RegisterError.h"
 #include "StringUtils.h"
@@ -17,7 +19,10 @@ namespace PROL16 { namespace util {
 
 namespace {
 
-std::unordered_map<std::string, Register> const specialRegisterTable = {
+using SpecialRegisterTable = std::unordered_map<std::string, Register>;
+
+// ATTENTION: keep in sync with 'PROL16RegisterInfo.td'
+SpecialRegisterTable const specialRegisterTable = {
 		{"rsp", 0},
 		{"rfp", 1},
 		{"rra", 2}
@@ -57,8 +62,29 @@ std::string getCanonicalRegisterName(std::string const &registerName) {
 	return loweredRegisterName;
 }
 
+std::string getCanonicalRegisterName(Register const reg) {
+	checkRegisterIsValid(reg);
+
+	// for now, only use special register name for 'rsp'
+	if (reg == 0) {
+		return "rsp";
+	}
+
+	std::ostringstream registerNameStream;
+	// the cast is necessary because uint8_t is interpreted as character and not as number!
+	registerNameStream << 'r' << static_cast<unsigned>(reg);
+
+	return registerNameStream.str();
+}
+
 bool isSpecialRegister(std::string const &registerName) {
 	return specialRegisterTable.find(getCanonicalRegisterName(registerName)) != specialRegisterTable.cend();
+}
+
+bool isSpecialRegister(Register const reg) {
+	return std::any_of(specialRegisterTable.cbegin(), specialRegisterTable.cend(), [reg](SpecialRegisterTable::value_type const &value) {
+		return value.second == reg;
+	});
 }
 
 bool isReturnAddressRegister(std::string const &registerName) {
