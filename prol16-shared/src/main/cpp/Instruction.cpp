@@ -74,8 +74,8 @@ std::string Instruction::asString() const {
 	// the casts are necessary because uint8_t is interpreted as character and not as number!
 	switch (numberOfRegisterOperands(mnemonic)) {
 	case 0: break;
-	case 1: instructionStream << " r" << static_cast<unsigned>(ra); break;
-	case 2: instructionStream << " r" << static_cast<unsigned>(ra) << ", r" << static_cast<unsigned>(rb); break;
+	case 1: instructionStream << ' ' << getCanonicalRegisterName(ra); break;
+	case 2: instructionStream << ' ' << getCanonicalRegisterName(ra) << ", " << getCanonicalRegisterName(rb); break;
 	}
 
 	return instructionStream.str();
