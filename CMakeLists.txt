@@ -13,6 +13,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_FLAGS}")
 endif()
 
+# set up clang-tidy checks
+# see https://blog.kitware.com/static-checks-with-cmake-cdash-iwyu-clang-tidy-lwyu-cpplint-and-cppcheck/
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+
 # enable support for adding tests 
 # see https://gitlab.kitware.com/cmake/community/wikis/doc/ctest/Testing-With-CTest
 enable_testing()
