@@ -9,9 +9,10 @@
 #define PROL16_AS_SRC_MAIN_CPP_NUMBERUTILS_H_INCLUDED
 
 #include <cstdint>
-#include <string>
 #include <ostream>
+#include <string>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 using Number = uint16_t;
@@ -22,6 +23,7 @@ Immediate parseNumber(std::string number);
 std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number);
 std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number);
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_NUMBERUTILS_H_INCLUDED */

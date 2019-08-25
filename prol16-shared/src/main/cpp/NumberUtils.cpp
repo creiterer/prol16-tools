@@ -11,6 +11,7 @@
 #include <cctype>
 #include <iomanip>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 namespace {
@@ -23,7 +24,7 @@ int getRadix(char const suffix) {
 	}
 }
 
-}
+} 	// anonymous namespace
 
 /* Number Grammar:
 fragment BinaryDigit : [0-1] ;
@@ -50,7 +51,7 @@ Immediate parseNumber(std::string number) {
 
 	// for decimal numbers it is allowed to omit the suffix
 	// -> if the last character is not a decimal digit, it must be a suffix that needs to be removed
-	if (!isdigit(suffix)) {
+	if (!isdigit(suffix)) {		// NOLINT(readability-implicit-bool-conversion)
 		number.pop_back();
 	}
 
@@ -67,4 +68,5 @@ std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const
 	return printHexNumberFormatted(stream << "0x", number);
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
