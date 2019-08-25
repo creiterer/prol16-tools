@@ -7,7 +7,7 @@
 
 #include "CommandCounter.h"
 
-namespace PROL16 {
+namespace PROL16 {	// NOLINT(readability-identifier-naming)
 
 CommandCounter& CommandCounter::operator++() {
 	// Beware that the memory has a width of 16 bit / 2 byte
@@ -17,7 +17,7 @@ CommandCounter& CommandCounter::operator++() {
 	return *this;
 }
 
-CommandCounter CommandCounter::operator++(int) {
+CommandCounter const CommandCounter::operator++(int) {
 	CommandCounter tmp(*this);
 	operator++();
 
@@ -32,4 +32,4 @@ CommandCounter& CommandCounter::operator+=(uint16_t const rhs) {
 	return *this;
 }
 
-}
+} 	// namespace PROL16

@@ -8,21 +8,20 @@
 #ifndef PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_COMMANDCOUNTER_H_INCLUDED
 #define PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_COMMANDCOUNTER_H_INCLUDED
 
-#include <cstdint>
-
 #include "Instruction.h"
 
-namespace PROL16 {
+#include <cstdint>
+
+namespace PROL16 {	// NOLINT(readability-identifier-naming)
 
 class CommandCounter final {
 public:
 	using Counter = uint16_t;
 
 	CommandCounter() = default;
-	~CommandCounter() = default;
 
 	CommandCounter& operator++();
-	CommandCounter operator++(int);
+	CommandCounter const operator++(int);
 
 	CommandCounter& operator+=(uint16_t const rhs);
 
@@ -37,6 +36,6 @@ private:
 	Counter counter = 0;
 };
 
-}
+} 	// namespace PROL16
 
 #endif /* PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_COMMANDCOUNTER_H_INCLUDED */
