@@ -41,6 +41,14 @@ std::string getCanonicalRegisterName(std::string const &registerName);
 
 std::string getCanonicalRegisterName(Register const reg);
 
+Register getProgramCounterRegister();
+
+Register getReturnAddressRegister();
+
+Register getStackPointerRegister();
+
+Register getFramePointerRegister();
+
 /**
  * TODO
  * @param registerName

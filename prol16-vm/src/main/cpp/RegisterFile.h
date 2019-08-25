@@ -36,6 +36,9 @@ public:
 	Data read(Register const reg) const;
 	void write(Register const reg, Data const data);
 
+	Data readProgramCounter() const;
+	void writeProgramCounter(Data const data);
+
 private:
 	std::array<Data, util::RegisterCount> registerFile{0};
 };

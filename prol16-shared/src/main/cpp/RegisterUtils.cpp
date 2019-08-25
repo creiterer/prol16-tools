@@ -24,9 +24,10 @@ using RegisterNameTable = std::unordered_map<std::string, Register>;
 
 // ATTENTION: keep in sync with 'PROL16RegisterInfo.td'
 RegisterNameTable const SpecialRegisterTable = {		// NOLINT(cert-err58-cpp)
-		{"rsp", 0},
-		{"rfp", 1},
-		{"rra", 2}
+		{"rpc", 0},
+		{"rra", 1},
+		{"rsp", 2},
+		{"rfp", 3}
 };
 
 }	// anonymous namespace
@@ -66,9 +67,12 @@ std::string getCanonicalRegisterName(std::string const &registerName) {
 std::string getCanonicalRegisterName(Register const reg) {
 	checkRegisterIsValid(reg);
 
-	// for now, only use special register name for 'rsp'
-	if (reg == 0) {
-		return "rsp";
+	auto itor = std::find_if(SpecialRegisterTable.cbegin(), SpecialRegisterTable.cend(), [reg](RegisterNameTable::value_type const &value) {
+		return value.second == reg;
+	});
+
+	if (itor != SpecialRegisterTable.cend()) {
+		return itor->first;
 	}
 
 	std::ostringstream registerNameStream;
@@ -76,6 +80,22 @@ std::string getCanonicalRegisterName(Register const reg) {
 	registerNameStream << 'r' << static_cast<unsigned>(reg);
 
 	return registerNameStream.str();
+}
+
+Register getProgramCounterRegister() {
+	return SpecialRegisterTable.at("rpc");
+}
+
+Register getReturnAddressRegister() {
+	return SpecialRegisterTable.at("rra");
+}
+
+Register getStackPointerRegister() {
+	return SpecialRegisterTable.at("rsp");
+}
+
+Register getFramePointerRegister() {
+	return SpecialRegisterTable.at("rfp");
 }
 
 bool isSpecialRegister(std::string const &registerName) {

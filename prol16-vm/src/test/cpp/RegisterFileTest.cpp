@@ -26,6 +26,10 @@ TEST(RegisterFileTest, testRegisterFileUsage) {
 	ASSERT_EQ(0xABBA, registerFile[6]);
 	ASSERT_EQ(0xABBA, registerFile.read(6));
 
+	registerFile.writeProgramCounter(0xBABE);
+	ASSERT_EQ(0xBABE, registerFile[0]);
+	ASSERT_EQ(0xBABE, registerFile.readProgramCounter());
+
 	ASSERT_THROW(registerFile[16], util::RegisterError);
 	ASSERT_THROW(registerFile.read(16), util::RegisterError);
 	ASSERT_THROW(registerFile.write(16, 0xABBA), util::RegisterError);

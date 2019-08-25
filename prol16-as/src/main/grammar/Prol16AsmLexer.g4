@@ -22,9 +22,10 @@ fragment HexNumber : HexDigit ('_'? HexDigit)* HexNumberSuffix ;
 
 fragment RegisterPrefix : [rR] ;
 fragment RegisterNumber : DecimalDigit+ ;
+fragment ProgramCounterRegister : 'rpc' | 'RPC' ;
+fragment ReturnAddressRegister : 'rra' | 'RRA' ;
 fragment StackPointerRegister : 'rsp' | 'RSP' ;
 fragment FramePointerRegister : 'rfp' | 'RFP' ;
-fragment ReturnAddressRegister : 'rra' | 'RRA' ;
 fragment GeneralPurposeRegister : RegisterPrefix RegisterNumber ;
 
 /**
@@ -70,7 +71,7 @@ NEWLINE : '\r'? '\n' ;	// return newlines to the parser because they are the end
 
 Number : BinaryNumber | DecimalNumber | HexNumber ;
 
-Register : StackPointerRegister | FramePointerRegister | ReturnAddressRegister | GeneralPurposeRegister ;
+Register : ProgramCounterRegister | ReturnAddressRegister | StackPointerRegister | FramePointerRegister | GeneralPurposeRegister ;
 
 String : ('"' ~["]+ '"') | ('\'' ~[\u0027]+ '\'') ;	// \u0027 is the character '
 

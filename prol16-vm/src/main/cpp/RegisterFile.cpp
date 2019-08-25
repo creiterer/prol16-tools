@@ -43,4 +43,12 @@ void RegisterFile::write(Register const reg, Data const data) {
 	registerFile.at(reg) = data;
 }
 
+RegisterFile::Data RegisterFile::readProgramCounter() const {
+	return read(util::getProgramCounterRegister());
+}
+
+void RegisterFile::writeProgramCounter(Data const data) {
+	write(util::getProgramCounterRegister(), data);
+}
+
 }	// namespace PROL16

@@ -188,12 +188,16 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 void VirtualMachine::setProgramCounter(VirtualMemory::Address const address) {
 	if (address >= memory.getCodeSegmentSize()) {
 		std::ostringstream errorMessage;
-		errorMessage << "trying to set program counter (" << programCounter << ") ";
-		errorMessage << "to an invalid address (" << address << ")";
+		errorMessage << "trying to set program counter (";
+		util::printHexNumberFormattedWithBase(errorMessage, programCounter) << ") ";
+		errorMessage << "to an invalid address (";
+		util::printHexNumberFormattedWithBase(errorMessage, address) << ")";
+
 		throw std::runtime_error(errorMessage.str());
 	}
 
 	programCounter = address;
+	registerFile.writeProgramCounter(programCounter);
 }
 
 void VirtualMachine::setZeroFlag(RegisterFile::Data const result) {
