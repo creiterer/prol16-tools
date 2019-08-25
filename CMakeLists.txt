@@ -8,14 +8,14 @@ set(CMAKE_CXX_STANDARD 14)
 set(WARNING_FLAGS "-Wall -Wnon-virtual-dtor -Wextra -Wpedantic -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
 
-set(CLANG_FLAGS "-Xclang -fcolor-diagnostics")
+set(CLANG_FLAGS "-fcolor-diagnostics")
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_FLAGS}")
 endif()
 
 # set up clang-tidy checks
 # see https://blog.kitware.com/static-checks-with-cmake-cdash-iwyu-clang-tidy-lwyu-cpplint-and-cppcheck/
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+#set(CMAKE_CXX_CLANG_TIDY "clang-tidy") -> do not set it globally due to many errors related to googletest
 
 # enable support for adding tests 
 # see https://gitlab.kitware.com/cmake/community/wikis/doc/ctest/Testing-With-CTest
@@ -59,3 +59,5 @@ add_subdirectory(prol16-as)
 add_subdirectory(prol16-dis)
 add_subdirectory(prol16-vm)
 
+set_target_properties(prol16shared prol16-as prol16-dis prol16-vm
+    PROPERTIES CXX_CLANG_TIDY "clang-tidy")
