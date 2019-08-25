@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <string>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 using Register = uint8_t;
@@ -60,6 +61,7 @@ Register parseRegisterNumber(std::string const &registerName);
 
 Register parseRegisterNumberChecked(std::string const &registerName);
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_REGISTERUTILS_H_INCLUDED */

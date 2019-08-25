@@ -7,28 +7,29 @@
 
 #include "RegisterUtils.h"
 
-#include <unordered_map>
-#include <stdexcept>
-#include <algorithm>
-#include <sstream>
-
 #include "RegisterError.h"
 #include "StringUtils.h"
 
+#include <algorithm>
+#include <sstream>
+#include <stdexcept>
+#include <unordered_map>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 namespace {
 
-using SpecialRegisterTable = std::unordered_map<std::string, Register>;
+using RegisterNameTable = std::unordered_map<std::string, Register>;
 
 // ATTENTION: keep in sync with 'PROL16RegisterInfo.td'
-SpecialRegisterTable const specialRegisterTable = {
+RegisterNameTable const SpecialRegisterTable = {		// NOLINT(cert-err58-cpp)
 		{"rsp", 0},
 		{"rfp", 1},
 		{"rra", 2}
 };
 
-}
+}	// anonymous namespace
 
 bool isRegisterValid(Register const reg) {
 	return reg < RegisterCount;
@@ -78,11 +79,11 @@ std::string getCanonicalRegisterName(Register const reg) {
 }
 
 bool isSpecialRegister(std::string const &registerName) {
-	return specialRegisterTable.find(getCanonicalRegisterName(registerName)) != specialRegisterTable.cend();
+	return SpecialRegisterTable.find(getCanonicalRegisterName(registerName)) != SpecialRegisterTable.cend();
 }
 
 bool isSpecialRegister(Register const reg) {
-	return std::any_of(specialRegisterTable.cbegin(), specialRegisterTable.cend(), [reg](SpecialRegisterTable::value_type const &value) {
+	return std::any_of(SpecialRegisterTable.cbegin(), SpecialRegisterTable.cend(), [reg](RegisterNameTable::value_type const &value) {
 		return value.second == reg;
 	});
 }
@@ -98,7 +99,7 @@ Register parseRegisterNumber(std::string const &registerName) {
 	std::string const canonicalRegisterName = getCanonicalRegisterName(registerName);
 
 	if (isSpecialRegister(canonicalRegisterName)) {
-		return specialRegisterTable.at(::util::toLower(canonicalRegisterName));
+		return SpecialRegisterTable.at(::util::toLower(canonicalRegisterName));
 	}
 
 	return std::stoul(std::string(canonicalRegisterName.cbegin()+1, canonicalRegisterName.cend()));
@@ -115,4 +116,5 @@ Register parseRegisterNumberChecked(std::string const &registerName) {
 	}
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
