@@ -21,4 +21,5 @@ void CLIArgumentsBuilder::addFlag(std::string const &name, bool const value) {
 	flags.emplace(name, value);
 }
 
-}}
+}	// namespace cli
+}	// namespace util

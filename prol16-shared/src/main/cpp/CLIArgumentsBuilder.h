@@ -8,10 +8,10 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTBUILDER_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTBUILDER_H_INCLUDED
 
-#include <string>
-
-#include "NonCopyable.h"
 #include "CLIArguments.h"
+#include "NonCopyable.h"
+
+#include <string>
 
 namespace util { namespace cli {
 
@@ -21,7 +21,6 @@ public:
 	using FlagMap = CLIArguments::FlagMap;
 
 	CLIArgumentsBuilder() = default;
-	~CLIArgumentsBuilder() = default;
 
 	CLIArguments build() const;
 
@@ -35,6 +34,7 @@ private:
 	ArgumentMap shortToLongNameMap;
 };
 
-}}
+}	// namespace cli
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTBUILDER_H_INCLUDED */
