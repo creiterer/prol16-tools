@@ -7,18 +7,19 @@
 
 #include "VirtualMemory.h"
 
-#include <stdexcept>
-#include <sstream>
-#include <cstring>
-
 #include "FileUtils.h"
 #include "MathUtils.h"
 
+#include <cstring>
+#include <sstream>
+#include <stdexcept>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 VirtualMemory::Data const VirtualMemory::MagicInitValue;
 
-VirtualMemory::VirtualMemory() : codeSegmentSize(0) {
+VirtualMemory::VirtualMemory() {
 	memory.fill(MagicInitValue);
 }
 
@@ -38,4 +39,4 @@ void VirtualMemory::initializeFromFile(std::string const &filename) {
 	codeSegmentSize = buffer.size() / sizeof(Data);
 }
 
-}
+} 	// namespace PROL16
