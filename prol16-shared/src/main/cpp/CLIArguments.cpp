@@ -8,11 +8,12 @@
 #include "CLIArguments.h"
 
 #include <stdexcept>
+#include <utility>
 
 namespace util { namespace cli {
 
-CLIArguments::CLIArguments(ArgumentMap const &arguments, FlagMap const &flags, ArgumentMap const &shortToLongNameMap)
-: arguments(arguments), flags(flags), shortToLongNameMap(shortToLongNameMap) {}
+CLIArguments::CLIArguments(ArgumentMap arguments, FlagMap flags, ArgumentMap shortToLongNameMap)
+: arguments(std::move(arguments)), flags(std::move(flags)), shortToLongNameMap(std::move(shortToLongNameMap)) {}
 
 bool CLIArguments::isSet(std::string const &flagName) const {
 	try {
@@ -38,4 +39,5 @@ std::string const& CLIArguments::operator[](std::string const &argumentName) con
 	}
 }
 
-}}
+}	// namespace cli
+}	// namespace util

@@ -8,10 +8,10 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTS_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTS_H_INCLUDED
 
+#include "CLIFlags.h"
+
 #include <string>
 #include <unordered_map>
-
-#include "CLIFlags.h"
 
 namespace util { namespace cli {
 
@@ -20,8 +20,7 @@ public:
 	using ArgumentMap = std::unordered_map<std::string, std::string>;
 	using FlagMap = std::unordered_map<std::string, bool>;
 
-	CLIArguments(ArgumentMap const &arguments, FlagMap const &flags, ArgumentMap const &shortToLongNameMap);
-	~CLIArguments() = default;
+	CLIArguments(ArgumentMap arguments, FlagMap flags, ArgumentMap shortToLongNameMap);
 
 	bool isSet(std::string const &flagName) const;
 	bool isSet(flags::FlagName const &flagName) const;
@@ -33,6 +32,7 @@ private:
 	ArgumentMap shortToLongNameMap;
 };
 
-}}
+}	// namespace cli
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTS_H_INCLUDED */
