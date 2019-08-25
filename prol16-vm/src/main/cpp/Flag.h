@@ -8,16 +8,16 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAG_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAG_H_INCLUDED
 
-#include <string>
-
 #include "Logger.h"
 
+#include <string>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class Flag final {
 public:
-	Flag(std::string const &flagName);
-	~Flag() = default;
+	explicit Flag(std::string flagName);
 
 	explicit operator bool() const { return isSet(); }
 
@@ -41,7 +41,7 @@ private:
 	void checkFlagIsValid() const;
 };
 
-}
+}	// namespace PROL16
 
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Flag const &flag);
 

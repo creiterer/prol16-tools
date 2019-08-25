@@ -9,9 +9,12 @@
 
 #include "FlagError.h"
 
+#include <utility>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
-Flag::Flag(std::string const &flagName) : state(State::Undefined), name(flagName) {
+Flag::Flag(std::string flagName) : state(State::Undefined), name(std::move(flagName)) {
 
 }
 
@@ -48,7 +51,7 @@ void Flag::checkFlagIsValid() const {
 	}
 }
 
-}
+} 	// namespace PROL16
 
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Flag const &flag) {
 	logger << flag.asString();
