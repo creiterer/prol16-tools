@@ -10,15 +10,15 @@
 
 #include "BaseErrorListener.h"
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class CountingErrorListener final : public antlr4::BaseErrorListener {
 public:
 	CountingErrorListener() = default;
-	~CountingErrorListener() = default;
 
-	void syntaxError(antlr4::Recognizer *recognizer, antlr4::Token * offendingSymbol, size_t line, size_t charPositionInLine,
-			const std::string &msg, std::exception_ptr e) override {
+	void syntaxError(antlr4::Recognizer */*recognizer*/, antlr4::Token */*offendingSymbol*/, size_t /*line*/, size_t /*charPositionInLine*/,
+					 const std::string &/*msg*/, std::exception_ptr /*e*/) override {
 		++errorCount;
 	}
 
@@ -30,6 +30,6 @@ private:
 	unsigned errorCount = 0;
 };
 
-}
+} 	// namespace PROL16
 
 #endif /* PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_COUNTINGERRORLISTENER_H_INCLUDED */
