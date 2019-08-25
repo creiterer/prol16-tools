@@ -1,20 +1,27 @@
-#include <iostream>
-#include <string>
+/**
+ * @author		creiterer
+ * @date 		2019-03-31
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		brief description
+ */
 
 #include "VirtualMachine.h"
 
-#include "RegisterUtils.h"
 #include "ArgumentParser.h"
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "CLIFlags.h"
+#include "RegisterUtils.h"
 #include "ScopedFileStream.h"
+
+#include <iostream>
+#include <string>
 
 using std::cerr;
 using std::endl;
 
-static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";
-static std::string const LOGFILE_OPTION_NAME = "--log-file";
+static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";		// NOLINT(readability-identifier-naming)
+static std::string const LOGFILE_OPTION_NAME = "--log-file";		// NOLINT(readability-identifier-naming)
 
 int main(int const argc, char const * const argv[]) {
 	try {
