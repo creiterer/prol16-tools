@@ -8,12 +8,13 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_REGISTERFILE_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_REGISTERFILE_H_INCLUDED
 
-#include <cstdint>
-#include <array>
-#include <bitset>
-
 #include "RegisterUtils.h"
 
+#include <array>
+#include <bitset>
+#include <cstdint>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class RegisterFile final {
@@ -24,7 +25,6 @@ public:
 	static Data const MagicInitValue = 0xDEAD;
 
 	RegisterFile();
-	~RegisterFile() = default;
 
 	Data& operator[](Register const reg);
 
@@ -37,9 +37,9 @@ public:
 	void write(Register const reg, Data const data);
 
 private:
-	std::array<Data, util::RegisterCount> registerFile;
+	std::array<Data, util::RegisterCount> registerFile{0};
 };
 
-}
+}	// namespace PROL16
 
 #endif /* PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_REGISTERFILE_H_INCLUDED */

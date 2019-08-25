@@ -7,9 +7,10 @@
 
 #include "RegisterFile.h"
 
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 RegisterFile::Data const RegisterFile::MagicInitValue;
@@ -42,4 +43,4 @@ void RegisterFile::write(Register const reg, Data const data) {
 	registerFile.at(reg) = data;
 }
 
-}
+}	// namespace PROL16
