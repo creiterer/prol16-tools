@@ -15,11 +15,13 @@ public:
 	NonCopyable() = default;
 	virtual ~NonCopyable() = default;
 
-private:
-	NonCopyable(NonCopyable const &other) = delete;
-	NonCopyable& operator= (NonCopyable const &other) = delete;
+	NonCopyable(NonCopyable const&) = delete;
+	NonCopyable& operator=(NonCopyable const&) = delete;
+
+	NonCopyable(NonCopyable&&) = default;
+	NonCopyable& operator=(NonCopyable&&) = default;
 };
 
-}
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_NONCOPYABLE_H_INCLUDED */
