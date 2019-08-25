@@ -10,6 +10,7 @@
 
 #include "Prol16AsmParserBaseListener.h"
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 bool isNumber(Prol16AsmParser::ExpressionContext const * const expression);
@@ -18,6 +19,7 @@ bool isRegister(Prol16AsmParser::PrintInstructionContext const * const context);
 bool isImmediate(Prol16AsmParser::PrintInstructionContext const * const context);
 bool isString(Prol16AsmParser::PrintInstructionContext const * const context);
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_TOOLS_PROL16_AS_SRC_MAIN_CPP_CONTEXTUTILS_H_INCLUDED */

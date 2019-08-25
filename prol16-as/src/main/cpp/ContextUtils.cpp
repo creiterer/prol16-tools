@@ -7,7 +7,7 @@
 
 #include "ContextUtils.h"
 
-
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 bool isNumber(Prol16AsmParser::ExpressionContext const * const expression) {
@@ -30,4 +30,5 @@ bool isString(Prol16AsmParser::PrintInstructionContext const * const context) {
 	return context->string != nullptr;
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
