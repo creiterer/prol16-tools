@@ -7,17 +7,17 @@
 
 #include "FileUtils.h"
 
-#include <stdexcept>
-#include <sstream>
-
 #include "ScopedFileStream.h"
+
+#include <sstream>
+#include <stdexcept>
 
 namespace util {
 
 std::streampos getFileLength(std::ifstream &stream) {
-	stream.seekg (0, stream.end);
+	stream.seekg(0, std::ifstream::end);
 	std::streampos const fileLength = stream.tellg();
-	stream.seekg (0, stream.beg);
+	stream.seekg(0, std::ifstream::beg);
 
 	return fileLength;
 }
@@ -32,6 +32,8 @@ FileBuffer readEntireFile(std::string const &filename) {
 	// -> need to ensure the correct size before -> use the fill constructor or the resize() method!
 	//buffer.reserve(fileLength);
 
+	// reinterpret_cast is necessary in this case
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	inputFileStream.stream().read(reinterpret_cast<char*>(buffer.data()), fileLength);
 
 	if ((!inputFileStream.stream()) || (inputFileStream.stream().gcount() != fileLength)) {
@@ -45,4 +47,4 @@ FileBuffer readEntireFile(std::string const &filename) {
 	return buffer;
 }
 
-}
+} 	// namespace util

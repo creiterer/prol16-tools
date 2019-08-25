@@ -19,6 +19,6 @@ std::streampos getFileLength(std::ifstream const &stream);
 
 FileBuffer readEntireFile(std::string const &filename);
 
-}
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED */
