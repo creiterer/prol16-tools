@@ -7,9 +7,10 @@
 
 #include "InstructionWriter.h"
 
-#include "RegisterUtils.h"
 #include "MnemonicUtils.h"
+#include "RegisterUtils.h"
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 using namespace util;
@@ -171,7 +172,8 @@ void InstructionWriter::writePrinti(Immediate const immediate) {
 //}
 
 void InstructionWriter::writeBufferToStream(std::ostream &stream) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	stream.write(reinterpret_cast<char*>(instructionBuffer.data()), instructionBuffer.size()*(sizeof(InstructionBuffer::value_type)/sizeof(char)));
 }
 
-}
+} 	// namespace PROL16

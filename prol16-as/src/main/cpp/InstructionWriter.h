@@ -8,14 +8,15 @@
 #ifndef PROL16_AS_SRC_MAIN_CPP_INSTRUCTIONWRITER_H_INCLUDED
 #define PROL16_AS_SRC_MAIN_CPP_INSTRUCTIONWRITER_H_INCLUDED
 
+#include "Instruction.h"
+#include "NonCopyable.h"
+#include "NumberUtils.h"
+#include "RegisterUtils.h"
+
 #include <ostream>
 #include <vector>
 
-#include "NonCopyable.h"
-#include "Instruction.h"
-#include "RegisterUtils.h"
-#include "NumberUtils.h"
-
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class InstructionWriter final : private ::util::NonCopyable {
@@ -25,7 +26,6 @@ public:
 	using InstructionBuffer = std::vector<Instruction::EncodedType>;
 
 	InstructionWriter() = default;
-	~InstructionWriter() = default;
 
 	void writeNop();
 
@@ -91,6 +91,6 @@ private:
 	InstructionBuffer instructionBuffer;
 };
 
-}
+} 	// namespace PROL16
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_INSTRUCTIONWRITER_H_INCLUDED */
