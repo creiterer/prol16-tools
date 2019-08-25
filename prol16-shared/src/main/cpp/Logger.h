@@ -8,12 +8,12 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_LOGGER_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_LOGGER_H_INCLUDED
 
+#include "NonCopyable.h"
+
+#include <functional>
+#include <initializer_list>
 #include <ostream>
 #include <vector>
-#include <initializer_list>
-#include <functional>
-
-#include "NonCopyable.h"
 
 namespace util { namespace logging {
 
@@ -25,9 +25,9 @@ public:
 	using LogStream = std::ostream&;
 	using LogStreams = std::vector<std::reference_wrapper<std::ostream>>;
 
-	Logger(LogStream logStream, bool const enabled = true);
-	Logger(LogStreams const &logStreams, bool const enabled = true);
-	Logger(LogStreams &&logStreams, bool const enabled = true);
+	explicit Logger(LogStream logStream, bool const enabled = true);
+	explicit Logger(LogStreams const &logStreams, bool const enabled = true);
+	explicit Logger(LogStreams &&logStreams, bool const enabled = true);
 	Logger(std::initializer_list<std::reference_wrapper<std::ostream>> logStreams, bool const enabled = true);
 
 	inline void addLogStream(LogStream logStream) { logStreams.emplace_back(logStream); }
@@ -69,6 +69,7 @@ private:
 	bool enabled;
 };
 
-}}
+}	// namespace logging
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_LOGGER_H_INCLUDED */

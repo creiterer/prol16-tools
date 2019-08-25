@@ -7,13 +7,14 @@
 
 #include "Logger.h"
 
-#include <utility>
 #include <algorithm>
+#include <utility>
 
 namespace util { namespace logging {
 
 Logger::Logger(LogStream logStream, bool const enabled) : logStreams{logStream}, enabled(enabled) {}
 
+// NOLINTNEXTLINE(modernize-pass-by-value): makes no sense since there is an explicit rvalue-ref overload
 Logger::Logger(LogStreams const &logStreams, bool const enabled) : logStreams(logStreams), enabled(enabled) {}
 
 Logger::Logger(LogStreams &&logStreams, bool const enabled) : logStreams(std::move(logStreams)), enabled(enabled) {}
@@ -79,4 +80,5 @@ Logger& Logger::operator<<(void const * const value) {
 }
 */
 
-}}
+}	// namespace logging
+}	// namespace util
