@@ -6,24 +6,24 @@
  * 				and walks through the parse tree, writing the instructions to a file.
  */
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <fstream>
-
 #include "antlr4-runtime.h"
-#include "Prol16AsmLexer.h"
-#include "Prol16AsmParser.h"
-#include "Prol16AsmListener.h"
-#include "LabelListener.h"
 #include "CountingErrorListener.h"
-
-#include "ScopedFileStream.h"
-#include "Filename.h"
 #include "InstructionWriter.h"
+#include "LabelListener.h"
+#include "Prol16AsmLexer.h"
+#include "Prol16AsmListener.h"
+#include "Prol16AsmParser.h"
+
 #include "ArgumentParser.h"
 #include "CLIArguments.h"
 #include "CLIError.h"
+#include "Filename.h"
+#include "ScopedFileStream.h"
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 using namespace antlr4;
 using std::cout;
@@ -36,7 +36,7 @@ using util::ScopedFileStream;
 //	cerr << "Usage: " << appName << " PROL16_ASSEMBLY_FILE" << endl;
 //}
 
-static std::string const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE";
+static std::string const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
 
 int main(int const argc, char const * const argv[]) {
 	try {
