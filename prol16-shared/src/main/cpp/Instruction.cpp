@@ -7,11 +7,12 @@
 
 #include "Instruction.h"
 
+#include "InstructionDecodeError.h"
+
 #include <sstream>
 #include <stdexcept>
 
-#include "InstructionDecodeError.h"
-
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 Instruction Instruction::decode(EncodedType const encodedValue) {
@@ -105,7 +106,7 @@ Instruction::Opcode Instruction::decodeOpcode(EncodedType const encodedValue) {
 	return (encodedValue >> (2*RegisterBitWidth)) & OpcodeMask;
 }
 
-}
+}	// namespace PROL16
 
 std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction) {
 	stream << instruction.asString();

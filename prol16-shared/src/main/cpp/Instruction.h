@@ -8,14 +8,15 @@
 #ifndef PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED
 #define PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED
 
-#include <cstdint>
-#include <string>
-#include <ostream>
-
+#include "Logger.h"
 #include "MnemonicUtils.h"
 #include "RegisterUtils.h"
-#include "Logger.h"
 
+#include <cstdint>
+#include <ostream>
+#include <string>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class Instruction final {
@@ -31,14 +32,14 @@ public:
 	static Instruction decode(EncodedType const encodedValue);
 
 	Instruction() = default;
-	Instruction(Opcode const opcode);
-	Instruction(Mnemonic const mnemonic);
+	explicit Instruction(Opcode const opcode);
+	explicit Instruction(Mnemonic const mnemonic);
 	Instruction(Opcode const opcode, Register const ra);
 	Instruction(Mnemonic const mnemonic, Register const ra);
 	Instruction(Opcode const opcode, Register const ra, Register const rb);
 	Instruction(Mnemonic const mnemonic, Register const ra, Register const rb);
-	~Instruction() = default;
 
+	// NOLINTNEXTLINE(google-explicit-constructor)
 	operator EncodedType() const;
 
 	inline Register getRb() const { return rb; }
@@ -69,7 +70,8 @@ private:
 	EncodedType encodeOpcode() const;
 };
 
-}
+}	// namespace PROL16
+
 std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction);
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction);
 
