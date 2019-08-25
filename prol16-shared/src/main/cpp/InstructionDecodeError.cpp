@@ -7,9 +7,10 @@
 
 #include "InstructionDecodeError.h"
 
-#include <sstream>
 #include <ios>
+#include <sstream>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 InstructionDecodeError::InstructionDecodeError(Instruction::EncodedType const encodedValue, std::string const &hint) {
@@ -24,4 +25,5 @@ char const* InstructionDecodeError::what() const noexcept {
 	return errorMessage.c_str();
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16

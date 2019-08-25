@@ -8,11 +8,12 @@
 #ifndef PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_INSTRUCTIONDECODEERROR_H_INCLUDED
 #define PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_INSTRUCTIONDECODEERROR_H_INCLUDED
 
+#include "Instruction.h"
+
 #include <stdexcept>
 #include <string>
 
-#include "Instruction.h"
-
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 class InstructionDecodeError final : public std::exception {
@@ -25,6 +26,7 @@ private:
 	std::string errorMessage;
 };
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_INSTRUCTIONDECODEERROR_H_INCLUDED */
