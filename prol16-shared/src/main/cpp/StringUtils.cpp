@@ -20,7 +20,7 @@ void checkStringIsNotEmpty(std::string const &str) {
 	}
 }
 
-}
+}	// namespace preconditions
 
 std::string toLower(std::string str) {
 	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -47,4 +47,4 @@ std::string prepend(std::string const &str, std::string const &prependee) {
 	return prependee + str;
 }
 
-}
+}	// namespace util
