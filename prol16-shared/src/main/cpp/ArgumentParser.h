@@ -9,14 +9,14 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED
 
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-#include "NonCopyable.h"
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
 #include "CLIFlags.h"
+#include "NonCopyable.h"
+
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace util { namespace cli {
 
@@ -27,7 +27,6 @@ public:
 	using FlagMap = CLIArgumentsBuilder::FlagMap;
 
 	ArgumentParser() = default;
-	~ArgumentParser() = default;
 
 	ArgumentParser& addPositionalArgument(std::string const &name);
 
@@ -52,6 +51,7 @@ private:
 	ArgumentMap shortToLongNameMapping;
 };
 
-}}
+}	// namespace cli
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED */

@@ -8,15 +8,15 @@
 
 #include "ArgumentParser.h"
 
-#include <cassert>
-#include <sstream>
-#include <algorithm>
-#include <unordered_set>
-#include <stdexcept>
-
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
 #include "CLIError.h"
+
+#include <algorithm>
+#include <cassert>
+#include <sstream>
+#include <stdexcept>
+#include <unordered_set>
 
 namespace util { namespace cli {
 
@@ -118,7 +118,7 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 
 			cliArgumentsBuilder.addArgument(longOptionName, argv[++i]);
 			optionalArgumentsCopy.erase(longOptionName);
-		} else if (positionalArgumentsCopy.size() != 0) {
+		} else if (!positionalArgumentsCopy.empty()) {
 			cliArgumentsBuilder.addArgument(positionalArgumentsCopy[0], argumentValue);
 			positionalArgumentsCopy.erase(positionalArgumentsCopy.begin());
 		} else {
@@ -176,4 +176,5 @@ std::string ArgumentParser::getUsageMessage(std::string const &appName) const {
 	return usageMessage.str();
 }
 
-}}
+}	// namespace cli
+}	// namespace util
