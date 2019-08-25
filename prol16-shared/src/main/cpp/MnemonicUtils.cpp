@@ -7,17 +7,18 @@
 
 #include "MnemonicUtils.h"
 
-#include <unordered_map>
-#include <stdexcept>
-#include <sstream>
-
 #include "OpcodeError.h"
 
+#include <sstream>
+#include <stdexcept>
+#include <unordered_map>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 namespace {
 
-std::unordered_map<Mnemonic, std::string> const mnemonicStringTable = {
+std::unordered_map<Mnemonic, std::string> const MnemonicStringTable = {
 		{NOP, "nop"},
 		{SLEEP, "sleep"},
 		{LOADI, "loadi"},
@@ -46,12 +47,12 @@ std::unordered_map<Mnemonic, std::string> const mnemonicStringTable = {
 		{PRINTI, "print"}	// for convenience, also use 'print' for mnemonic/opcode 'PRINTI', like the assembler does
 };
 
-}
+}	// anonymous namespace
 
 bool isOpcodeValid(Opcode const opcode) {
 	Mnemonic const mnemonic = getMnemonicOfOpcode(opcode);
 
-	return mnemonicStringTable.find(mnemonic) != mnemonicStringTable.cend();
+	return MnemonicStringTable.find(mnemonic) != MnemonicStringTable.cend();
 }
 
 Opcode validateOpcode(Opcode const opcode) {
@@ -63,7 +64,7 @@ Opcode validateOpcode(Opcode const opcode) {
 }
 
 std::string getMnemonicStringOfOpcode(Opcode const opcode) {
-	return mnemonicStringTable.at(getMnemonicOfOpcode(opcode));
+	return MnemonicStringTable.at(getMnemonicOfOpcode(opcode));
 }
 
 Mnemonic getMnemonicOfOpcode(Opcode const opcode) {
@@ -75,7 +76,7 @@ Opcode getOpcodeOfMnemonic(Mnemonic const mnemonic) {
 }
 
 std::string getMnemonicAsString(Mnemonic const mnemonic) {
-	return mnemonicStringTable.at(mnemonic);
+	return MnemonicStringTable.at(mnemonic);
 }
 
 uint8_t numberOfRegisterOperands(Mnemonic const mnemonic) {
@@ -124,4 +125,5 @@ uint8_t numberOfRegisterOperands(Opcode const opcode) {
 	return numberOfRegisterOperands(getMnemonicOfOpcode(opcode));
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16

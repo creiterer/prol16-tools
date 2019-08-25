@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <string>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 using Opcode = uint8_t;
@@ -64,6 +65,7 @@ uint8_t numberOfRegisterOperands(Mnemonic const mnemonic);
 
 uint8_t numberOfRegisterOperands(Opcode const opcode);
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_MNEMONICUTILS_H_INCLUDED */
