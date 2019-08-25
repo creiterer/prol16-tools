@@ -7,25 +7,27 @@
 
 #include "Prol16AsmListener.h"
 
-#include <stdexcept>
-#include <sstream>
-
-#include "RegisterUtils.h"
 #include "ContextUtils.h"
 #include "NotImplementedError.h"
+#include "RegisterUtils.h"
 
+#include <sstream>
+#include <stdexcept>
+#include <utility>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
-Prol16AsmListener::Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable const &labelTable)
-: instructionWriter(instructionWriter), labelTable(labelTable) {
+Prol16AsmListener::Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable labelTable)
+: instructionWriter(instructionWriter), labelTable(std::move(labelTable)) {
 
 }
 
-void Prol16AsmListener::enterNopInstruction(Prol16AsmParser::NopInstructionContext *context) {
+void Prol16AsmListener::enterNopInstruction(Prol16AsmParser::NopInstructionContext */*context*/) {
 	instructionWriter.writeNop();
 }
 
-void Prol16AsmListener::enterSleepInstruction(Prol16AsmParser::SleepInstructionContext *context) {
+void Prol16AsmListener::enterSleepInstruction(Prol16AsmParser::SleepInstructionContext */*context*/) {
 	instructionWriter.writeSleep();
 }
 
@@ -185,7 +187,7 @@ void Prol16AsmListener::enterSymbolicConstantDefinition(Prol16AsmParser::Symboli
 
 	auto result = symbolicConstantTable.emplace(context->identifier->getText(), value);
 	if (!result.second) {
-		// TODO: print error that the symbolic constant is already defined (multiple definition)
+		// TODO(creiterer): print error that the symbolic constant is already defined (multiple definition)
 	}
 }
 
@@ -217,19 +219,21 @@ void Prol16AsmListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionC
 InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
 	if (util::isNumber(expression)) {
 		return util::parseNumber(expression->number->getText());
-	} else if (util::isIdentifier(expression)) {
+	}
+
+	if (util::isIdentifier(expression)) {
 		std::string const identifier = expression->identifier->getText();
 		try {
 			return symbolicConstantTable.at(identifier);
 		} catch (std::out_of_range const&) {
 			return labelTable.at(identifier);
 		}
-	} else {
-		std::ostringstream errorMessage;
-		errorMessage << "expression '" << expression->getText() << "' is neither a number nor an identifier";
-
-		throw std::runtime_error(errorMessage.str());
 	}
+
+	std::ostringstream errorMessage;
+	errorMessage << "expression '" << expression->getText() << "' is neither a number nor an identifier";
+
+	throw std::runtime_error(errorMessage.str());
 }
 
-}
+} 	// namespace PROL16

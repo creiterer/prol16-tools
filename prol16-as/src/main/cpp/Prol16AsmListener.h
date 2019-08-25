@@ -8,27 +8,27 @@
 #ifndef PROL16_AS_SRC_MAIN_CPP_PROL16ASMLISTENER_H_INCLUDED
 #define PROL16_AS_SRC_MAIN_CPP_PROL16ASMLISTENER_H_INCLUDED
 
-#include <unordered_map>
-#include <string>
-#include <cstdint>
-
-#include "Prol16AsmParserBaseListener.h"
 #include "InstructionWriter.h"
-#include "NumberUtils.h"
 #include "LabelListener.h"
+#include "NumberUtils.h"
+#include "Prol16AsmParserBaseListener.h"
 
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class Prol16AsmListener final : public Prol16AsmParserBaseListener {
 public:
 	using LabelTable = LabelListener::LabelTable;
 
-	Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable const &labelTable);
-	~Prol16AsmListener() = default;
+	Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable labelTable);
 
-	void enterNopInstruction(Prol16AsmParser::NopInstructionContext *context) override;
+	void enterNopInstruction(Prol16AsmParser::NopInstructionContext */*context*/) override;
 
-	void enterSleepInstruction(Prol16AsmParser::SleepInstructionContext *context) override;
+	void enterSleepInstruction(Prol16AsmParser::SleepInstructionContext */*context*/) override;
 
 	void enterLoadiInstruction(Prol16AsmParser::LoadiInstructionContext *context) override;
 
@@ -98,6 +98,6 @@ private:
 	InstructionWriter::Immediate evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const;
 };
 
-}
+}	// namespace PROL16
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_PROL16ASMLISTENER_H_INCLUDED */
