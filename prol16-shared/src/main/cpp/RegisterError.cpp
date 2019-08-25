@@ -9,6 +9,7 @@
 
 #include <sstream>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 RegisterError::RegisterError(Register const reg) {
@@ -29,4 +30,5 @@ char const* RegisterError::what() const noexcept {
 	return errorMessage.c_str();
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
