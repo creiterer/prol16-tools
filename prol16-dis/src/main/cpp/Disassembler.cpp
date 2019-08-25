@@ -7,14 +7,15 @@
 
 #include "Disassembler.h"
 
-#include <stdexcept>
-#include <iostream>
-#include <iomanip>
-
-#include "MnemonicUtils.h"
 #include "EOFError.h"
 #include "IncompleteInstructionError.h"
+#include "MnemonicUtils.h"
 
+#include <iomanip>
+#include <iostream>
+#include <stdexcept>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 Disassembler::Disassembler(std::istream &sourceStream, std::ostream &destinationStream)
@@ -62,14 +63,19 @@ Instruction Disassembler::readAndDecodeInstruction() {
 	if ((sourceStream.gcount() > 0) && (sourceStream.gcount() < bufferSize)) {
 		// we read something, but not a complete instruction
 		throw util::IncompleteInstructionError();
-	} else if ((sourceStream.gcount() == 0) && sourceStream.eof()) {
+	}
+
+	if ((sourceStream.gcount() == 0) && sourceStream.eof()) {
 		// we reached end-of-file
 		throw ::util::EOFError();
-	} else if (sourceStream.gcount() != bufferSize) {
+	}
+
+	if (sourceStream.gcount() != bufferSize) {
 		// we read more than bufferSize or gcount is 0 but we are not at EOF -> either case is weird
 		throw std::runtime_error("failed to read instruction");
 	}
 
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	Instruction::EncodedType const encodedValue = *reinterpret_cast<Instruction::EncodedType*>(instructionBuffer);
 	return Instruction::decode(encodedValue);
 }
@@ -84,8 +90,9 @@ Disassembler::Immediate Disassembler::readImmediate() {
 		throw util::IncompleteInstructionError("failed to read loadi's immediate");
 	}
 
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	Immediate const immediate = *reinterpret_cast<Immediate*>(immediateBuffer);
 	return immediate;
 }
 
-}
+}	// namespace PROL16
