@@ -10,13 +10,15 @@
 
 #include <stdexcept>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 class FlagError final : public std::runtime_error {
 public:
-	FlagError(std::string const &name) : runtime_error(name + " has an undefined value") {}
+	explicit FlagError(std::string const &name) : runtime_error(name + " has an undefined value") {}
 };
 
-}}
+}	// namespace util
+}	// namespace PROL16
 
 #endif /* PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAGERROR_H_INCLUDED */
