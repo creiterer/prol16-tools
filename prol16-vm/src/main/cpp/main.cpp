@@ -41,19 +41,19 @@ int main(int const argc, char const * const argv[]) {
 
 		return 0;
 	} catch (util::cli::CLIError const &e) {
-		cerr << "CLI Error: " << e.what() << endl;
+		cerr << "\nCLI Error: " << e.what() << endl;
 		return 2;
 	} catch (std::ios_base::failure const &f) {
-        cerr << "Error: Caught an ios_base::failure." << endl;
+        cerr << "\nError: Caught an ios_base::failure." << endl;
         cerr << "Error Message: " << f.what() << endl;
         cerr << "Error Code: " << f.code() << endl;
         return 1;
 	} catch (std::exception const &e) {
-        cerr << "Error: Caught an std::exception." << endl;
+        cerr << "\nError: Caught an std::exception." << endl;
         cerr << "Error Message: " << e.what() << endl;
         return 1;
 	} catch (...) {
-        cerr << "Error: Caught an unexpected exception." << endl;
+        cerr << "\nError: Caught an unexpected exception." << endl;
         return 1;
 	}
 }
