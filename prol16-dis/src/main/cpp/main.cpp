@@ -5,17 +5,18 @@
  * @brief 		brief description
  */
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#include "Filename.h"
-#include "ScopedFileStream.h"
-#include "CLIError.h"
-#include "CLIArguments.h"
-#include "ArgumentParser.h"
 
 #include "Disassembler.h"
+
+#include "ArgumentParser.h"
+#include "CLIArguments.h"
+#include "CLIError.h"
+#include "Filename.h"
+#include "ScopedFileStream.h"
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 using std::cout;
 using std::cerr;
@@ -52,9 +53,9 @@ void disassembleToFile(util::Filename const &filename) {
 	cout << "========== Decompilation Finished ==========" << endl;
 }
 
-}
+}	// anonymous namespace
 
-static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";
+static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";		// NOLINT(readability-identifier-naming)
 
 int main(int const argc, char const * const argv[]) {
 	using namespace util;
