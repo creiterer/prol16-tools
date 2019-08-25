@@ -19,6 +19,8 @@ struct FlagName final {
 
 static FlagName const VERBOSE{"-v", "--verbose"};
 
-}}}
+}	// namespace flags
+}	// namespace cli
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIFLAGS_H_INCLUDED */
