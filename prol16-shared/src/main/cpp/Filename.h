@@ -14,12 +14,11 @@ namespace util {
 
 class Filename final {
 public:
-	Filename(std::string const &filename);
-	Filename(char const * const filename);
-	~Filename() = default;
+	explicit Filename(std::string filename);
+	explicit Filename(char const * const filename);
 
 	inline std::string asString() const { return filename; }
-	operator std::string() const { return filename; }
+	explicit operator std::string() const { return filename; }
 
 	std::string getWithoutExtension() const;
 
@@ -29,6 +28,6 @@ private:
 	std::string const filename;
 };
 
-}
+}	// namespace util
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_FILENAME_H_INCLUDED */

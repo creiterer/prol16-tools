@@ -7,9 +7,11 @@
 
 #include "Filename.h"
 
+#include <utility>
+
 namespace util {
 
-Filename::Filename(std::string const &filename) : filename(filename) {
+Filename::Filename(std::string filename) : filename(std::move(filename)) {
 
 }
 
@@ -34,4 +36,4 @@ std::string Filename::getWithCustomExtension(std::string const &extension) const
 	return getWithoutExtension().append(".").append(extension);
 }
 
-}
+}	// namespace util
