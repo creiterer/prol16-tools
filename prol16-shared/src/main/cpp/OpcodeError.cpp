@@ -7,9 +7,10 @@
 
 #include "OpcodeError.h"
 
-#include <sstream>
 #include <ios>
+#include <sstream>
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 OpcodeError::OpcodeError(Opcode const opcode) {
@@ -25,4 +26,5 @@ char const* OpcodeError::what() const noexcept {
 	return errorMessage.c_str();
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
