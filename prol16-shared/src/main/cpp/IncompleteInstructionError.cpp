@@ -7,6 +7,7 @@
 
 #include "IncompleteInstructionError.h"
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 IncompleteInstructionError::IncompleteInstructionError() {
@@ -21,4 +22,5 @@ char const* IncompleteInstructionError::what() const noexcept {
 	return errorMessage.c_str();
 }
 
-}}
+}	// namespace util
+}	// namespace PROL16
