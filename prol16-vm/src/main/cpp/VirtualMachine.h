@@ -8,19 +8,20 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MACHINE_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MACHINE_H_INCLUDED
 
+#include "Flag.h"
+#include "RegisterFile.h"
+#include "VirtualMemory.h"
+
+#include "Instruction.h"
+#include "Logger.h"
+#include "NonCopyable.h"
+#include "NumberUtils.h"
+#include "RegisterUtils.h"
+
 #include <cstdint>
 #include <ios>
 
-#include "NonCopyable.h"
-#include "VirtualMemory.h"
-#include "RegisterFile.h"
-
-#include "Instruction.h"
-#include "RegisterUtils.h"
-#include "NumberUtils.h"
-#include "Flag.h"
-#include "Logger.h"
-
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 class VirtualMachine final : private ::util::NonCopyable {
@@ -32,7 +33,6 @@ public:
 	static uint8_t const BitWidth = 16;
 
 	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger);
-	~VirtualMachine() = default;
 
 	void run();
 
@@ -63,6 +63,6 @@ private:
 	void printProgramCounter(std::ostream &stream) const;
 };
 
-}
+}	// namespace PROL16
 
 #endif

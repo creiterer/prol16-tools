@@ -7,13 +7,14 @@
 
 #include "VirtualMachine.h"
 
-#include <stdexcept>
-#include <sstream>
-#include <iostream>
-#include <functional>
-
 #include "OpcodeError.h"
 
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+
+// NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
 VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger)
@@ -285,4 +286,4 @@ void VirtualMachine::printProgramCounter(std::ostream &stream) const {
 	util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
 }
 
-}
+}	// namespace PROL16
