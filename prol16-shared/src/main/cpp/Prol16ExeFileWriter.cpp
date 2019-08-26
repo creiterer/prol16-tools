@@ -8,15 +8,13 @@
 #include "Prol16ExeFileWriter.h"
 
 #include "FileUtils.h"
+#include "Prol16ExeFile.h"
 
 #include <algorithm>
 #include <iterator>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
-
-char const * const Prol16ExeFileWriter::Extension{"p16"};
-std::array<char, Prol16ExeFileWriter::MagicNumberSize> const Prol16ExeFileWriter::MagicNumber{0x7F, 'P', '1', '6'};
 
 Prol16ExeFileWriter::Prol16ExeFileWriter(std::string const &filename)
 : filename(filename), fileStream(filename, std::ofstream::binary) {
@@ -29,14 +27,14 @@ Prol16ExeFileWriter::~Prol16ExeFileWriter() {
 	fileStream.close();
 }
 
-void Prol16ExeFileWriter::writeFileHeader(Address const entryPointAddress) {
+void Prol16ExeFileWriter::writeFileHeader(memory::Address const entryPointAddress) {
 	writeMagicNumber();
 	::util::writeValueBinary(fileStream, entryPointAddress);
 }
 
 void Prol16ExeFileWriter::writeMagicNumber() {
 	std::ostream_iterator<char> ostreamItor(fileStream);
-	std::copy(MagicNumber.cbegin(), MagicNumber.cend(), ostreamItor);
+	std::copy(Prol16ExeFile::MagicNumber.cbegin(), Prol16ExeFile::MagicNumber.cend(), ostreamItor);
 }
 
 }	// namespace util
