@@ -18,6 +18,8 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/ArgumentParser.cpp
     ${MAIN_CPP_DIR}/Logger.cpp
     ${MAIN_CPP_DIR}/Prol16ExeFileWriter.cpp
+    ${MAIN_CPP_DIR}/Prol16ExeFile.cpp
+    ${MAIN_CPP_DIR}/Prol16ExeParseError.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})
