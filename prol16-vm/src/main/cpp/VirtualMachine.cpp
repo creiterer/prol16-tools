@@ -8,6 +8,7 @@
 #include "VirtualMachine.h"
 
 #include "OpcodeError.h"
+#include "Prol16ExeFile.h"
 
 #include <functional>
 #include <iostream>
@@ -18,8 +19,21 @@
 namespace PROL16 {
 
 VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger)
-: programCounter(0), carryFlag("carry flag"), zeroFlag("zero flag"), logger(logger) {
-	memory.initializeFromFile(filename);
+: carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger) {
+	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
+
+	// needs to be done before setting the program counter due to the
+	// 'if (address >= memory.getCodeSegme' check
+	memory.initializeCodeSegment(p16ExeFile.getCodeSegment());
+
+	VirtualMemory::Address const entryPointAddress = p16ExeFile.getEntryPointAddress();
+	setProgramCounter(entryPointAddress);
+
+	logger << "starting program execution at address ";
+	logger.forEachLogStream([entryPointAddress](::util::logging::Logger::LogStream stream){
+		util::printHexNumberFormattedWithBase(stream, entryPointAddress);
+	});
+	logger << '\n';
 }
 
 void VirtualMachine::run() {
@@ -42,8 +56,8 @@ VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
 bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	using namespace util;
 
-	logger.forEachLogStream(std::bind(&VirtualMachine::printProgramCounter, this, std::placeholders::_1));
-	logger << "|z=" << zeroFlag << "|c=" << carryFlag << ": " << instruction;
+	logger.forEachLogStream(std::bind(&VirtualMachine::printState, this, std::placeholders::_1));
+	logger << instruction;
 
 	Register const ra = instruction.getRa();
 	Register const rb = instruction.getRb();
@@ -197,7 +211,6 @@ void VirtualMachine::setProgramCounter(VirtualMemory::Address const address) {
 	}
 
 	programCounter = address;
-	registerFile.writeProgramCounter(programCounter);
 }
 
 void VirtualMachine::setZeroFlag(RegisterFile::Data const result) {
@@ -288,6 +301,14 @@ void VirtualMachine::printInfo(std::string const &message) const {
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
 	util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
+}
+
+void VirtualMachine::printState(std::ostream &stream) const {
+	printProgramCounter(stream);
+	util::printHexNumberFormattedWithBase(stream << "|ra=", registerFile.readReturnAddress());
+	util::printHexNumberFormattedWithBase(stream << "|sp=", registerFile.readStackPointer());
+	util::printHexNumberFormattedWithBase(stream << "|fp=", registerFile.readFramePointer());
+	stream << "|z=" << zeroFlag << "|c=" << carryFlag << ": ";
 }
 
 }	// namespace PROL16

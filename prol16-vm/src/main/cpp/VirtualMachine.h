@@ -37,11 +37,11 @@ public:
 	void run();
 
 private:
-	VirtualMemory::Address programCounter;
-	VirtualMemory memory;
 	RegisterFile registerFile;
+	VirtualMemory memory;
 	Flag carryFlag;
 	Flag zeroFlag;
+	VirtualMemory::Address &programCounter;
 	::util::logging::Logger &logger;
 
 	Instruction fetchAndDecodeInstruction();
@@ -61,6 +61,7 @@ private:
 
 	void printInfo(std::string const &message) const;
 	void printProgramCounter(std::ostream &stream) const;
+	void printState(std::ostream &stream) const;
 };
 
 }	// namespace PROL16
