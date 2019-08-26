@@ -8,6 +8,7 @@
 #ifndef PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_LABELLISTENER_H_INCLUDED
 #define PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_LABELLISTENER_H_INCLUDED
 
+#include "AddressUtils.h"
 #include "CommandCounter.h"
 #include "NumberUtils.h"
 #include "Prol16AsmParserBaseListener.h"
@@ -79,6 +80,8 @@ public:
 	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
 
 	inline LabelTable getLabels() const { return labelTable; }
+
+	util::Address getLabelAddress(std::string const &labelName) const;
 
 private:
 	CommandCounter commandCounter;
