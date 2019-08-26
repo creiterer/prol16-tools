@@ -40,3 +40,13 @@ TEST(FileUtilsTest, testWriteValueBinary) {
 	ASSERT_EQ(28, value[0]);
 	ASSERT_EQ(0, value[1]);
 }
+
+TEST(FileUtilsTest, testReadValue) {
+	FileBuffer buffer{28, 0, 255, 0};
+
+	uint16_t value = readValue<uint16_t>(buffer);
+	ASSERT_EQ(28, value);
+
+	value = readValue<uint16_t>(buffer, 2);
+	ASSERT_EQ(255, value);
+}

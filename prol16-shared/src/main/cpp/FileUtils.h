@@ -25,6 +25,12 @@ void writeValueBinary(std::ostream &stream, T value) {
 	stream.write(reinterpret_cast<char*>(&value), sizeof(T)/sizeof(char));
 }
 
+template <typename T>
+T readValue(FileBuffer const &buffer, FileBuffer::size_type const offset = 0) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	return *reinterpret_cast<T const*>(buffer.data() + offset);
+}
+
 }	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED */
