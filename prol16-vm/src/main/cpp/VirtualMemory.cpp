@@ -24,10 +24,8 @@ VirtualMemory::VirtualMemory() {
 }
 
 void VirtualMemory::initializeFromFile(std::string const &filename) {
-	using namespace util;
-
-	FileBuffer buffer = readEntireFile(filename);
-	if (!isMultiple(sizeof(Data), buffer.size())) {
+	::util::FileBuffer buffer = ::util::readEntireFile(filename);
+	if (!::util::isMultiple(sizeof(Data), buffer.size())) {
 		std::ostringstream errorMessage;
 		errorMessage << "actual size of the file buffer (" << buffer.size() << ") ";
 		errorMessage << "isn't a multiple of the data size (" << sizeof(Data) << "); ";

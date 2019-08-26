@@ -8,6 +8,7 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 
+#include "AddressUtils.h"
 #include "NonCopyable.h"
 
 #include <array>
@@ -20,7 +21,7 @@ namespace PROL16 {
 class VirtualMemory final : private ::util::NonCopyable {
 public:
 	using Data = uint16_t;
-	using Address = uint16_t;
+	using Address = PROL16::util::Address;
 
 	static size_t const MemorySize = 1 << 16;	// 2^16 = 65536
 	static Data const MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
