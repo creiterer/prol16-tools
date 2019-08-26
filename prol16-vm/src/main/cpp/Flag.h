@@ -43,6 +43,7 @@ private:
 
 }	// namespace PROL16
 
+std::ostream& operator<<(std::ostream &stream, PROL16::Flag const &flag);
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Flag const &flag);
 
 #endif /* PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAG_H_INCLUDED */

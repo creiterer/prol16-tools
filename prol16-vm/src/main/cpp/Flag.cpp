@@ -35,7 +35,7 @@ bool Flag::isSet() const {
 std::string Flag::asString() const {
 	switch (state) {
 	case Flag::State::Undefined:
-		return "undefined";
+		return "?";
 	case Flag::State::Zero:
 		return "0";
 	case Flag::State::One:
@@ -52,6 +52,11 @@ void Flag::checkFlagIsValid() const {
 }
 
 } 	// namespace PROL16
+
+std::ostream& operator<<(std::ostream &stream, PROL16::Flag const &flag) {
+	stream << flag.asString();
+	return stream;
+}
 
 util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Flag const &flag) {
 	logger << flag.asString();
