@@ -9,6 +9,9 @@
 
 #include "gtest/gtest.h"
 
+#include <cstdint>
+#include <sstream>
+
 using namespace util;
 
 TEST(FileUtilsTest, testReadingEmptyFile) {
@@ -26,4 +29,14 @@ TEST(FileUtilsTest, testReadingBinaryFile) {
 	FileBuffer expectedBuffer = {0xBA, 0xDC, 0x0F, 0xFE, 0xE0, 0xDD, 0xF0, 0x0D};
 
 	ASSERT_EQ(expectedBuffer, buffer);
+}
+
+TEST(FileUtilsTest, testWriteValueBinary) {
+	std::ostringstream stream;
+
+	writeValueBinary(stream, static_cast<uint16_t>(28));
+	std::string const value = stream.str();
+	ASSERT_EQ(2, value.size());
+	ASSERT_EQ(28, value[0]);
+	ASSERT_EQ(0, value[1]);
 }

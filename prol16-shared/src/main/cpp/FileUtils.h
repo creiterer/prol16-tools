@@ -19,6 +19,12 @@ std::streampos getFileLength(std::ifstream const &stream);
 
 FileBuffer readEntireFile(std::string const &filename);
 
+template <typename T>
+void writeValueBinary(std::ostream &stream, T value) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	stream.write(reinterpret_cast<char*>(&value), sizeof(T)/sizeof(char));
+}
+
 }	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED */
