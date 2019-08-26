@@ -10,7 +10,9 @@
 #include "FileUtils.h"
 #include "MathUtils.h"
 
+#include <algorithm>
 #include <cstring>
+#include <iterator>
 #include <sstream>
 #include <stdexcept>
 
@@ -30,11 +32,21 @@ void VirtualMemory::initializeFromFile(std::string const &filename) {
 		errorMessage << "actual size of the file buffer (" << buffer.size() << ") ";
 		errorMessage << "isn't a multiple of the data size (" << sizeof(Data) << "); ";
 		errorMessage << "this indicates incomplete instructions!";
+
 		throw std::runtime_error(errorMessage.str());
 	}
 
 	std::memcpy(memory.data(), buffer.data(), buffer.size());
 	codeSegmentSize = buffer.size() / sizeof(Data);
+}
+
+void VirtualMemory::initializeCodeSegment(util::Prol16ExeFile::CodeSegment const &codeSegment) {
+	if (codeSegment.size() > MaxCodeSegmentSize) {
+		throw std::runtime_error("code segment from file doesn't fit into code segment from memory");
+	}
+
+	std::copy(codeSegment.cbegin(), codeSegment.cend(), std::next(memory.begin(), CodeSegmentOffset));
+	codeSegmentSize = codeSegment.size();
 }
 
 } 	// namespace PROL16

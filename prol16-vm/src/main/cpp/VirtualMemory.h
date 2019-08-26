@@ -8,11 +8,11 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 
-#include "AddressUtils.h"
+#include "MemoryUtils.h"
 #include "NonCopyable.h"
+#include "Prol16ExeFile.h"
 
 #include <array>
-#include <cstdint>
 #include <string>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -20,11 +20,16 @@ namespace PROL16 {
 
 class VirtualMemory final : private ::util::NonCopyable {
 public:
-	using Data = uint16_t;
-	using Address = PROL16::util::Address;
+	using Data = PROL16::util::memory::Data;
+	using Address = PROL16::util::memory::Address;
 
 	static size_t const MemorySize = 1 << 16;	// 2^16 = 65536
+	using Memory = std::array<Data, MemorySize>;
+
 	static Data const MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
+
+	static size_t const CodeSegmentOffset = 0;
+	static size_t const MaxCodeSegmentSize = 0x8000;
 
 	VirtualMemory();
 
@@ -43,9 +48,10 @@ public:
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
 
 	void initializeFromFile(std::string const &filename);
+	void initializeCodeSegment(util::Prol16ExeFile::CodeSegment const &codeSegment);
 
 private:
-	std::array<Data, MemorySize> memory{0};
+	Memory memory{0};
 	size_t codeSegmentSize{0};
 };
 
