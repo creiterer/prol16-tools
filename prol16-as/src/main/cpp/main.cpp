@@ -18,6 +18,7 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Filename.h"
+#include "Prol16ExeFile.h"
 #include "Prol16ExeFileWriter.h"
 #include "ScopedFileStream.h"
 
@@ -31,6 +32,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using util::ScopedFileStream;
+using PROL16::util::Prol16ExeFile;
 using PROL16::util::Prol16ExeFileWriter;
 
 static char const * const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
@@ -58,7 +60,7 @@ int main(int const argc, char const * const argv[]) {
 
 		CommonTokenStream tokens(&lexer);
 
-		Prol16ExeFileWriter p16ExeFile(filename.getWithCustomExtension(Prol16ExeFileWriter::Extension));
+		Prol16ExeFileWriter p16ExeFile(filename.getWithCustomExtension(Prol16ExeFile::Extension));
 
 		PROL16::Prol16AsmParser parser(&tokens);
 		parser.addErrorListener(&countingErrorListener);
