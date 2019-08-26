@@ -27,6 +27,6 @@ bool isMultiple(T const a, T const b) {
 	return (b % a) == 0;
 }
 
-}
+}	// namespace util
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_MATHUTILS_H_INCLUDED */
