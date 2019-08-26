@@ -18,15 +18,15 @@
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
-class Prol16ExeFile final : private ::util::NonCopyable {	// NOLINT(cppcoreguidelines-special-member-functions)
+class Prol16ExeFileWriter final : private ::util::NonCopyable {	// NOLINT(cppcoreguidelines-special-member-functions)
 public:
 	static char const * const Extension;
 
 	static unsigned const MagicNumberSize{4};
 	static std::array<char, MagicNumberSize> const MagicNumber;
 
-	explicit Prol16ExeFile(std::string const &filename);
-	~Prol16ExeFile() override;
+	explicit Prol16ExeFileWriter(std::string const &filename);
+	~Prol16ExeFileWriter() override;
 
 	inline std::ofstream& stream() { return fileStream; }
 	inline std::string getFilename() const { return filename; }

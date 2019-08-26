@@ -5,7 +5,7 @@
  * @brief 		brief description
  */
 
-#include "Prol16ExeFile.h"
+#include "Prol16ExeFileWriter.h"
 
 #include "FileUtils.h"
 
@@ -15,26 +15,26 @@
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
-char const * const Prol16ExeFile::Extension{"p16"};
-std::array<char, Prol16ExeFile::MagicNumberSize> const Prol16ExeFile::MagicNumber{0x7F, 'P', '1', '6'};
+char const * const Prol16ExeFileWriter::Extension{"p16"};
+std::array<char, Prol16ExeFileWriter::MagicNumberSize> const Prol16ExeFileWriter::MagicNumber{0x7F, 'P', '1', '6'};
 
-Prol16ExeFile::Prol16ExeFile(std::string const &filename)
+Prol16ExeFileWriter::Prol16ExeFileWriter(std::string const &filename)
 : filename(filename), fileStream(filename, std::ofstream::binary) {
 	if (!fileStream) {
 		throw std::ios_base::failure("Failed to open PROL16 executable file '" + filename + "'");
 	}
 }
 
-Prol16ExeFile::~Prol16ExeFile() {
+Prol16ExeFileWriter::~Prol16ExeFileWriter() {
 	fileStream.close();
 }
 
-void Prol16ExeFile::writeFileHeader(Address const entryPointAddress) {
+void Prol16ExeFileWriter::writeFileHeader(Address const entryPointAddress) {
 	writeMagicNumber();
 	::util::writeValueBinary(fileStream, entryPointAddress);
 }
 
-void Prol16ExeFile::writeMagicNumber() {
+void Prol16ExeFileWriter::writeMagicNumber() {
 	std::ostream_iterator<char> ostreamItor(fileStream);
 	std::copy(MagicNumber.cbegin(), MagicNumber.cend(), ostreamItor);
 }
