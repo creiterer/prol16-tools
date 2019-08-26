@@ -8,8 +8,8 @@
 #ifndef PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_LABELLISTENER_H_INCLUDED
 #define PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_LABELLISTENER_H_INCLUDED
 
-#include "AddressUtils.h"
 #include "CommandCounter.h"
+#include "MemoryUtils.h"
 #include "NumberUtils.h"
 #include "Prol16AsmParserBaseListener.h"
 
@@ -24,6 +24,8 @@ public:
 	using LabelName = std::string;
 	using LabelValue = util::Immediate;
 	using LabelTable = std::unordered_map<LabelName, LabelValue>;
+
+	using Address = PROL16::util::memory::Address;
 
 	LabelListener() = default;
 
@@ -81,7 +83,7 @@ public:
 
 	inline LabelTable getLabels() const { return labelTable; }
 
-	util::Address getLabelAddress(std::string const &labelName) const;
+	Address getLabelAddress(std::string const &labelName) const;
 
 private:
 	CommandCounter commandCounter;

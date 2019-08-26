@@ -128,7 +128,7 @@ void LabelListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionConte
 	}
 }
 
-util::Address LabelListener::getLabelAddress(std::string const &labelName) const {
+LabelListener::Address LabelListener::getLabelAddress(std::string const &labelName) const {
 	return labelTable.at(labelName);
 }
 
