@@ -36,8 +36,13 @@ public:
 	Data read(Register const reg) const;
 	void write(Register const reg, Data const data);
 
+	Data& getProgramCounter();
 	Data readProgramCounter() const;
 	void writeProgramCounter(Data const data);
+
+	Data readReturnAddress() const;
+	Data readStackPointer() const;
+	Data readFramePointer() const;
 
 private:
 	std::array<Data, util::RegisterCount> registerFile{0};

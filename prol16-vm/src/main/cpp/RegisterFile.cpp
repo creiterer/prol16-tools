@@ -43,12 +43,28 @@ void RegisterFile::write(Register const reg, Data const data) {
 	registerFile.at(reg) = data;
 }
 
+RegisterFile::Data& RegisterFile::getProgramCounter() {
+	return registerFile.at(util::getProgramCounterRegister());
+}
+
 RegisterFile::Data RegisterFile::readProgramCounter() const {
 	return read(util::getProgramCounterRegister());
 }
 
 void RegisterFile::writeProgramCounter(Data const data) {
 	write(util::getProgramCounterRegister(), data);
+}
+
+RegisterFile::Data RegisterFile::readReturnAddress() const {
+	return read(util::getReturnAddressRegister());
+}
+
+RegisterFile::Data RegisterFile::readStackPointer() const {
+	return read(util::getStackPointerRegister());
+}
+
+RegisterFile::Data RegisterFile::readFramePointer() const {
+	return read(util::getFramePointerRegister());
 }
 
 }	// namespace PROL16
