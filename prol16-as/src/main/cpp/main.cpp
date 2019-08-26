@@ -18,6 +18,7 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Filename.h"
+#include "Prol16ExeFile.h"
 #include "ScopedFileStream.h"
 
 #include <fstream>
@@ -30,22 +31,14 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using util::ScopedFileStream;
+using PROL16::util::Prol16ExeFile;
 
-//static void printUsage(std::string const &errorMessage, std::string const &appName) {
-//	cerr << errorMessage << endl;
-//	cerr << "Usage: " << appName << " PROL16_ASSEMBLY_FILE" << endl;
-//}
+static char const * const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
 
-static std::string const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
+static char const * const EntryPointName = "main";
 
 int main(int const argc, char const * const argv[]) {
 	try {
-//		if (argc != 2) {
-//			std::ostringstream errorMessage;
-//			errorMessage << "Error: expected exactly one PROL16 assembly input file but got " << (argc - 1);
-//			printUsage(errorMessage.str(), argv[0]);
-//			return 1;
-//		}
 		util::cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 
@@ -65,14 +58,14 @@ int main(int const argc, char const * const argv[]) {
 
 		CommonTokenStream tokens(&lexer);
 
-		ScopedFileStream<std::ofstream> exeFileStream(filename.getWithCustomExtension("p16"), std::ofstream::binary);
+		Prol16ExeFile p16ExeFile(filename.getWithCustomExtension(Prol16ExeFile::Extension));
 
 		PROL16::Prol16AsmParser parser(&tokens);
 		parser.addErrorListener(&countingErrorListener);
 
 		tree::ParseTree *parseTree = parser.prol16AsmFile();
 
-		cout << "compiling '" << filename.asString() << "' to '" << exeFileStream.getFilename() << "': ";
+		cout << "compiling '" << filename.asString() << "' to '" << p16ExeFile.getFilename() << "': ";
 		if (countingErrorListener.hasFoundErrors()) {
 			cout << "FAILED: " << countingErrorListener.getErrorCount() << " error(s) detected while parsing" << endl;
 			return 2;
@@ -85,7 +78,14 @@ int main(int const argc, char const * const argv[]) {
 		PROL16::Prol16AsmListener asmListener(instructionWriter, labelListener.getLabels());
 		tree::ParseTreeWalker::DEFAULT.walk(&asmListener, parseTree);
 
-		instructionWriter.writeBufferToStream(exeFileStream);
+		try {
+			p16ExeFile.writeFileHeader(labelListener.getLabelAddress(EntryPointName));
+		} catch (std::out_of_range const&) {
+			cout << "FAILED: Could not find address of entry point '" << EntryPointName << "'" << endl;
+			return 2;
+		}
+
+		instructionWriter.writeBufferToStream(p16ExeFile.stream());
 
 		cout << "SUCCEEDED" << endl;
 		cout << "========== Compilation Finished ==========" << endl;
