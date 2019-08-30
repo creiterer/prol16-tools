@@ -85,6 +85,8 @@ public:
 
 	Address getLabelAddress(std::string const &labelName) const;
 
+	void addLabel(std::string const &labelName, int const offset = 0);
+
 private:
 	CommandCounter commandCounter;
 	LabelTable labelTable;

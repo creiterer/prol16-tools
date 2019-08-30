@@ -14,10 +14,7 @@
 namespace PROL16 {
 
 void LabelListener::enterLabelStatement(Prol16AsmParser::LabelStatementContext *context) {
-	auto result = labelTable.emplace(context->identifier->getText(), commandCounter.getNextInstructionAddress());
-	if (!result.second) {
-		// TODO(creiterer): print error that the label is already defined (multiple definition)
-	}
+	addLabel(context->identifier->getText());
 }
 
 void LabelListener::enterNopInstruction(Prol16AsmParser::NopInstructionContext */*context*/) {
@@ -130,6 +127,13 @@ void LabelListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionConte
 
 LabelListener::Address LabelListener::getLabelAddress(std::string const &labelName) const {
 	return labelTable.at(labelName);
+}
+
+void LabelListener::addLabel(std::string const &labelName, int const offset) {
+	auto result = labelTable.emplace(labelName, commandCounter.getNextInstructionAddress() + offset);
+	if (!result.second) {
+		// TODO(creiterer): print error that the label is already defined (multiple definition)
+	}
 }
 
 } 	// namespace PROL16
