@@ -55,7 +55,7 @@ SHL		: 'shl' | 'SHL' ;
 SHR		: 'shr' | 'SHR' ;
 SHLC	: 'shlc' | 'SHLC' ;
 SHRC	: 'shrc' | 'SHRC' ;
-PRINT	: 'print' | 'PRINT' ;
+PRINT	: '_print' | '_PRINT' ;
 
 ORG		: 'org' | 'ORG' ;
 DB		: 'db' | 'DB' ;
