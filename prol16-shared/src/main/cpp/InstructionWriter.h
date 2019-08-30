@@ -17,7 +17,7 @@
 #include <vector>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
-namespace PROL16 {
+namespace PROL16 { namespace util {
 
 class InstructionWriter final : private ::util::NonCopyable {
 public:
@@ -91,6 +91,7 @@ private:
 	InstructionBuffer instructionBuffer;
 };
 
+} 	// namespace util
 } 	// namespace PROL16
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_INSTRUCTIONWRITER_H_INCLUDED */

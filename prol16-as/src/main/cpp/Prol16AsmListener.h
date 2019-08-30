@@ -24,7 +24,7 @@ class Prol16AsmListener final : public Prol16AsmParserBaseListener {
 public:
 	using LabelTable = LabelListener::LabelTable;
 
-	Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable labelTable);
+	Prol16AsmListener(util::InstructionWriter &instructionWriter, LabelTable labelTable);
 
 	void enterNopInstruction(Prol16AsmParser::NopInstructionContext */*context*/) override;
 
@@ -91,11 +91,11 @@ private:
 	using SymbolValue = util::Immediate;
 	using SymbolicConstantTable = std::unordered_map<SymbolName, SymbolValue>;
 
-	InstructionWriter &instructionWriter;
+	util::InstructionWriter &instructionWriter;
 	SymbolicConstantTable symbolicConstantTable;
 	LabelTable const labelTable;
 
-	InstructionWriter::Immediate evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const;
+	util::InstructionWriter::Immediate evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const;
 };
 
 }	// namespace PROL16

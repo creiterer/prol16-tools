@@ -11,9 +11,7 @@
 #include "RegisterUtils.h"
 
 // NOLINTNEXTLINE(readability-identifier-naming)
-namespace PROL16 {
-
-using namespace util;
+namespace PROL16 { namespace util {
 
 void InstructionWriter::writeNop() {
 	instructionBuffer.push_back(Instruction(NOP));
@@ -176,4 +174,5 @@ void InstructionWriter::writeBufferToStream(std::ostream &stream) {
 	stream.write(reinterpret_cast<char*>(instructionBuffer.data()), instructionBuffer.size()*(sizeof(InstructionBuffer::value_type)/sizeof(char)));
 }
 
+} 	// namespace util
 } 	// namespace PROL16

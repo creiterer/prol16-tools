@@ -14,7 +14,7 @@
 
 #include "RegisterError.h"
 
-using PROL16::InstructionWriter;
+using PROL16::util::InstructionWriter;
 using PROL16::util::RegisterError;
 
 #define TEST_INSTRUCTION_WRITE(statement, expectedValue) \

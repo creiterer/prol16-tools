@@ -18,7 +18,9 @@
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
-Prol16AsmListener::Prol16AsmListener(InstructionWriter &instructionWriter, LabelTable labelTable)
+using util::InstructionWriter;
+
+Prol16AsmListener::Prol16AsmListener(util::InstructionWriter &instructionWriter, LabelTable labelTable)
 : instructionWriter(instructionWriter), labelTable(std::move(labelTable)) {
 
 }
@@ -216,7 +218,7 @@ void Prol16AsmListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionC
 	}
 }
 
-InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
+util::InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
 	if (util::isNumber(expression)) {
 		return util::parseNumber(expression->number->getText());
 	}
@@ -226,7 +228,14 @@ InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmPars
 		try {
 			return symbolicConstantTable.at(identifier);
 		} catch (std::out_of_range const&) {
-			return labelTable.at(identifier);
+			try {
+				return labelTable.at(identifier);
+			} catch (std::out_of_range const&) {
+				std::ostringstream errorMessage;
+				errorMessage << "identifier '" << identifier << "' is not defined";
+
+				throw std::runtime_error(errorMessage.str());
+			}
 		}
 	}
 
