@@ -34,6 +34,7 @@ using std::endl;
 using util::ScopedFileStream;
 using PROL16::util::Prol16ExeFile;
 using PROL16::util::Prol16ExeFileWriter;
+using PROL16::util::InstructionWriter;
 
 static char const * const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
 
@@ -76,7 +77,10 @@ int main(int const argc, char const * const argv[]) {
 		PROL16::LabelListener labelListener;
 		tree::ParseTreeWalker::DEFAULT.walk(&labelListener, parseTree);
 
-		PROL16::InstructionWriter instructionWriter;
+		// TODO(creiterer): explain
+		labelListener.addLabel("print", 1);
+
+		InstructionWriter instructionWriter;
 		PROL16::Prol16AsmListener asmListener(instructionWriter, labelListener.getLabels());
 		tree::ParseTreeWalker::DEFAULT.walk(&asmListener, parseTree);
 
@@ -88,6 +92,8 @@ int main(int const argc, char const * const argv[]) {
 		}
 
 		instructionWriter.writeBufferToStream(p16ExeFile.stream());
+
+		p16ExeFile.writeProl16StdLib();
 
 		cout << "SUCCEEDED" << endl;
 		cout << "========== Compilation Finished ==========" << endl;
