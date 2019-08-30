@@ -52,7 +52,6 @@ get_filename_component(MAIN_CPP_DIR "cpp/" ABSOLUTE)
 set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/main.cpp
     ${MAIN_CPP_DIR}/Prol16AsmListener.cpp
-    ${MAIN_CPP_DIR}/InstructionWriter.cpp
     ${MAIN_CPP_DIR}/CommandCounter.cpp
     ${MAIN_CPP_DIR}/LabelListener.cpp
     ${MAIN_CPP_DIR}/ContextUtils.cpp
