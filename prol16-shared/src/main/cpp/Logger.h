@@ -33,6 +33,7 @@ public:
 	inline void addLogStream(LogStream logStream) { logStreams.emplace_back(logStream); }
 
 	inline void setEnabled(bool const enabled) { this->enabled = enabled; }
+	inline bool isEnabled() const { return enabled; }
 	inline void enable() { enabled = true; }
 	inline void disable() { enabled = false; }
 
