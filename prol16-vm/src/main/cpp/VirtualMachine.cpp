@@ -45,7 +45,7 @@ void VirtualMachine::run() {
 	}
 }
 
-Instruction VirtualMachine::fetchAndDecodeInstruction() {
+VirtualMachine::Instruction VirtualMachine::fetchAndDecodeInstruction() {
 	return Instruction::decode(memory[programCounter++]);
 }
 
@@ -177,12 +177,22 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		break;
 
 	case PRINT:
-		printHexNumberFormattedWithBase(std::cout, registerFile[ra]);
+		if (!logger.isEnabled()) {
+			printHexNumberFormattedWithBase(std::cout, registerFile[ra]);
+			std::cout << '\n';
+		}
+
+		logger.forEachLogStream([this, ra](::util::logging::Logger::LogStream stream){
+			printHexNumberFormattedWithBase(stream << '\n', registerFile[ra]);
+		});
+
 		break;
 
 	case PRINTI: {
 		Immediate const immediate = fetchImmediate();
 		printHexNumberFormattedWithBase(std::cout, immediate);
+		std::cout << '\n';
+
 		logger << ", ";
 		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
 			printHexNumberFormattedWithBase(stream, immediate);
@@ -294,7 +304,7 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 void VirtualMachine::printInfo(std::string const &message) const {
 	using namespace std;
 
-	cout << "INFO (";
+	cout << "\nINFO (";
 	printProgramCounter(cout);
 	cout << "): " << message << endl;
 }
