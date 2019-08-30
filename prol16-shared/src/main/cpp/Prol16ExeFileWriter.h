@@ -19,6 +19,8 @@ namespace PROL16 { namespace util {
 
 class Prol16ExeFileWriter final : private ::util::NonCopyable {	// NOLINT(cppcoreguidelines-special-member-functions)
 public:
+	static memory::Data const MagicStdLibValue = 0xBAAD;
+
 	explicit Prol16ExeFileWriter(std::string const &filename);
 	~Prol16ExeFileWriter() override;
 
@@ -26,6 +28,7 @@ public:
 	inline std::string getFilename() const { return filename; }
 
 	void writeFileHeader(memory::Address const entryPointAddress);
+	void writeProl16StdLib();
 
 private:
 	std::string const filename;

@@ -8,7 +8,9 @@
 #include "Prol16ExeFileWriter.h"
 
 #include "FileUtils.h"
+#include "InstructionWriter.h"
 #include "Prol16ExeFile.h"
+#include "RegisterUtils.h"
 
 #include <algorithm>
 #include <iterator>
@@ -30,6 +32,18 @@ Prol16ExeFileWriter::~Prol16ExeFileWriter() {
 void Prol16ExeFileWriter::writeFileHeader(memory::Address const entryPointAddress) {
 	writeMagicNumber();
 	::util::writeValueBinary(fileStream, entryPointAddress);
+}
+
+void Prol16ExeFileWriter::writeProl16StdLib() {
+	::util::writeValueBinary(fileStream, MagicStdLibValue);
+
+	InstructionWriter instructionWriter;
+
+	// TODO(creiterer): explain
+	instructionWriter.writePrint(4);
+	instructionWriter.writeJump(getReturnAddressRegister());
+
+	instructionWriter.writeBufferToStream(fileStream);
 }
 
 void Prol16ExeFileWriter::writeMagicNumber() {
