@@ -54,7 +54,7 @@ void Disassembler::disassemble() {
 	}
 }
 
-Instruction Disassembler::readAndDecodeInstruction() {
+Disassembler::Instruction Disassembler::readAndDecodeInstruction() {
 	unsigned const bufferSize = sizeof(Instruction::EncodedType)/sizeof(char);
 	char instructionBuffer[bufferSize];
 

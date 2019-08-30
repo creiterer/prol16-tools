@@ -13,7 +13,7 @@
 #include <stdexcept>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
-namespace PROL16 {
+namespace PROL16 { namespace util {
 
 Instruction Instruction::decode(EncodedType const encodedValue) {
 	try {
@@ -106,14 +106,15 @@ Instruction::Opcode Instruction::decodeOpcode(EncodedType const encodedValue) {
 	return (encodedValue >> (2*RegisterBitWidth)) & OpcodeMask;
 }
 
-}	// namespace PROL16
+} 	// namespace util
+} 	// namespace PROL16
 
-std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction) {
+std::ostream& operator<<(std::ostream &stream, PROL16::util::Instruction const &instruction) {
 	stream << instruction.asString();
 	return stream;
 }
 
-util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction) {
+util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::util::Instruction const &instruction) {
 	logger << instruction.asString();
 	return logger;
 }

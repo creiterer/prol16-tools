@@ -21,6 +21,7 @@ namespace PROL16 {
 class Disassembler final : private ::util::NonCopyable {
 public:
 	using Immediate = util::Immediate;
+	using Instruction = util::Instruction;
 
 	Disassembler(std::istream &sourceStream, std::ostream &destinationStream);
 

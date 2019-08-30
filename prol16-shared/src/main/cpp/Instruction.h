@@ -17,7 +17,7 @@
 #include <string>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
-namespace PROL16 {
+namespace PROL16 { namespace util {
 
 class Instruction final {
 public:
@@ -70,9 +70,10 @@ private:
 	EncodedType encodeOpcode() const;
 };
 
-}	// namespace PROL16
+} 	// namespace util
+} 	// namespace PROL16
 
-std::ostream& operator<<(std::ostream &stream, PROL16::Instruction const &instruction);
-util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::Instruction const &instruction);
+std::ostream& operator<<(std::ostream &stream, PROL16::util::Instruction const &instruction);
+util::logging::Logger& operator<<(util::logging::Logger &logger, PROL16::util::Instruction const &instruction);
 
 #endif /* PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED */

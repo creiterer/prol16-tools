@@ -12,7 +12,7 @@
 #include "MnemonicUtils.h"
 #include "InstructionDecodeError.h"
 
-using namespace PROL16;
+using PROL16::util::Instruction;
 using PROL16::util::InstructionDecodeError;
 
 TEST(InstructionTest, testInstructionEncoding) {

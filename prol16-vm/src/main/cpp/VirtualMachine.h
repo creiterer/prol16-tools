@@ -29,6 +29,7 @@ public:
 	using Register = util::Register;
 	using Immediate = util::Immediate;
 	using ArithmeticResult = uint32_t;
+	using Instruction = util::Instruction;
 
 	static uint8_t const BitWidth = 16;
 
