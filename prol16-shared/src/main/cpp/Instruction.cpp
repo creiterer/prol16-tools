@@ -72,7 +72,6 @@ std::string Instruction::asString() const {
 	std::ostringstream instructionStream;
 	instructionStream << getMnemonicAsString(mnemonic);
 
-	// the casts are necessary because uint8_t is interpreted as character and not as number!
 	switch (numberOfRegisterOperands(mnemonic)) {
 	case 0: break;
 	case 1: instructionStream << ' ' << getCanonicalRegisterName(ra); break;
