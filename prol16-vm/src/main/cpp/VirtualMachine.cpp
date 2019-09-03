@@ -277,7 +277,7 @@ void VirtualMachine::executeSub(Register const ra, Register const rb, bool const
 		registerFile[ra] = static_cast<RegisterFile::Data>(result);
 	}
 
-	setZeroFlag(registerFile[ra]);
+	setZeroFlag(static_cast<RegisterFile::Data>(result));
 	setCarryFlag(result);
 }
 
