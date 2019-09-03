@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 #include <algorithm>
+#include <stdexcept>
 #include <utility>
 
 namespace util { namespace logging {
@@ -25,6 +26,90 @@ void Logger::forEachLogStream(std::function<void(LogStream)> const &function) {
 	if (enabled) {
 		std::for_each(logStreams.begin(), logStreams.end(), function);
 	}
+}
+
+std::streamsize Logger::setWidth(std::streamsize const width) {
+	oldWidth = logStreams.front().get().width();
+
+	forEachLogStream([width](LogStream stream){
+		stream.width(width);
+	});
+
+	return oldWidth;
+}
+
+void Logger::restoreWidth() {
+	forEachLogStream([this](LogStream stream){
+		stream.width(oldWidth);
+	});
+}
+
+char Logger::setFillCharacter(char const fillCharacter) {
+	oldFillCharacter = logStreams.front().get().fill();
+
+	forEachLogStream([fillCharacter](LogStream stream){
+		stream.fill(fillCharacter);
+	});
+
+	return oldFillCharacter;
+}
+
+void Logger::restoreFillCharacter() {
+	forEachLogStream([this](LogStream stream){
+		stream.fill(oldFillCharacter);
+	});
+}
+
+void Logger::setAdjustment(Adjustment const adjustment) {
+	std::ios_base::fmtflags formatFlags = logStreams.front().get().flags();
+	if ((formatFlags & std::ios_base::left) != 0) {
+		oldAdjustment = Adjustment::Left;
+	} else if ((formatFlags & std::ios_base::right) != 0) {
+		oldAdjustment = Adjustment::Right;
+	} else {
+		oldAdjustment = Adjustment::Internal;
+	}
+
+	setAdjustmentAux(adjustment);
+}
+
+void Logger::restoreAdjustment() {
+	setAdjustmentAux(oldAdjustment);
+}
+
+void Logger::setFormat(std::streamsize const width, char const fillCharacter) {
+	setWidth(width);
+	setFillCharacter(fillCharacter);
+}
+
+void Logger::setFormat(std::streamsize const width, char const fillCharacter, Adjustment const adjustment) {
+	setWidth(width);
+	setFillCharacter(fillCharacter);
+	setAdjustment(adjustment);
+}
+
+void Logger::restoreFormat() {
+	restoreWidth();
+	restoreFillCharacter();
+	restoreAdjustment();
+}
+
+void Logger::setAdjustmentAux(Adjustment const adjustment) {
+	forEachLogStream([adjustment](LogStream stream){
+		switch (adjustment) {
+		case Adjustment::Left:
+			stream << std::left;
+			break;
+		case Adjustment::Right:
+			stream << std::right;
+			break;
+		case Adjustment::Internal:
+			stream << std::internal;
+			break;
+		default:
+			throw std::logic_error("Logger: trying to set invalid adjustment");
+		}
+	});
 }
 
 /*

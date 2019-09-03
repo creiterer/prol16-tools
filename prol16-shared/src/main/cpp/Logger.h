@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <initializer_list>
+#include <ios>
 #include <ostream>
 #include <vector>
 
@@ -24,6 +25,12 @@ public:
 	// see https://stackoverflow.com/questions/922360/why-cant-i-make-a-vector-of-references
 	using LogStream = std::ostream&;
 	using LogStreams = std::vector<std::reference_wrapper<std::ostream>>;
+
+	enum class Adjustment {
+		Left,
+		Right,
+		Internal,
+	};
 
 	explicit Logger(LogStream logStream, bool const enabled = true);
 	explicit Logger(LogStreams const &logStreams, bool const enabled = true);
@@ -38,6 +45,19 @@ public:
 	inline void disable() { enabled = false; }
 
 	void forEachLogStream(std::function<void(LogStream)> const &function);
+
+	std::streamsize setWidth(std::streamsize const width);
+	void restoreWidth();
+
+	char setFillCharacter(char const fillCharacter);
+	void restoreFillCharacter();
+
+	void setAdjustment(Adjustment const adjustment);
+	void restoreAdjustment();
+
+	void setFormat(std::streamsize const width, char const fillCharacter);
+	void setFormat(std::streamsize const width, char const fillCharacter, Adjustment const adjustment);
+	void restoreFormat();
 
 	template <typename T>
 	Logger& operator<<(T const &value) {
@@ -68,6 +88,11 @@ public:
 private:
 	LogStreams logStreams;
 	bool enabled;
+	std::streamsize oldWidth{0};
+	char oldFillCharacter{' '};
+	Adjustment oldAdjustment{Adjustment::Right};
+
+	void setAdjustmentAux(Adjustment const adjustment);
 };
 
 }	// namespace logging
