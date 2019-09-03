@@ -14,6 +14,7 @@
 
 #include "Instruction.h"
 #include "Logger.h"
+#include "MnemonicUtils.h"
 #include "NonCopyable.h"
 #include "NumberUtils.h"
 #include "RegisterUtils.h"
@@ -27,6 +28,7 @@ namespace PROL16 {
 class VirtualMachine final : private ::util::NonCopyable {
 public:
 	using Register = util::Register;
+	using Mnemonic = util::Mnemonic;
 	using Immediate = util::Immediate;
 	using ArithmeticResult = uint32_t;
 	using Instruction = util::Instruction;
@@ -63,6 +65,9 @@ private:
 	void printInfo(std::string const &message) const;
 	void printProgramCounter(std::ostream &stream) const;
 	void printState(std::ostream &stream) const;
+	void printInstructionOperandValues(std::ostream &stream, Mnemonic const mnemonic,
+									   Register const ra, Register const rb) const;
+	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
 };
 
 }	// namespace PROL16

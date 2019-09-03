@@ -18,6 +18,8 @@
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
 
+using ::util::logging::Logger;
+
 VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger)
 : carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger) {
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
@@ -30,7 +32,7 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 	setProgramCounter(entryPointAddress);
 
 	logger << "starting program execution at address ";
-	logger.forEachLogStream([entryPointAddress](::util::logging::Logger::LogStream stream){
+	logger.forEachLogStream([entryPointAddress](Logger::LogStream stream){
 		util::printHexNumberFormattedWithBase(stream, entryPointAddress);
 	});
 	logger << '\n';
@@ -57,12 +59,20 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	using namespace util;
 
 	logger.forEachLogStream(std::bind(&VirtualMachine::printState, this, std::placeholders::_1));
-	logger << instruction;
 
+	Mnemonic const mnemonic = instruction.getMnemonic();
 	Register const ra = instruction.getRa();
 	Register const rb = instruction.getRb();
 
-	switch (instruction.getMnemonic()) {
+	if (mnemonic != LOADI) {
+		logger.setFormat(20, ' ', Logger::Adjustment::Left);
+		logger << instruction;
+		logger.restoreFormat();
+
+		logger.forEachLogStream(std::bind(&VirtualMachine::printInstructionOperandValues, this, std::placeholders::_1, mnemonic, ra, rb));
+	}
+
+	switch (mnemonic) {
 	case NOP: 	// no operation is performed
 		break;
 
@@ -72,11 +82,21 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 
 	case LOADI: {
 		Immediate const immediate = fetchImmediate();
+
+		std::ostringstream instructionStream;
+		instructionStream << instruction;
+		printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
+
+		logger.setFormat(20, ' ', Logger::Adjustment::Left);
+		logger << instructionStream.str();
+		logger.restoreFormat();
+
+		// printing of the register operand value has to happen before the register file gets updated
+		// so that the value with which the instruction is executed is printed and not the value after
+		// instruction execution
+		logger.forEachLogStream(std::bind(&VirtualMachine::printInstructionOperandValues, this, std::placeholders::_1, mnemonic, ra, rb));
+
 		registerFile[ra] = immediate;
-		logger << ", ";
-		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
-			printHexNumberFormattedWithBase(stream, immediate);
-		});
 		break;
 	}
 
@@ -319,6 +339,27 @@ void VirtualMachine::printState(std::ostream &stream) const {
 	util::printHexNumberFormattedWithBase(stream << "|sp=", registerFile.readStackPointer());
 	util::printHexNumberFormattedWithBase(stream << "|fp=", registerFile.readFramePointer());
 	stream << "|z=" << zeroFlag << "|c=" << carryFlag << ": ";
+}
+
+void VirtualMachine::printInstructionOperandValues(std::ostream &stream, Mnemonic const mnemonic,
+												   Register const ra, Register const rb) const {
+	switch (util::numberOfRegisterOperands(mnemonic)) {
+	case 0: break;
+	case 1:
+		printRegisterValue(stream << '(', ra)  << ')';
+		break;
+	case 2:
+		printRegisterValue(stream << '(', ra);
+		printRegisterValue(stream << '|', rb)  << ')';
+		break;
+	}
+}
+
+std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register const ra) const {
+	stream << util::getCanonicalRegisterName(ra);
+	util::printHexNumberFormattedWithBase(stream << '=', registerFile[ra]);
+
+	return stream;
 }
 
 }	// namespace PROL16
