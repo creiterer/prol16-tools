@@ -7,6 +7,7 @@
 
 #include "VirtualMachine.h"
 
+#include "NotImplementedError.h"
 #include "OpcodeError.h"
 #include "Prol16ExeFile.h"
 
@@ -32,8 +33,10 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 	setProgramCounter(entryPointAddress);
 
 	logger << "starting program execution at address ";
-	logger.forEachLogStream([entryPointAddress](Logger::LogStream stream){
+	logger.forEachLogStream([this, entryPointAddress](Logger::LogStream stream){
 		util::printHexNumberFormattedWithBase(stream, entryPointAddress);
+		util::printHexNumberFormattedWithBase(stream << " (css=", memory.getCodeSegmentSize());
+		stream << ')';
 	});
 	logger << '\n';
 }
@@ -58,6 +61,8 @@ VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
 bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	using namespace util;
 
+	size_t const instructionLogWidth = 20;
+
 	logger.forEachLogStream(std::bind(&VirtualMachine::printState, this, std::placeholders::_1));
 
 	Mnemonic const mnemonic = instruction.getMnemonic();
@@ -65,7 +70,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	Register const rb = instruction.getRb();
 
 	if (mnemonic != LOADI) {
-		logger.setFormat(20, ' ', Logger::Adjustment::Left);
+		logger.setFormat(instructionLogWidth, ' ', Logger::Adjustment::Left);
 		logger << instruction;
 		logger.restoreFormat();
 
@@ -87,7 +92,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		instructionStream << instruction;
 		printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
 
-		logger.setFormat(20, ' ', Logger::Adjustment::Left);
+		logger.setFormat(instructionLogWidth, ' ', Logger::Adjustment::Left);
 		logger << instructionStream.str();
 		logger.restoreFormat();
 
@@ -220,6 +225,19 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		break;
 	}
 
+	case PRINTSTR: {
+		std::string const str = memory.readString(registerFile[ra]);
+		if (!logger.isEnabled()) {
+			std::cout << str << '\n';
+		}
+
+		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
+			stream << '\n' << str;
+		});
+
+		break;
+	}
+
 	default:
 		throw util::OpcodeError(instruction.getOpcode());
 	}
@@ -300,6 +318,7 @@ void VirtualMachine::executeDec(Register const ra) {
 }
 
 void VirtualMachine::executeShl(Register const ra, bool const withCarry) {
+	// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 	carryFlag.set((registerFile[ra] & 0x8000) != 0);
 	registerFile[ra] <<= 1;
 
@@ -315,6 +334,7 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 	registerFile[ra] >>= 1;
 
 	if (withCarry && carryFlag.isSet()) {
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 		registerFile[ra] |= 0x8000;	// shift in carry from the right -> set bit 15 to carry
 	}
 
