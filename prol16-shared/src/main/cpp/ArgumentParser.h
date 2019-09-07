@@ -37,6 +37,7 @@ public:
 	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue = false);
 	ArgumentParser& addFlag(flags::FlagName const &flagName, bool const defaultValue = false);
 
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 	CLIArguments parseArguments(int const argc, char const * const argv[]) const;
 
 	std::string getUsageMessage(std::string const &appName) const;

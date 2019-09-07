@@ -86,6 +86,7 @@ ArgumentParser& ArgumentParser::addFlag(flags::FlagName const &flagName, bool co
 	return *this;
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 CLIArguments ArgumentParser::parseArguments(int const argc, char const * const argv[]) const {
 	ArgumentVector positionalArgumentsCopy = positionalArguments;
 	ArgumentMap optionalArgumentsCopy = optionalArguments;
