@@ -40,7 +40,12 @@ void Prol16ExeFileWriter::writeProl16StdLib() {
 	InstructionWriter instructionWriter;
 
 	// TODO(creiterer): explain
+	// void print(p16int);
 	instructionWriter.writePrint(4);
+	instructionWriter.writeJump(getReturnAddressRegister());
+
+	// void printstr(char const * const);
+	instructionWriter.writePrintstr(4);
 	instructionWriter.writeJump(getReturnAddressRegister());
 
 	instructionWriter.writeBufferToStream(fileStream);
