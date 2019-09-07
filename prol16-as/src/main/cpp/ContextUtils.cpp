@@ -30,5 +30,13 @@ bool isString(Prol16AsmParser::PrintInstructionContext const * const context) {
 	return context->string != nullptr;
 }
 
+bool isNumber(Prol16AsmParser::DataWordStoreContext const * const context) {
+	return context->number != nullptr;
+}
+
+bool isString(Prol16AsmParser::DataWordStoreContext const * const context) {
+	return context->string != nullptr;
+}
+
 }	// namespace util
 }	// namespace PROL16
