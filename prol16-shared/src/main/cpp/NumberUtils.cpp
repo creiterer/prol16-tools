@@ -18,9 +18,9 @@ namespace {
 
 int getRadix(char const suffix) {
 	switch (suffix) {
-	case 'b': return 2;
-	case 'h': return 16;
-	default: return 10;
+	case 'b': return 2;		// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+	case 'h': return 16;	// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+	default: return 10;		// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 	}
 }
 
@@ -42,7 +42,7 @@ fragment HexNumber : HexDigit ('_'? HexDigit)* HexNumberSuffix ;
 Number : BinaryNumber | DecimalNumber | HexNumber ;
  */
 
-Immediate parseNumber(std::string number) {
+Number parseNumber(std::string number) {
 	// remove all optional '_' characters
 	auto newEnd = std::remove(number.begin(), number.end(), '_');
 	number.assign(number.begin(), newEnd);

@@ -18,7 +18,7 @@ namespace PROL16 { namespace util {
 using Number = uint16_t;
 using Immediate = Number;
 
-Immediate parseNumber(std::string number);
+Number parseNumber(std::string number);
 
 std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number);
 std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number);
