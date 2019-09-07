@@ -7,8 +7,10 @@
 
 #include "InstructionWriter.h"
 
+#include "FileUtils.h"
 #include "MnemonicUtils.h"
 #include "RegisterUtils.h"
+#include "StringUtils.h"
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
@@ -165,13 +167,23 @@ void InstructionWriter::writePrinti(Immediate const immediate) {
 	instructionBuffer.push_back(immediate);
 }
 
-//void InstructionWriter::writePrint(std::string const &str) {
-//
-//}
+void InstructionWriter::writePrintstr(Register const ra) {
+	util::checkRegisterIsValid(ra);
 
-void InstructionWriter::writeBufferToStream(std::ostream &stream) {
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	stream.write(reinterpret_cast<char*>(instructionBuffer.data()), instructionBuffer.size()*(sizeof(InstructionBuffer::value_type)/sizeof(char)));
+	instructionBuffer.push_back(Instruction(PRINTSTR, ra));
+}
+
+void InstructionWriter::writeImmediate(Immediate const immediate) {
+	instructionBuffer.push_back(immediate);
+}
+
+void InstructionWriter::writeString(String const &str) {
+	std::vector<EncodedType> encodedString = ::util::encode<EncodedType>(str);
+	instructionBuffer.insert(instructionBuffer.cend(), encodedString.cbegin(), encodedString.cend());
+}
+
+void InstructionWriter::writeBufferToStream(std::ostream &stream) const {
+	::util::writeBufferToStream(stream, instructionBuffer);
 }
 
 } 	// namespace util

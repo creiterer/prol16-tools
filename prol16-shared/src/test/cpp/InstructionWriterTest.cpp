@@ -81,14 +81,16 @@ TEST(InstructionWriterTest, testAllInstructions) {
 
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeShrc(14), 0x7DC0);
 
-	TEST_INSTRUCTION_WRITE(instructionWriter.writePrint(14), 0xF9C0);
+	TEST_INSTRUCTION_WRITE(instructionWriter.writePrint(14), 0xF5C0);
 
 	instructionWriter.writePrinti(0xA5A5);
 	buffer = instructionWriter.getInstructionBuffer();
 	ASSERT_EQ(2, buffer.size());
-	ASSERT_EQ(0xFC00, buffer[0]);
+	ASSERT_EQ(0xF800, buffer[0]);
 	ASSERT_EQ(0XA5A5, buffer[1]);
 	instructionWriter.clearInstructionBuffer();
+
+	TEST_INSTRUCTION_WRITE(instructionWriter.writePrintstr(14), 0xFDC0);
 }
 
 TEST(InstructionWriterTest, testWritingMultipleInstructions) {
@@ -176,4 +178,25 @@ TEST(InstructionWriterTest, testRegisterOutOfRange) {
 	ASSERT_THROW(instructionWriter.writeShlc(16), RegisterError);
 
 	ASSERT_THROW(instructionWriter.writeShrc(16), RegisterError);
+
+	ASSERT_THROW(instructionWriter.writePrint(16), RegisterError);
+
+	ASSERT_THROW(instructionWriter.writePrintstr(16), RegisterError);
+}
+
+TEST(InstructionWriterTest, testWritingDataWords) {
+	InstructionWriter instructionWriter;
+
+	TEST_INSTRUCTION_WRITE(instructionWriter.writeImmediate(0xA5A5), 0xA5A5);
+
+	instructionWriter.writeString("Hello World");
+	InstructionWriter::InstructionBuffer buffer = instructionWriter.getInstructionBuffer();
+	ASSERT_EQ(6, buffer.size());
+	ASSERT_EQ(('e' << 8) + 'H', buffer[0]);
+	ASSERT_EQ(('l' << 8) + 'l', buffer[1]);
+	ASSERT_EQ((' ' << 8) + 'o', buffer[2]);
+	ASSERT_EQ(('o' << 8) + 'W', buffer[3]);
+	ASSERT_EQ(('l' << 8) + 'r', buffer[4]);
+	ASSERT_EQ('d', buffer[5]);
+	instructionWriter.clearInstructionBuffer();
 }

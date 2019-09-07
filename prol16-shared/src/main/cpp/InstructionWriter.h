@@ -14,6 +14,7 @@
 #include "RegisterUtils.h"
 
 #include <ostream>
+#include <string>
 #include <vector>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -23,7 +24,9 @@ class InstructionWriter final : private ::util::NonCopyable {
 public:
 	using Register = util::Register;
 	using Immediate = util::Immediate;
-	using InstructionBuffer = std::vector<Instruction::EncodedType>;
+	using String = std::string;
+	using EncodedType = Instruction::EncodedType;
+	using InstructionBuffer = std::vector<EncodedType>;
 
 	InstructionWriter() = default;
 
@@ -79,9 +82,13 @@ public:
 
 	void writePrinti(Immediate const immediate);
 
-//	void writePrint(std::string const &str);
+	void writePrintstr(Register const ra);
 
-	void writeBufferToStream(std::ostream &stream);
+	void writeImmediate(Immediate const immediate);
+
+	void writeString(String const &str);
+
+	void writeBufferToStream(std::ostream &stream) const;
 
 	inline InstructionBuffer getInstructionBuffer() const { return instructionBuffer; }
 	inline void clearInstructionBuffer() { instructionBuffer.clear(); }
