@@ -7,8 +7,10 @@
 
 #include "StringUtils.h"
 
+#include <cstdint>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include "gtest/gtest.h"
 
@@ -43,4 +45,191 @@ TEST(StringUtilsTest, testPrepend) {
 	ASSERT_EQ("foo", prepend(str2, 'f'));
 	ASSERT_EQ("toodle-oo", prepend(str2, "toodle-"));
 
+}
+
+TEST(StringUtilsTest, testEncode) {
+	std::string str("abc");
+
+	std::vector<uint16_t> buffer = encode<uint16_t>(str);
+	ASSERT_EQ(2, buffer.size());
+	ASSERT_EQ(('b' << 8) + 'a', buffer[0]);
+	ASSERT_EQ('c', buffer[1]);
+}
+
+TEST(StringUtilsTest, testLTrim) {
+	std::string str;
+
+	ltrim(str, " \t");
+	ASSERT_TRUE(str.empty());
+
+	str = "test";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = " test";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\ttest";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = " \ttest";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t test";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test \t";
+	ltrim(str, " \t");
+	ASSERT_EQ("test \t", str);
+
+	str = "\t test \t";
+	ltrim(str, " \t");
+	ASSERT_EQ("test \t", str);
+
+	str = "\t \t\t test";
+	ltrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t t est";
+	ltrim(str, " \t");
+	ASSERT_EQ("t est", str);
+
+	str = "\t \t";
+	ltrim(str, " \t");
+	ASSERT_TRUE(str.empty());
+}
+
+TEST(StringUtilsTest, testRTrim) {
+	std::string str;
+
+	rtrim(str, " \t");
+	ASSERT_TRUE(str.empty());
+
+	str = "test";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test ";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test\t";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test \t";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test\t ";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = " \ttest";
+	rtrim(str, " \t");
+	ASSERT_EQ(" \ttest", str);
+
+	str = "\t test \t";
+	rtrim(str, " \t");
+	ASSERT_EQ("\t test", str);
+
+	str = "test\t \t\t ";
+	rtrim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "tes t\t ";
+	rtrim(str, " \t");
+	ASSERT_EQ("tes t", str);
+
+	str = "\t \t";
+	rtrim(str, " \t");
+	ASSERT_TRUE(str.empty());
+}
+
+TEST(StringUtilsTest, testTrim) {
+	std::string str;
+
+	trim(str, " \t");
+	ASSERT_TRUE(str.empty());
+
+	str = "test";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = " test";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test ";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = " test ";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\ttest";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test\t";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\ttest\t";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t test";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "test \t";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t test \t";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t \t test\t \t\t ";
+	trim(str, " \t");
+	ASSERT_EQ("test", str);
+
+	str = "\t t es t\t ";
+	trim(str, " \t");
+	ASSERT_EQ("t es t", str);
+
+	str = "\t \t";
+	trim(str, " \t");
+	ASSERT_TRUE(str.empty());
+}
+
+TEST(StringUtilsTest, testTrimQuotes) {
+	std::string str;
+	trimQuotes(str);
+	ASSERT_TRUE(str.empty());
+
+	str = "test";
+	trimQuotes(str);
+	ASSERT_EQ("test", str);
+
+	str = "\"test\"";
+	trimQuotes(str);
+	ASSERT_EQ("test", str);
+}
+
+TEST(StringUtilsTest, testGetUnquoted) {
+	std::string str;
+	ASSERT_TRUE(getUnquoted(str).empty());
+
+	str = "test";
+	ASSERT_EQ("test", getUnquoted(str));
+
+	str = "\"test\"";
+	ASSERT_EQ("test", getUnquoted(str));
 }

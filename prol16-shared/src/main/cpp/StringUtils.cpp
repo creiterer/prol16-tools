@@ -47,4 +47,31 @@ std::string prepend(std::string const &str, std::string const &prependee) {
 	return prependee + str;
 }
 
+void ltrim(std::string &str, std::string const &chars) {
+	size_t const pos = str.find_first_not_of(chars);
+	str.erase(0, pos);
+}
+
+void rtrim(std::string &str, std::string const &chars) {
+	size_t const pos = str.find_last_not_of(chars) + 1;
+	if (pos <= str.length()) {
+		str.erase(pos, str.length() - pos);
+	}
+}
+
+void trim(std::string &str, std::string const &chars) {
+	ltrim(str, chars);
+	rtrim(str, chars);
+}
+
+void trimQuotes(std::string &str) {
+	trim(str, "\"");
+}
+
+std::string getUnquoted(std::string str) {
+	trimQuotes(str);
+
+	return str;
+}
+
 }	// namespace util
