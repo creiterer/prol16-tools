@@ -45,8 +45,9 @@ enum Mnemonic : Opcode {
 	SHR = 0x1D,
 	SHLC = 0x1E,
 	SHRC = 0x1F,
-	PRINT = 0x3E,
-	PRINTI = 0x3F,
+	PRINT = 0x3D,
+	PRINTI = 0x3E,
+	PRINTSTR = 0x3F,
 };
 
 bool isOpcodeValid(Opcode const opcode);

@@ -44,7 +44,8 @@ std::unordered_map<Mnemonic, std::string> const MnemonicStringTable = {
 		{SHLC, "shlc"},
 		{SHRC, "shrc"},
 		{PRINT, "print"},
-		{PRINTI, "print"}	// for convenience, also use 'print' for mnemonic/opcode 'PRINTI', like the assembler does
+		{PRINTI, "print"},	// for convenience, also use 'print' for mnemonic/opcode 'PRINTI', like the assembler does
+		{PRINTSTR, "printstr"}
 };
 
 }	// anonymous namespace
@@ -98,6 +99,7 @@ uint8_t numberOfRegisterOperands(Mnemonic const mnemonic) {
 	case SHLC:
 	case SHRC:
 	case PRINT:
+	case PRINTSTR:
 		return 1;
 
 	case LOAD:
