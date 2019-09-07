@@ -47,4 +47,8 @@ FileBuffer readEntireFile(std::string const &filename) {
 	return buffer;
 }
 
+void writeStringToStream(std::ostream &stream, std::string const &str) {
+	stream.write(str.c_str(), str.length() + 1);	// +1 for terminating null character
+}
+
 } 	// namespace util

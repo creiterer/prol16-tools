@@ -9,15 +9,22 @@
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED
 
 #include <fstream>
+#include <string>
+#include <type_traits>
 #include <vector>
 
 namespace util {
 
-using FileBuffer = std::vector<unsigned char>;
+template <typename T>
+using Buffer = std::vector<T>;
+
+using FileBuffer = Buffer<unsigned char>;
 
 std::streampos getFileLength(std::ifstream const &stream);
 
 FileBuffer readEntireFile(std::string const &filename);
+
+void writeStringToStream(std::ostream &stream, std::string const &str);
 
 template <typename T>
 void writeValueBinary(std::ostream &stream, T value) {
@@ -29,6 +36,14 @@ template <typename T>
 T readValue(FileBuffer const &buffer, FileBuffer::size_type const offset = 0) {
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	return *reinterpret_cast<T const*>(buffer.data() + offset);
+}
+
+template <typename T>
+void writeBufferToStream(std::ostream &stream, Buffer<T> const &buffer) {
+	static_assert(std::is_integral<T>::value, "writeBufferToStream() requires an integral value type for the buffer.");
+
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	stream.write(reinterpret_cast<char const*>(buffer.data()), buffer.size()*(sizeof(T)/sizeof(char)));
 }
 
 }	// namespace util

@@ -50,3 +50,30 @@ TEST(FileUtilsTest, testReadValue) {
 	value = readValue<uint16_t>(buffer, 2);
 	ASSERT_EQ(255, value);
 }
+
+TEST(FileUtilsTest, testWriteBufferToStream) {
+	std::ostringstream stream;
+	Buffer<uint16_t> buffer{0xCAFE, 0xBABE, 0xDEAD, 0xD0DE};
+
+	writeBufferToStream(stream, buffer);
+
+	std::string const streamBuffer = stream.str();
+	ASSERT_EQ(buffer.size() * sizeof(uint16_t)/sizeof(char), streamBuffer.size());
+	ASSERT_EQ(0xFE, static_cast<uint8_t>(streamBuffer[0]));
+	ASSERT_EQ(0xCA, static_cast<uint8_t>(streamBuffer[1]));
+	ASSERT_EQ(0xBE, static_cast<uint8_t>(streamBuffer[2]));
+	ASSERT_EQ(0xBA, static_cast<uint8_t>(streamBuffer[3]));
+	ASSERT_EQ(0xAD, static_cast<uint8_t>(streamBuffer[4]));
+	ASSERT_EQ(0xDE, static_cast<uint8_t>(streamBuffer[5]));
+	ASSERT_EQ(0xDE, static_cast<uint8_t>(streamBuffer[6]));
+	ASSERT_EQ(0xD0, static_cast<uint8_t>(streamBuffer[7]));
+}
+
+TEST(FileUtilsTest, testWriteStringToStream) {
+	std::ostringstream stream;
+	std::string const str = "some string";
+
+	writeStringToStream(stream, str);
+
+	ASSERT_STREQ("some string", stream.str().c_str());
+}
