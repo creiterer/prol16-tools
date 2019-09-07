@@ -11,6 +11,7 @@
 #include "IncompleteInstructionError.h"
 #include "MnemonicUtils.h"
 
+#include <array>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
@@ -56,9 +57,9 @@ void Disassembler::disassemble() {
 
 Disassembler::Instruction Disassembler::readAndDecodeInstruction() {
 	unsigned const bufferSize = sizeof(Instruction::EncodedType)/sizeof(char);
-	char instructionBuffer[bufferSize];
+	std::array<char, bufferSize> instructionBuffer{};
 
-	sourceStream.read(instructionBuffer, bufferSize);
+	sourceStream.read(instructionBuffer.data(), bufferSize);
 
 	if ((sourceStream.gcount() > 0) && (sourceStream.gcount() < bufferSize)) {
 		// we read something, but not a complete instruction
@@ -76,22 +77,22 @@ Disassembler::Instruction Disassembler::readAndDecodeInstruction() {
 	}
 
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	Instruction::EncodedType const encodedValue = *reinterpret_cast<Instruction::EncodedType*>(instructionBuffer);
+	Instruction::EncodedType const encodedValue = *reinterpret_cast<Instruction::EncodedType*>(instructionBuffer.data());
 	return Instruction::decode(encodedValue);
 }
 
 Disassembler::Immediate Disassembler::readImmediate() {
 	unsigned const bufferSize = sizeof(Immediate)/sizeof(char);
-	char immediateBuffer[bufferSize];
+	std::array<char, bufferSize> immediateBuffer{};
 
-	sourceStream.read(immediateBuffer, bufferSize);
+	sourceStream.read(immediateBuffer.data(), bufferSize);
 
 	if (sourceStream.gcount() != bufferSize) {
 		throw util::IncompleteInstructionError("failed to read loadi's immediate");
 	}
 
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	Immediate const immediate = *reinterpret_cast<Immediate*>(immediateBuffer);
+	Immediate const immediate = *reinterpret_cast<Immediate*>(immediateBuffer.data());
 	return immediate;
 }
 
