@@ -81,6 +81,8 @@ public:
 
 	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
 
+	void enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) override;
+
 	inline LabelTable getLabels() const { return labelTable; }
 
 	Address getLabelAddress(std::string const &labelName) const;

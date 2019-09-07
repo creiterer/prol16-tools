@@ -9,6 +9,7 @@
 
 #include "ContextUtils.h"
 #include "NotImplementedError.h"
+#include "StringUtils.h"
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
@@ -122,6 +123,25 @@ void LabelListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionConte
 		throw ::util::NotImplementedError("print \"str\"");
 	} else {
 		throw std::runtime_error("invalid 'print' instruction; don't know how much the command counter needs to be incremented");
+	}
+}
+
+void LabelListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) {
+	if (util::isNumber(context)) {
+		++commandCounter;
+	} else if (util::isString(context)) {
+		std::string const str = ::util::getUnquoted(context->string->getText());
+		size_t const cStringLength = str.length() + 1;
+		if (::util::isMultiple(sizeof(PROL16::util::memory::Data), cStringLength)) {
+			commandCounter += cStringLength / sizeof(PROL16::util::memory::Data);
+		} else {
+			commandCounter += (cStringLength / sizeof(PROL16::util::memory::Data)) + 1;
+		}
+	} else {
+		std::ostringstream errorMessage;
+		errorMessage << "argument of 'db', which is '" << context->getText() << "', is neither a number nor a string";
+
+		throw std::runtime_error(errorMessage.str());
 	}
 }
 
