@@ -44,6 +44,8 @@ public:
 	inline Data read(Address const address) const { return memory.at(address); }
 	inline void write(Address const address, Data const data) { memory.at(address) = data; }
 
+	std::string readString(Address const address) const;
+
 	inline size_t size() const { return memory.size(); }
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
 

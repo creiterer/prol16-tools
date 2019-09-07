@@ -25,6 +25,11 @@ VirtualMemory::VirtualMemory() {
 	memory.fill(MagicInitValue);
 }
 
+std::string VirtualMemory::readString(Address const address) const {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	return std::string(reinterpret_cast<char const*>(memory.data() + address));
+}
+
 void VirtualMemory::initializeFromFile(std::string const &filename) {
 	::util::FileBuffer buffer = ::util::readEntireFile(filename);
 	if (!::util::isMultiple(sizeof(Data), buffer.size())) {
