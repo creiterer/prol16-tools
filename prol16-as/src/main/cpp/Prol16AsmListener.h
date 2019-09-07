@@ -74,15 +74,15 @@ public:
 
 	void enterShrcInstruction(Prol16AsmParser::ShrcInstructionContext *context) override;
 
-	void enterCommandCounterLoad(Prol16AsmParser::CommandCounterLoadContext *context) override;
+	void enterCommandCounterLoad(Prol16AsmParser::CommandCounterLoadContext */*context*/) override;
 
 	void enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) override;
 
 	void enterSymbolicConstantDefinition(Prol16AsmParser::SymbolicConstantDefinitionContext *context) override;
 
-	void enterMacroDefinition(Prol16AsmParser::MacroDefinitionContext *context) override;
+	void enterMacroDefinition(Prol16AsmParser::MacroDefinitionContext */*context*/) override;
 
-	void enterMacroCall(Prol16AsmParser::MacroCallContext *context) override;
+	void enterMacroCall(Prol16AsmParser::MacroCallContext */*context*/) override;
 
 	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
 

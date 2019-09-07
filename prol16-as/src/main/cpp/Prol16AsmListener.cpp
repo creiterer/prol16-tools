@@ -10,6 +10,7 @@
 #include "ContextUtils.h"
 #include "NotImplementedError.h"
 #include "RegisterUtils.h"
+#include "StringUtils.h"
 
 #include <sstream>
 #include <stdexcept>
@@ -176,12 +177,21 @@ void Prol16AsmListener::enterShrcInstruction(Prol16AsmParser::ShrcInstructionCon
 	instructionWriter.writeShrc(ra);
 }
 
-void Prol16AsmListener::enterCommandCounterLoad(Prol16AsmParser::CommandCounterLoadContext *context) {
-
+void Prol16AsmListener::enterCommandCounterLoad(Prol16AsmParser::CommandCounterLoadContext */*context*/) {
+	throw ::util::NotImplementedError("'org' directive");
 }
 
 void Prol16AsmListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) {
+	if (util::isNumber(context)) {
+		instructionWriter.writeImmediate(util::parseNumber(context->number->getText()));
+	} else if (util::isString(context)) {
+		instructionWriter.writeString(::util::getUnquoted(context->string->getText()));
+	} else {
+		std::ostringstream errorMessage;
+		errorMessage << "argument of 'db', which is '" << context->getText() << "', is neither a number nor a string";
 
+		throw std::runtime_error(errorMessage.str());
+	}
 }
 
 void Prol16AsmListener::enterSymbolicConstantDefinition(Prol16AsmParser::SymbolicConstantDefinitionContext *context) {
@@ -193,12 +203,12 @@ void Prol16AsmListener::enterSymbolicConstantDefinition(Prol16AsmParser::Symboli
 	}
 }
 
-void Prol16AsmListener::enterMacroDefinition(Prol16AsmParser::MacroDefinitionContext *context) {
-
+void Prol16AsmListener::enterMacroDefinition(Prol16AsmParser::MacroDefinitionContext */*context*/) {
+	throw ::util::NotImplementedError("macro definition");
 }
 
-void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext *context) {
-
+void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext */*context*/) {
+	throw ::util::NotImplementedError("macro call");
 }
 
 void Prol16AsmListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) {
