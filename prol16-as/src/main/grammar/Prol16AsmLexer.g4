@@ -7,6 +7,7 @@ lexer grammar Prol16AsmLexer;
  * Fragment definitions
  */
 fragment Letter : [a-zA-Z] ;
+fragment Dot : '.' ;
 
 fragment BinaryDigit : [0-1] ;
 fragment DecimalDigit : [0-9] ;
@@ -75,7 +76,7 @@ Register : ProgramCounterRegister | ReturnAddressRegister | StackPointerRegister
 
 String : ('"' ~["]+ '"') | ('\'' ~[\u0027]+ '\'') ;	// \u0027 is the character '
 
-Identifier : Letter ('_'? (Letter | DecimalDigit))* ;
+Identifier : (Letter | Dot) ('_'? (Letter | Dot | DecimalDigit))* ;
 
 /**
  * Definition of things that should be skipped
