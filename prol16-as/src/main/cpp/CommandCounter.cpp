@@ -17,6 +17,7 @@ CommandCounter& CommandCounter::operator++() {
 	return *this;
 }
 
+// NOLINTNEXTLINE(readability-const-return-type)
 CommandCounter const CommandCounter::operator++(int) {
 	CommandCounter tmp(*this);
 	operator++();
