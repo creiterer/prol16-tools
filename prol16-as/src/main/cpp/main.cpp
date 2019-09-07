@@ -8,7 +8,6 @@
 
 #include "antlr4-runtime.h"
 #include "CountingErrorListener.h"
-#include "InstructionWriter.h"
 #include "LabelListener.h"
 #include "Prol16AsmLexer.h"
 #include "Prol16AsmListener.h"
@@ -18,6 +17,7 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Filename.h"
+#include "InstructionWriter.h"
 #include "Prol16ExeFile.h"
 #include "Prol16ExeFileWriter.h"
 #include "ScopedFileStream.h"
@@ -78,7 +78,9 @@ int main(int const argc, char const * const argv[]) {
 		tree::ParseTreeWalker::DEFAULT.walk(&labelListener, parseTree);
 
 		// TODO(creiterer): explain
+		// TODO(creiterer): refactor to Prol16ExeFileWriter
 		labelListener.addLabel("print", 1);
+		labelListener.addLabel("printstr", 3);
 
 		InstructionWriter instructionWriter;
 		PROL16::Prol16AsmListener asmListener(instructionWriter, labelListener.getLabels());
