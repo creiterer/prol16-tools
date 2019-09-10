@@ -204,7 +204,6 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	case PRINT:
 		if (!logger.isEnabled()) {
 			printHexNumberFormattedWithBase(std::cout, registerFile[ra]);
-			std::cout << '\n';
 		}
 
 		logger.forEachLogStream([this, ra](::util::logging::Logger::LogStream stream){
@@ -216,7 +215,6 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	case PRINTI: {
 		Immediate const immediate = fetchImmediate();
 		printHexNumberFormattedWithBase(std::cout, immediate);
-		std::cout << '\n';
 
 		logger << ", ";
 		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
@@ -228,7 +226,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	case PRINTSTR: {
 		std::string const str = memory.readString(registerFile[ra]);
 		if (!logger.isEnabled()) {
-			std::cout << str << '\n';
+			std::cout << str;
 		}
 
 		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
