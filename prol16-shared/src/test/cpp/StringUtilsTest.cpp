@@ -54,6 +54,13 @@ TEST(StringUtilsTest, testEncode) {
 	ASSERT_EQ(2, buffer.size());
 	ASSERT_EQ(('b' << 8) + 'a', buffer[0]);
 	ASSERT_EQ('c', buffer[1]);
+
+	str = "\"\\n\"";
+	buffer = encode<uint16_t>(str);
+	ASSERT_EQ(3, buffer.size());
+	ASSERT_EQ(('\\' << 8) + '"', buffer[0]);
+	ASSERT_EQ(('"' << 8) + 'n', buffer[1]);
+	ASSERT_EQ(0, buffer[2]);
 }
 
 TEST(StringUtilsTest, testLTrim) {

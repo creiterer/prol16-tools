@@ -46,10 +46,10 @@ template <typename T>
 std::vector<T> encode(std::string str) {
 	static_assert(std::is_integral<T>::value, "encode() requires an integral value type for the returned buffer.");
 
-	size_t const cStringLength = str.length() + 1;	// +1 for '\0'
-	while ((cStringLength % sizeof(T)) != 0) {
+	while (((str.length() + 1) % sizeof(T)) != 0) {
 		str.push_back('\0');
 	}
+	size_t const cStringLength = str.length() + 1;	// +1 for '\0'
 	assert(util::isMultiple(sizeof(T), cStringLength));
 
 	std::vector<T> buffer(cStringLength / sizeof(T));
