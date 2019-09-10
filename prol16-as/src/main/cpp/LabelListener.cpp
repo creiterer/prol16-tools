@@ -130,7 +130,7 @@ void LabelListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *co
 	if (util::isNumber(context)) {
 		++commandCounter;
 	} else if (util::isString(context)) {
-		std::string const str = ::util::getUnquoted(context->string->getText());
+		std::string const str = ::util::getUnquoted(::util::handleEscapeSequences(context->string->getText()));
 		size_t const cStringLength = str.length() + 1;
 		if (::util::isMultiple(sizeof(PROL16::util::memory::Data), cStringLength)) {
 			commandCounter += cStringLength / sizeof(PROL16::util::memory::Data);

@@ -185,7 +185,7 @@ void Prol16AsmListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext
 	if (util::isNumber(context)) {
 		instructionWriter.writeImmediate(util::parseNumber(context->number->getText()));
 	} else if (util::isString(context)) {
-		instructionWriter.writeString(::util::getUnquoted(context->string->getText()));
+		instructionWriter.writeString(::util::getUnquoted(::util::handleEscapeSequences(context->string->getText())));
 	} else {
 		std::ostringstream errorMessage;
 		errorMessage << "argument of 'db', which is '" << context->getText() << "', is neither a number nor a string";
