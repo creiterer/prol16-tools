@@ -74,4 +74,20 @@ std::string getUnquoted(std::string str) {
 	return str;
 }
 
+std::string handleEscapeSequences(std::string str) {
+	size_t pos = str.find('\\');
+	while (pos != std::string::npos) {
+		if (pos + 1 < str.length()) {
+			switch (str[pos+1]) {
+			case 'n': str.replace(pos, 2, "\n"); break;
+			case 'r': str.replace(pos, 2, "\r"); break;
+			case 't': str.replace(pos, 2, "\t"); break;
+			}
+		}
+		pos = str.find('\\', pos + 1);
+	}
+
+	return str;
+}
+
 }	// namespace util

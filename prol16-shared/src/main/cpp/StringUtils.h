@@ -42,6 +42,8 @@ void trimQuotes(std::string &str);
 
 std::string getUnquoted(std::string str);
 
+std::string handleEscapeSequences(std::string str);
+
 template <typename T>
 std::vector<T> encode(std::string str) {
 	static_assert(std::is_integral<T>::value, "encode() requires an integral value type for the returned buffer.");

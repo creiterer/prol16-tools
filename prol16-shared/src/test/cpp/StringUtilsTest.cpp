@@ -240,3 +240,35 @@ TEST(StringUtilsTest, testGetUnquoted) {
 	str = "\"test\"";
 	ASSERT_EQ("test", getUnquoted(str));
 }
+
+TEST(StringUtilsTest, testHandleEscapeSequences) {
+	std::string str;
+	ASSERT_TRUE(handleEscapeSequences(str).empty());
+
+	str = "test";
+	ASSERT_EQ("test", handleEscapeSequences(str));
+
+	str = "\n";
+	ASSERT_EQ("\n", handleEscapeSequences(str));
+
+	str = "\\n";
+	ASSERT_EQ("\n", handleEscapeSequences(str));
+
+	str = "\\";
+	ASSERT_EQ("\\", handleEscapeSequences(str));
+
+	str = "test\n";
+	ASSERT_EQ("test\n", handleEscapeSequences(str));
+
+	str = "test\\n";
+	ASSERT_EQ("test\n", handleEscapeSequences(str));
+
+	str = "\\ntest\\n";
+	ASSERT_EQ("\ntest\n", handleEscapeSequences(str));
+
+	str = "\\ttest\\t";
+	ASSERT_EQ("\ttest\t", handleEscapeSequences(str));
+
+	str = "\\rtest\\r";
+	ASSERT_EQ("\rtest\r", handleEscapeSequences(str));
+}
