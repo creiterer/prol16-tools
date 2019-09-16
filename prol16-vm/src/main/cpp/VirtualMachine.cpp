@@ -21,8 +21,9 @@ namespace PROL16 {
 
 using ::util::logging::Logger;
 
-VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger)
-: carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger) {
+VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger, bool const interactive)
+: carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger),
+  commandInterpreter(nullptr) {
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
 
 	// needs to be done before setting the program counter due to the
@@ -31,6 +32,10 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 
 	VirtualMemory::Address const entryPointAddress = p16ExeFile.getEntryPointAddress();
 	setProgramCounter(entryPointAddress);
+
+	if (interactive) {
+		setupCommandInterpreter();
+	}
 
 	logger << "starting program execution at address ";
 	logger.forEachLogStream([this, entryPointAddress](Logger::LogStream stream){
@@ -45,6 +50,10 @@ void VirtualMachine::run() {
 	bool stopProgramExecution = false;
 
 	while ((programCounter < memory.getCodeSegmentSize()) && (!stopProgramExecution)) {
+		if (commandInterpreter != nullptr) {
+			commandInterpreter->run();
+		}
+
 		Instruction instruction = fetchAndDecodeInstruction();
 		stopProgramExecution = executeInstruction(instruction);
 	}
@@ -378,6 +387,11 @@ std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register 
 	util::printHexNumberFormattedWithBase(stream << '=', registerFile[ra]);
 
 	return stream;
+}
+
+void VirtualMachine::setupCommandInterpreter() {
+	commandInterpreter = std::make_unique<::util::CommandInterpreter>("> ");
+
 }
 
 }	// namespace PROL16

@@ -12,6 +12,7 @@
 #include "RegisterFile.h"
 #include "VirtualMemory.h"
 
+#include "CommandInterpreter.h"
 #include "Instruction.h"
 #include "Logger.h"
 #include "MnemonicUtils.h"
@@ -21,6 +22,7 @@
 
 #include <cstdint>
 #include <ios>
+#include <memory>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
@@ -35,7 +37,7 @@ public:
 
 	static uint8_t const BitWidth = 16;
 
-	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger);
+	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger, bool const interactive);
 
 	void run();
 
@@ -46,6 +48,7 @@ private:
 	Flag zeroFlag;
 	VirtualMemory::Address &programCounter;
 	::util::logging::Logger &logger;
+	std::unique_ptr<::util::CommandInterpreter> commandInterpreter;
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();
@@ -68,6 +71,8 @@ private:
 	void printInstructionOperandValues(std::ostream &stream, Mnemonic const mnemonic,
 									   Register const ra, Register const rb) const;
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
+
+	void setupCommandInterpreter();
 };
 
 }	// namespace PROL16

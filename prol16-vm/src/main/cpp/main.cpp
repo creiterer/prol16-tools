@@ -28,6 +28,7 @@ int main(int const argc, char const * const argv[]) {
 		util::cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addOptionalArgument(LOGFILE_OPTION_NAME, "prol16-vm.log");
+		argumentParser.addFlag(util::cli::flags::INTERACTIVE, false);
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
@@ -36,7 +37,7 @@ int main(int const argc, char const * const argv[]) {
 
 		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
 
-		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger);
+		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger, cliArguments.isSet(util::cli::flags::INTERACTIVE));
 		prol16vm.run();
 
 		return 0;

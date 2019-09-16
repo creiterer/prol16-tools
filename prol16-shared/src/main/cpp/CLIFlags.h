@@ -17,6 +17,7 @@ struct FlagName final {
 	std::string const longName;
 };
 
+static FlagName const INTERACTIVE{"-i", "--interactive"};
 static FlagName const VERBOSE{"-v", "--verbose"};
 
 }	// namespace flags
