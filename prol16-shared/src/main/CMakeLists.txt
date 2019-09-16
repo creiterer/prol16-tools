@@ -21,6 +21,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/Prol16ExeFile.cpp
     ${MAIN_CPP_DIR}/Prol16ExeParseError.cpp
     ${MAIN_CPP_DIR}/InstructionWriter.cpp
+    ${MAIN_CPP_DIR}/CommandInterpreter.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})
