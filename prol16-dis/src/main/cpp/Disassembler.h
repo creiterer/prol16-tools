@@ -9,8 +9,11 @@
 #define PROL16_ASM_PROL16_DIS_SRC_MAIN_CPP_DISASSEMBLER_H_INCLUDED
 
 #include "Instruction.h"
+#include "MemoryUtils.h"
 #include "NonCopyable.h"
 #include "NumberUtils.h"
+#include "Prol16ExeFile.h"
+#include "ScopedFileStream.h"
 
 #include <istream>
 #include <ostream>
@@ -22,17 +25,18 @@ class Disassembler final : private ::util::NonCopyable {
 public:
 	using Immediate = util::Immediate;
 	using Instruction = util::Instruction;
+	using Address = PROL16::util::memory::Address;
+	using CodeSegment = util::Prol16ExeFile::CodeSegment;
 
-	Disassembler(std::istream &sourceStream, std::ostream &destinationStream);
+	using SourceStream = ::util::ScopedFileStream<std::ifstream>;
+
+	Disassembler(SourceStream &sourceStream, std::ostream &destinationStream);
 
 	void disassemble();
 
 private:
-	std::istream &sourceStream;
+	util::Prol16ExeFile prol16ExeFile;
 	std::ostream &destinationStream;
-
-	Instruction readAndDecodeInstruction();
-	Immediate readImmediate();
 };
 
 }	// namespace PROL16

@@ -7,44 +7,45 @@
 
 #include "Disassembler.h"
 
-#include <sstream>
-#include <fstream>
+#include "IncompleteInstructionError.h"
+#include "InstructionDecodeError.h"
+#include "Prol16ExeParseError.h"
+#include "ScopedFileStream.h"
 
 #include "gtest/gtest.h"
 
-#include "InstructionDecodeError.h"
-#include "IncompleteInstructionError.h"
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
-TEST(DisassemblerTest, testEmptyFile) {
-	std::ifstream inputStream("resources/empty.p16", std::ifstream::binary);
-	std::ostringstream outputStream;
-
-	PROL16::Disassembler disassembler(inputStream, outputStream);
-	disassembler.disassemble();
-
-	ASSERT_EQ("", outputStream.str());
-}
+using ::util::ScopedFileStream;
+using PROL16::util::Prol16ExeParseError;
 
 TEST(DisassemblerTest, testSingleInstruction) {
-	std::ifstream inputStream("resources/single_instruction.p16", std::ifstream::binary);
-	std::ostringstream outputStream;
-
-	PROL16::Disassembler disassembler(inputStream, outputStream);
-	disassembler.disassemble();
-
-	ASSERT_EQ("0000:\tsleep\n", outputStream.str());
-}
-
-TEST(DisassemblerTest, testMultipleInstructions) {
-	std::ifstream inputStream("resources/multiple_instructions.p16", std::ifstream::binary);
+	ScopedFileStream<std::ifstream> inputStream("resources/single_instruction.p16", std::ifstream::binary);
 	std::ostringstream outputStream;
 
 	PROL16::Disassembler disassembler(inputStream, outputStream);
 	disassembler.disassemble();
 
 	std::ostringstream expectedOutput;
+	expectedOutput << "entry point address: 0000\n";
+	expectedOutput << "0000:\tsleep\n";
+
+	ASSERT_EQ(expectedOutput.str(), outputStream.str());
+}
+
+TEST(DisassemblerTest, testMultipleInstructions) {
+	ScopedFileStream<std::ifstream> inputStream("resources/multiple_instructions.p16", std::ifstream::binary);
+	std::ostringstream outputStream;
+
+	PROL16::Disassembler disassembler(inputStream, outputStream);
+	disassembler.disassemble();
+
+	std::ostringstream expectedOutput;
+	expectedOutput << "entry point address: 0000\n";
 	expectedOutput << "0000:\t" << "nop" << std::endl;
 	expectedOutput << "0001:\t" << "sleep" << std::endl;
 	expectedOutput << "0002:\t" << "loadi rpc, 8080h" << std::endl;
@@ -75,7 +76,7 @@ TEST(DisassemblerTest, testMultipleInstructions) {
 }
 
 TEST(DisassemblerTest, testInvalidInstruction) {
-	std::ifstream inputStream("resources/invalid_instruction.p16", std::ifstream::binary);
+	ScopedFileStream<std::ifstream> inputStream("resources/invalid_instruction.p16", std::ifstream::binary);
 	std::ostringstream outputStream;
 
 	PROL16::Disassembler disassembler(inputStream, outputStream);
@@ -83,17 +84,38 @@ TEST(DisassemblerTest, testInvalidInstruction) {
 }
 
 TEST(DisassemblerTest, testIncompleteInstruction) {
-	std::ifstream inputStream("resources/incomplete_instruction.p16", std::ifstream::binary);
+	ScopedFileStream<std::ifstream> inputStream("resources/incomplete_instruction.p16", std::ifstream::binary);
+	std::ostringstream outputStream;
+
+	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), std::runtime_error);
+}
+
+TEST(DisassemblerTest, testMissingImmediate) {
+	ScopedFileStream<std::ifstream> inputStream("resources/missing_immediate.p16", std::ifstream::binary);
 	std::ostringstream outputStream;
 
 	PROL16::Disassembler disassembler(inputStream, outputStream);
 	ASSERT_THROW(disassembler.disassemble(), PROL16::util::IncompleteInstructionError);
 }
 
-TEST(DisassemblerTest, testMissingImmediate) {
-	std::ifstream inputStream("resources/missing_immediate.p16", std::ifstream::binary);
+
+TEST(DisassemblerTest, testMissingMagicNumber) {
+	ScopedFileStream<std::ifstream> inputStream("resources/empty.p16", std::ifstream::binary);
 	std::ostringstream outputStream;
 
-	PROL16::Disassembler disassembler(inputStream, outputStream);
-	ASSERT_THROW(disassembler.disassemble(), PROL16::util::IncompleteInstructionError);
+	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), Prol16ExeParseError);
+}
+
+TEST(DisassemblerTest, testMissingEntryPoint) {
+	ScopedFileStream<std::ifstream> inputStream("resources/missing_entry_point.p16", std::ifstream::binary);
+	std::ostringstream outputStream;
+
+	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), Prol16ExeParseError);
+}
+
+TEST(DisassemblerTest, testEmptyCodeSegment) {
+	ScopedFileStream<std::ifstream> inputStream("resources/empty_code_segment.p16", std::ifstream::binary);
+	std::ostringstream outputStream;
+
+	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), Prol16ExeParseError);
 }
