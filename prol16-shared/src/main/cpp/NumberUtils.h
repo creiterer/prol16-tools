@@ -18,6 +18,10 @@ namespace PROL16 { namespace util {
 using Number = uint16_t;
 using Immediate = Number;
 
+static int const BinaryBase = 2;
+static int const DecimalBase = 10;
+static int const HexBase = 16;
+
 Number parseNumber(std::string number);
 
 std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number);

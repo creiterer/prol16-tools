@@ -18,9 +18,9 @@ namespace {
 
 int getRadix(char const suffix) {
 	switch (suffix) {
-	case 'b': return 2;		// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-	case 'h': return 16;	// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-	default: return 10;		// NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+	case 'b': return BinaryBase;
+	case 'h': return HexBase;
+	default: return DecimalBase;
 	}
 }
 
