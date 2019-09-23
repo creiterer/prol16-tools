@@ -16,11 +16,11 @@
 namespace util {
 
 CommandInterpreter::CommandInterpreter(std::string prompt) : quit(false), prompt(std::move(prompt)) {
-	registerCommand("q", "quit", "", [this](ArgumentVector const& /*unused*/){
+	registerCommand("q", "quit", 0, 0, "", [this](ArgumentVector const& /*unused*/){
 		quit = true;
 	});
 
-	registerCommand("h", "help", "-- show help", [this](ArgumentVector const& /*unused*/){
+	registerCommand("h", "help", 0, 0, "-- show help", [this](ArgumentVector const& /*unused*/){
 		std::unordered_set<StringMap::mapped_type> alreadyCoveredLongNames;
 
 		for (auto const &commandName : shortToLongNameMapping) {
@@ -36,13 +36,17 @@ CommandInterpreter::CommandInterpreter(std::string prompt) : quit(false), prompt
 	});
 }
 
-void CommandInterpreter::registerCommand(std::string const &commandName, std::string const &helpMessage,
-										 CommandCallback const &commandCallback) {
-	registerCommand("", commandName, helpMessage, commandCallback);
+void CommandInterpreter::registerCommand(std::string const &commandName,
+										 unsigned const minArgCount, unsigned const maxArgCount,
+										 std::string const &helpMessage, CommandCallback const &commandCallback,
+										 ArgumentValidationFn const &argumentValidationFn) {
+	registerCommand("", commandName, minArgCount, maxArgCount, helpMessage, commandCallback, argumentValidationFn);
 }
 
 void CommandInterpreter::registerCommand(std::string const &shortCommandName, std::string const &longCommandName,
-										 std::string const &helpMessage, CommandCallback const &commandCallback) {
+										 unsigned const minArgCount, unsigned const maxArgCount,
+										 std::string const &helpMessage, CommandCallback const &commandCallback,
+										 ArgumentValidationFn const &argumentValidationFn) {
 	auto result = commandMap.emplace(longCommandName, commandCallback);
 	assert(result.second);
 
@@ -51,7 +55,12 @@ void CommandInterpreter::registerCommand(std::string const &shortCommandName, st
 		assert(result2.second);
 	}
 
+	if (argumentValidationFn != nullptr) {
+		argumentValidationFnMap.emplace(longCommandName, argumentValidationFn);
+	}
+
 	helpMessageMap.emplace(longCommandName, helpMessage);
+	argumentCountMap.emplace(longCommandName, std::make_pair(minArgCount, maxArgCount));
 }
 
 void CommandInterpreter::run() const {
@@ -77,10 +86,27 @@ bool CommandInterpreter::isCommandValid(std::string const &command) const {
 		return false;
 	}
 
-	std::string const commandName = command.substr(0, command.find(' '));
+	ArgumentVector const argumentVector = parseCommand(command);
+	std::string const commandName = argumentVector.at(0);
+	ArgumentVector const arguments(std::next(argumentVector.cbegin()), argumentVector.cend());
 
-	return (commandMap.find(commandName) != commandMap.cend()) ||
-		   (shortToLongNameMapping.find(commandName) != shortToLongNameMapping.cend());
+	std::string canonicalCommandName;
+	try {
+		canonicalCommandName = getCanonicalCommandName(command);
+	} catch (std::out_of_range const&) {
+		return false;
+	}
+
+	ArgumentCountRange const argumentCountRange = argumentCountMap.at(canonicalCommandName);
+	if ((arguments.size() < argumentCountRange.first) || (arguments.size() > argumentCountRange.second)) {
+		return false;
+	}
+
+	if (argumentValidationFnMap.find(canonicalCommandName) != argumentValidationFnMap.cend()) {
+		return std::all_of(arguments.cbegin(), arguments.cend(), argumentValidationFnMap.at(canonicalCommandName));
+	}
+
+	return true;
 }
 
 void CommandInterpreter::showPrompt() const {
@@ -94,26 +120,44 @@ std::string CommandInterpreter::getCommand() const {
 	return command;
 }
 
-void CommandInterpreter::parseAndExecuteCommand(std::string const &command) const {
+CommandInterpreter::ArgumentVector CommandInterpreter::parseCommand(std::string const &command) {
+	ArgumentVector argumentVector;
+
+	if (command.empty()) {
+		return argumentVector;
+	}
+
 	// split the actual command from its arguments
 	size_t pos = command.find(' ');
-	std::string commandName = command.substr(0, pos);
+	argumentVector.push_back(command.substr(0, pos));
 
-	ArgumentVector arguments;
 	while (pos != std::string::npos) {
 		size_t prevPos = pos + 1;
 		pos = command.find(' ', prevPos);
-		arguments.push_back(command.substr(prevPos, pos - prevPos));
+		argumentVector.push_back(command.substr(prevPos, pos - prevPos));
 	}
 
-	try {
-		commandMap.at(commandName)(arguments);
-	} catch (std::out_of_range const&) {
-		commandMap.at(shortToLongNameMapping.at(commandName))(arguments);
-	}
+	return argumentVector;
 }
 
-void CommandInterpreter::printInvalidCommandMessage(std::string const &command) const {
+void CommandInterpreter::parseAndExecuteCommand(std::string const &command) const {
+	// command should already be validated at this point
+	ArgumentVector const argumentVector = parseCommand(command);
+	std::string const commandName = argumentVector.at(0);
+	ArgumentVector const arguments(std::next(argumentVector.cbegin()), argumentVector.cend());
+
+	commandMap.at(getCanonicalCommandName(commandName))(arguments);
+}
+
+std::string CommandInterpreter::getCanonicalCommandName(std::string const &command) const {
+	if (commandMap.find(command) != commandMap.cend()) {
+		return command;
+	}
+
+	return shortToLongNameMapping.at(command);
+}
+
+void CommandInterpreter::printInvalidCommandMessage(std::string const &command) {
 	std::cerr << "Invalid command '" << command << "'! Try command 'help'." << std::endl;
 }
 
