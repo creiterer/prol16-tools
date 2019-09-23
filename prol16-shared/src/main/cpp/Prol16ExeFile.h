@@ -10,6 +10,7 @@
 
 #include "FileUtils.h"
 #include "MemoryUtils.h"
+#include "ScopedFileStream.h"
 
 #include <array>
 #include <fstream>
@@ -36,6 +37,8 @@ public:
 	static unsigned const CodeSegmentOffset = EntryPointAddressOffset + sizeof(Address);
 
 	static Prol16ExeFile parse(std::string const &filename);
+	static Prol16ExeFile parse(::util::ScopedFileStream<std::ifstream> &sourceStream);
+	static Prol16ExeFile parse(std::ifstream &sourceStream, std::string const &filename = "");
 
 	inline Address getEntryPointAddress() const { return entryPointAddress; }
 	inline CodeSegment getCodeSegment() const { return codeSegment; }
@@ -43,6 +46,8 @@ public:
 private:
 	Address const entryPointAddress;
 	CodeSegment const codeSegment;
+
+	static Prol16ExeFile parse(::util::FileBuffer const &buffer, std::string const &filename);
 
 	static void checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename);
 	static void checkFileStartsWithMagicNumber(::util::FileBuffer const &buffer, std::string const &filename);

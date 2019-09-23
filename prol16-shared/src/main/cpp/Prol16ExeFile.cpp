@@ -24,8 +24,18 @@ char const * const Prol16ExeFile::Extension{"p16"};
 std::array<unsigned char, Prol16ExeFile::MagicNumberSize> const Prol16ExeFile::MagicNumber{0x7F, 'P', '1', '6'};
 
 Prol16ExeFile Prol16ExeFile::parse(std::string const &filename) {
-	::util::FileBuffer const buffer = ::util::readEntireFile(filename);
+	return parse(::util::readEntireFile(filename), filename);
+}
 
+Prol16ExeFile Prol16ExeFile::parse(::util::ScopedFileStream<std::ifstream> &sourceStream) {
+	return parse(::util::readEntireStream(sourceStream), sourceStream.getFilename());
+}
+
+Prol16ExeFile Prol16ExeFile::parse(std::ifstream &sourceStream, std::string const &filename) {
+	return parse(::util::readEntireStream(sourceStream), filename);
+}
+
+Prol16ExeFile Prol16ExeFile::parse(::util::FileBuffer const &buffer, std::string const &filename) {
 	checkFileSize(buffer.size(), filename);
 	checkFileStartsWithMagicNumber(buffer, filename);
 
