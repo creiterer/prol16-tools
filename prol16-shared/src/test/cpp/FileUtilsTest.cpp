@@ -21,7 +21,7 @@ TEST(FileUtilsTest, testReadingEmptyFile) {
 
 TEST(FileUtilsTest, testReadingNonEmptyFile) {
 	FileBuffer buffer = readEntireFile("resources/alphanumeric");
-	ASSERT_STREQ("abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789", reinterpret_cast<char*>(buffer.data()));
+	ASSERT_EQ("abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789", getBufferAsString(buffer));
 }
 
 TEST(FileUtilsTest, testReadingBinaryFile) {

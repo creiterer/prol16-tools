@@ -9,24 +9,33 @@
 
 #include "ScopedFileStream.h"
 
+#include <cassert>
 #include <sstream>
 #include <stdexcept>
 
 namespace util {
 
-std::streampos getFileLength(std::ifstream &stream) {
-	stream.seekg(0, std::ifstream::end);
-	std::streampos const fileLength = stream.tellg();
-	stream.seekg(0, std::ifstream::beg);
+FileSize getFileSize(std::ifstream &stream) {
+	stream.seekg(0, std::istream::end);
+	FileSize const fileSize = stream.tellg();
+	stream.seekg(0, std::istream::beg);
 
-	return fileLength;
+	return fileSize;
 }
 
 FileBuffer readEntireFile(std::string const &filename) {
 	ScopedFileStream<std::ifstream> inputFileStream(filename, std::ifstream::binary);
 
-	std::streampos const fileLength = getFileLength(inputFileStream);
-	FileBuffer buffer(fileLength);
+	return readEntireStream(inputFileStream);
+}
+
+FileBuffer readEntireStream(util::ScopedFileStream<std::ifstream> &stream) {
+	return readEntireStream(stream.stream(), stream.getFilename());
+}
+
+FileBuffer readEntireStream(std::ifstream &stream, std::string const &filename) {
+	FileSize const fileSize = getFileSize(stream);
+	FileBuffer buffer(fileSize);
 
 	// reserve() doesn't work because using data() to write data into the vector doesn't update its size appropriately
 	// -> need to ensure the correct size before -> use the fill constructor or the resize() method!
@@ -34,17 +43,24 @@ FileBuffer readEntireFile(std::string const &filename) {
 
 	// reinterpret_cast is necessary in this case
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	inputFileStream.stream().read(reinterpret_cast<char*>(buffer.data()), fileLength);
+	stream.read(reinterpret_cast<char*>(buffer.data()), fileSize);
 
-	if ((!inputFileStream.stream()) || (inputFileStream.stream().gcount() != fileLength)) {
+	if ((!stream) || (stream.gcount() != static_cast<std::streamsize>(fileSize))) {
 		std::ostringstream errorMessage;
 		errorMessage << "failed to read the entire file '" << filename << "'; ";
-		errorMessage << "only " << inputFileStream.stream().gcount() << " of " << fileLength << " bytes were read successfully";
+		errorMessage << "only " << stream.gcount() << " of " << fileSize << " bytes were read successfully";
 
 		throw std::runtime_error(errorMessage.str());
 	}
 
+	assert(buffer.size() == fileSize);
+
 	return buffer;
+}
+
+std::string getBufferAsString(FileBuffer const &buffer) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	return std::string(reinterpret_cast<char const*>(buffer.data()), buffer.size());
 }
 
 void writeStringToStream(std::ostream &stream, std::string const &str) {

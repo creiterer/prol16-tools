@@ -8,6 +8,8 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_FILEUTILS_H_INCLUDED
 
+#include "ScopedFileStream.h"
+
 #include <fstream>
 #include <string>
 #include <type_traits>
@@ -19,10 +21,15 @@ template <typename T>
 using Buffer = std::vector<T>;
 
 using FileBuffer = Buffer<unsigned char>;
+using FileSize = FileBuffer::size_type;
 
-std::streampos getFileLength(std::ifstream const &stream);
+FileSize getFileSize(std::ifstream const &stream);
 
 FileBuffer readEntireFile(std::string const &filename);
+FileBuffer readEntireStream(util::ScopedFileStream<std::ifstream> &stream);
+FileBuffer readEntireStream(std::ifstream &stream, std::string const &filename = "");
+
+std::string getBufferAsString(FileBuffer const &buffer);
 
 void writeStringToStream(std::ostream &stream, std::string const &str);
 
