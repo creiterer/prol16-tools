@@ -15,14 +15,14 @@ namespace PROL16 { namespace util {
 RegisterError::RegisterError(Register const reg) {
 	std::ostringstream errorMessageStream;
 
-	errorMessageStream << "register 'r" << reg << "' is out of the range of allowed registers (r0 -- r" << RegisterCount-1 << ", rsp, rfp, rra)";
+	errorMessageStream << "register 'r" << reg << "' is out of the range of allowed registers (rpc, rra, rsp, rfp, r4 -- r" << RegisterCount-1 << ')';
 	errorMessage = errorMessageStream.str();
 }
 
 RegisterError::RegisterError(std::string const &registerName) {
 	std::ostringstream errorMessageStream;
 
-	errorMessageStream << "register '" << registerName << "' is not a valid register (r0 -- r" << RegisterCount-1 << ", rsp, rfp, rra)";
+	errorMessageStream << "register '" << registerName << "' is not a valid register (rpc, rra, rsp, rfp, r4 -- r" << RegisterCount-1 << ')';
 	errorMessage = errorMessageStream.str();
 }
 
