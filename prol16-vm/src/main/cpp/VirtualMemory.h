@@ -14,6 +14,7 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
@@ -25,6 +26,8 @@ public:
 
 	static size_t const MemorySize = 1 << 16;	// 2^16 = 65536
 	using Memory = std::array<Data, MemorySize>;
+
+	using MemoryRange = std::vector<Data>;
 
 	static Data const MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
 
@@ -45,6 +48,8 @@ public:
 	inline void write(Address const address, Data const data) { memory.at(address) = data; }
 
 	std::string readString(Address const address) const;
+
+	MemoryRange readRange(Address const startAddress, Address const endAddress) const;
 
 	inline size_t size() const { return memory.size(); }
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }

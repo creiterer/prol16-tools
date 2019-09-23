@@ -30,6 +30,17 @@ std::string VirtualMemory::readString(Address const address) const {
 	return std::string(reinterpret_cast<char const*>(memory.data() + address));
 }
 
+VirtualMemory::MemoryRange VirtualMemory::readRange(Address const startAddress, Address const endAddress) const {
+	if (!(startAddress < size())) {
+		throw std::out_of_range("start address is out of valid memory range");
+	}
+	if (!(endAddress < size())) {
+		throw std::out_of_range("end address is out of valid memory range");
+	}
+
+	return MemoryRange(std::next(memory.cbegin(), startAddress), std::next(memory.cbegin(), endAddress + 1));
+}
+
 void VirtualMemory::initializeFromFile(std::string const &filename) {
 	::util::FileBuffer buffer = ::util::readEntireFile(filename);
 	if (!::util::isMultiple(sizeof(Data), buffer.size())) {
