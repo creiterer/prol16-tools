@@ -219,3 +219,32 @@ TEST(InstructionTest, testIs) {
 	ASSERT_TRUE(load.is(LOAD));
 	ASSERT_FALSE(load.is(STORE));
 }
+
+TEST(InstructionTest, testOperatorEqualTo) {
+	Instruction sleep(0x1);
+	/*
+	 *  | opcode  |   ra   |   rb   |
+	 *  | 0000 01 | 00 000 | 0 0000 |
+	 *  | 0000 | 0100 | 0000 | 0000 |
+	 *  |   0  |   4  |   0  |   0  |
+	 */
+	ASSERT_TRUE(0x400 == sleep);
+
+	Instruction loadi(0x2, 0);
+	/*
+	 *  | opcode  |   ra   |   rb   |
+	 *  | 0000 10 | 00 000 | 0 0000 |
+	 *  | 0000 | 1000 | 0000 | 0000 |
+	 *  |   0  |   8  |   0  |   0  |
+	 */
+	ASSERT_TRUE(0x800 == loadi);
+
+	Instruction load(0x3, 14, 15);
+	/*
+	 *  | opcode  |   ra   |   rb   |
+	 *  | 0000 11 | 01 110 | 0 1111 |
+	 *  | 0000 | 1101 | 1100 | 1111 |
+	 *  |   0  |   D  |   C  |   F  |
+	 */
+	ASSERT_TRUE(0xDCF == load);
+}

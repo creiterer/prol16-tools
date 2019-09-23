@@ -46,6 +46,7 @@ public:
 	inline Register getRa() const { return ra; }
 	inline Opcode getOpcode() const { return opcode; }
 	inline Mnemonic getMnemonic() const { return util::getMnemonicOfOpcode(opcode); }
+	inline std::string getMnemonicString() const { return util::getMnemonicAsString(getMnemonic()); }
 
 	EncodedType encode() const;
 
