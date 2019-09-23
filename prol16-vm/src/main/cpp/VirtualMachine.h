@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <ios>
 #include <memory>
+#include <string>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
@@ -32,6 +33,8 @@ public:
 	using Register = util::Register;
 	using Mnemonic = util::Mnemonic;
 	using Immediate = util::Immediate;
+	using Address = VirtualMemory::Address;
+	using Data = VirtualMemory::Data;
 	using ArithmeticResult = uint32_t;
 	using Instruction = util::Instruction;
 
@@ -71,8 +74,11 @@ private:
 	void printInstructionOperandValues(std::ostream &stream, Mnemonic const mnemonic,
 									   Register const ra, Register const rb) const;
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
+	std::ostream& printMemoryValue(std::ostream &stream, Address const address) const;
 
 	void setupCommandInterpreter();
+	void printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;
+	void printRegisterCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;
 };
 
 }	// namespace PROL16

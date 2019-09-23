@@ -11,6 +11,7 @@
 #include "OpcodeError.h"
 #include "Prol16ExeFile.h"
 
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -389,9 +390,41 @@ std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register 
 	return stream;
 }
 
+std::ostream& VirtualMachine::printMemoryValue(std::ostream &stream, Address const address) const {
+	util::printHexNumberFormatted(stream, address);
+	util::printHexNumberFormattedWithBase(stream << ": ", memory.read(address));
+
+	return stream;
+}
+
 void VirtualMachine::setupCommandInterpreter() {
 	commandInterpreter = std::make_unique<::util::CommandInterpreter>("> ");
+	commandInterpreter->registerCommand("m", "memory", 1, 2, "ADDRESS | ADDRESS_RANGE -- print memory of the given address (range)",
+										std::bind(&VirtualMachine::printMemoryCommand, this, std::placeholders::_1));
+	commandInterpreter->registerCommand("r", "register", 1, 1, "REG_NUMBER -- print the given register",
+										std::bind(&VirtualMachine::printRegisterCommand, this, std::placeholders::_1));
+}
 
+void VirtualMachine::printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const {
+	if (arguments.size() == 1) {
+		Address const address = stoul(arguments.at(0), nullptr, util::HexBase);
+		printMemoryValue(std::cerr, address) << '\n';
+	} else if (arguments.size() == 2) {
+		Address const startAddress = stoul(arguments.at(0), nullptr, util::HexBase);
+		Address const endAddress = stoul(arguments.at(1), nullptr, util::HexBase);
+
+		VirtualMemory::MemoryRange memoryRange = memory.readRange(startAddress, endAddress);
+		std::for_each(memoryRange.cbegin(), memoryRange.cend(), [this](Data const data){
+			printMemoryValue(std::cerr, data) << '\n';
+		});
+	}
+}
+
+void VirtualMachine::printRegisterCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const {
+	if (arguments.size() == 1) {
+		Register const reg = stoul(arguments.at(0));
+		printRegisterValue(std::cerr, reg) << '\n';
+	}
 }
 
 }	// namespace PROL16
