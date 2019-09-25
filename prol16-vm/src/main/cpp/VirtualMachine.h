@@ -40,7 +40,8 @@ public:
 
 	static uint8_t const BitWidth = 16;
 
-	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger, bool const interactive);
+	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
+				   bool const interactive, bool const shouldPrintDecimal);
 
 	void run();
 
@@ -52,6 +53,7 @@ private:
 	VirtualMemory::Address &programCounter;
 	::util::logging::Logger &logger;
 	std::unique_ptr<::util::CommandInterpreter> commandInterpreter;
+	bool const shouldPrintDecimal;
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();
@@ -75,6 +77,7 @@ private:
 									   Register const ra, Register const rb) const;
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
 	std::ostream& printMemoryValue(std::ostream &stream, Address const address) const;
+	std::ostream& printData(std::ostream &stream, Data const data) const;
 
 	void setupCommandInterpreter();
 	void printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;

@@ -22,9 +22,10 @@ namespace PROL16 {
 
 using ::util::logging::Logger;
 
-VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger, bool const interactive)
+VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
+							   bool const interactive, bool const shouldPrintDecimal)
 : carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger),
-  commandInterpreter(nullptr) {
+  commandInterpreter(nullptr), shouldPrintDecimal(shouldPrintDecimal) {
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
 
 	// needs to be done before setting the program counter due to the
@@ -213,7 +214,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 
 	case PRINT:
 		if (!logger.isEnabled()) {
-			printHexNumberFormattedWithBase(std::cout, registerFile[ra]);
+			printData(std::cout, registerFile[ra]);
 		}
 
 		logger.forEachLogStream([this, ra](::util::logging::Logger::LogStream stream){
@@ -393,6 +394,16 @@ std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register 
 std::ostream& VirtualMachine::printMemoryValue(std::ostream &stream, Address const address) const {
 	util::printHexNumberFormatted(stream, address);
 	util::printHexNumberFormattedWithBase(stream << ": ", memory.read(address));
+
+	return stream;
+}
+
+std::ostream& VirtualMachine::printData(std::ostream &stream, Data const data) const {
+	if (shouldPrintDecimal) {
+		stream << data;
+	} else {
+		util::printHexNumberFormattedWithBase(stream, data);
+	}
 
 	return stream;
 }
