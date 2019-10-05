@@ -25,11 +25,6 @@ using util::ScopedFileStream;
 
 namespace {
 
-//void printUsage(std::string const &appName) {
-//	cerr << "Usage: " << appName << "[-c] PROL16_EXE_FILE" << endl;
-//	cerr << "-c\t\tshow output on stdout instead of writing it to a file" << endl;
-//}
-
 void disassemble(std::string const &filename, std::ostream &outputStream) {
 	ScopedFileStream<std::ifstream> inputFileStream(filename, std::ifstream::binary);
 
@@ -44,7 +39,7 @@ void disassembleToConsole(std::string const &filename) {
 void disassembleToFile(util::Filename const &filename) {
 	cout << "========== Decompilation Started ==========" << endl;
 
-	ScopedFileStream<std::ofstream> assemblyFileStream(filename.getWithCustomExtension("s"), std::ofstream::out);
+	ScopedFileStream<std::ofstream> assemblyFileStream(filename.appendToName("_dis").getWithCustomExtension("s"), std::ofstream::out);
 	cout << "decompiling '" << filename.asString() << "' to '" << assemblyFileStream.getFilename() << "': ";
 
 	disassemble(filename.asString(), assemblyFileStream);
