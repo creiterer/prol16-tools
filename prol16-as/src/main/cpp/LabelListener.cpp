@@ -9,10 +9,15 @@
 
 #include "ContextUtils.h"
 #include "NotImplementedError.h"
+#include "RuntimeLibrary.h"
 #include "StringUtils.h"
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 {
+
+LabelListener::LabelListener() : labelTable(rtlib::RuntimeLibFunctions) {
+
+}
 
 void LabelListener::enterLabelStatement(Prol16AsmParser::LabelStatementContext *context) {
 	addLabel(context->identifier->getText());

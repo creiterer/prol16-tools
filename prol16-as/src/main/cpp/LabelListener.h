@@ -27,7 +27,7 @@ public:
 
 	using Address = PROL16::util::memory::Address;
 
-	LabelListener() = default;
+	LabelListener();
 
 	void enterLabelStatement(Prol16AsmParser::LabelStatementContext */*context*/) override;
 
