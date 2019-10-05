@@ -211,23 +211,6 @@ void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext */*cont
 	throw ::util::NotImplementedError("macro call");
 }
 
-void Prol16AsmListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) {
-	if (util::isRegister(context)) {			// PRINT
-		InstructionWriter::Register const ra = util::parseRegisterNumberChecked(context->ra->getText());
-		instructionWriter.writePrint(ra);
-	} else if (util::isImmediate(context)) {	// PRINTI
-		instructionWriter.writePrinti(evaluateExpression(context->immediate));
-	} else if (util::isString(context)) {
-//		instructionWriter.writePrint(context->string->getText());
-		throw ::util::NotImplementedError("print \"str\"");
-	} else {
-		std::ostringstream errorMessage;
-		errorMessage << "argument of 'print', which is '" << context->getText() << "', is neither a register nor an immediate nor a string";
-
-		throw std::runtime_error(errorMessage.str());
-	}
-}
-
 util::InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
 	if (util::isNumber(expression)) {
 		return util::parseNumber(expression->number->getText());

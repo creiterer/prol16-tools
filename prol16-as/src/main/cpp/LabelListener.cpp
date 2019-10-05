@@ -119,18 +119,6 @@ void LabelListener::enterShrcInstruction(Prol16AsmParser::ShrcInstructionContext
 	++commandCounter;
 }
 
-void LabelListener::enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) {
-	if (util::isRegister(context)) {			// PRINT
-		++commandCounter;		// 'print' needs only one instruction
-	} else if (util::isImmediate(context)) {	// PRINTI
-		commandCounter += 2;	// 'printi' takes the space of two instructions: the instruction itself and the immediate
-	} else if (util::isString(context)) {
-		throw ::util::NotImplementedError("print \"str\"");
-	} else {
-		throw std::runtime_error("invalid 'print' instruction; don't know how much the command counter needs to be incremented");
-	}
-}
-
 void LabelListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) {
 	if (util::isNumber(context)) {
 		++commandCounter;

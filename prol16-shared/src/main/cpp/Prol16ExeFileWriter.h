@@ -28,7 +28,6 @@ public:
 	inline std::string getFilename() const { return filename; }
 
 	void writeFileHeader(memory::Address const entryPointAddress);
-	void writeProl16StdLib();
 
 private:
 	std::string const filename;

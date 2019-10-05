@@ -78,12 +78,6 @@ public:
 
 	void writeShrc(Register const ra);
 
-	void writePrint(Register const ra);
-
-	void writePrinti(Immediate const immediate);
-
-	void writePrintstr(Register const ra);
-
 	void writeImmediate(Immediate const immediate);
 
 	void writeString(String const &str);

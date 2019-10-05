@@ -41,8 +41,7 @@ mnemonicStatement
 	| shlInstruction
 	| shrInstruction
 	| shlcInstruction
-	| shrcInstruction
-	| printInstruction)? NEWLINE
+	| shrcInstruction)? NEWLINE
 	;
 
 assemblerStatement
@@ -134,7 +133,6 @@ shlInstruction		: SHL ra=Register ;
 shrInstruction		: SHR ra=Register ;
 shlcInstruction		: SHLC ra=Register ;
 shrcInstruction		: SHRC ra=Register ;
-printInstruction	: PRINT (ra=Register | immediate=expression | string=String) ;
 
 commandCounterLoad : ORG address=expression ;
 dataWordStore : DB (number=Number | string=String) /* (Comma (numbers=Number | strings=String))* */ ;

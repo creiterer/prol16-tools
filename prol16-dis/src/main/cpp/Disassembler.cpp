@@ -10,7 +10,6 @@
 #include "EOFError.h"
 #include "IncompleteInstructionError.h"
 #include "MnemonicUtils.h"
-#include "Prol16ExeFileWriter.h"
 
 #include <array>
 #include <iomanip>
@@ -33,27 +32,15 @@ void Disassembler::disassemble() {
 
 	// NOLINTNEXTLINE(bugprone-too-small-loop-variable)
 	for (Address address = 0; address < codeSegment.size(); ++address) {
-		// skip the PROL16 standard library magic marker,
-		// which would result in an invalid instruction
-		if ((codeSegment.at(address) == util::Prol16ExeFileWriter::MagicStdLibValue) &&
-			(codeSegment.at(address+1) == Instruction(util::PRINT, 4))) {
-			continue;
-		}
-
 		Instruction instruction = Instruction::decode(codeSegment.at(address));
 
 		util::printHexNumberFormatted(destinationStream, address) << ":\t";
 		destinationStream << instruction;
 
-		if (instruction.is(util::LOADI) || instruction.is(util::PRINTI)) {
+		if (instruction.is(util::LOADI)) {
 			try {
 				Immediate const immediate = codeSegment.at(++address);
-
-				if (instruction.is(util::PRINTI)) {
-					util::printHexNumberFormatted(destinationStream << " ", immediate) << 'h' << std::endl;
-				} else {
-					util::printHexNumberFormatted(destinationStream << ", ", immediate) << 'h' << std::endl;
-				}
+				util::printHexNumberFormatted(destinationStream << ", ", immediate) << 'h' << std::endl;
 			} catch (std::out_of_range const&) {
 				throw util::IncompleteInstructionError("failed to read immediate of '" + instruction.getMnemonicString() + "'");
 			}

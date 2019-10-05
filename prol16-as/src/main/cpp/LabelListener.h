@@ -79,8 +79,6 @@ public:
 
 	void enterShrcInstruction(Prol16AsmParser::ShrcInstructionContext */*context*/) override;
 
-	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
-
 	void enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) override;
 
 	inline LabelTable getLabels() const { return labelTable; }

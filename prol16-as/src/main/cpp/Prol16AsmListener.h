@@ -84,8 +84,6 @@ public:
 
 	void enterMacroCall(Prol16AsmParser::MacroCallContext */*context*/) override;
 
-	void enterPrintInstruction(Prol16AsmParser::PrintInstructionContext *context) override;
-
 private:
 	using SymbolName = std::string;
 	using SymbolValue = util::Immediate;

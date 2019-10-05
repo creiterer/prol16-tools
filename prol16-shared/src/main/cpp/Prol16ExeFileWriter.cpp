@@ -34,23 +34,6 @@ void Prol16ExeFileWriter::writeFileHeader(memory::Address const entryPointAddres
 	::util::writeValueBinary(fileStream, entryPointAddress);
 }
 
-void Prol16ExeFileWriter::writeProl16StdLib() {
-	::util::writeValueBinary(fileStream, MagicStdLibValue);
-
-	InstructionWriter instructionWriter;
-
-	// TODO(creiterer): explain
-	// void print(p16int);
-	instructionWriter.writePrint(4);
-	instructionWriter.writeJump(getReturnAddressRegister());
-
-	// void printstr(char const * const);
-	instructionWriter.writePrintstr(4);
-	instructionWriter.writeJump(getReturnAddressRegister());
-
-	instructionWriter.writeBufferToStream(fileStream);
-}
-
 void Prol16ExeFileWriter::writeMagicNumber() {
 	std::ostream_iterator<char> ostreamItor(fileStream);
 	std::copy(Prol16ExeFile::MagicNumber.cbegin(), Prol16ExeFile::MagicNumber.cend(), ostreamItor);

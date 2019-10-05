@@ -220,41 +220,6 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		executeShr(ra, true);
 		break;
 
-	case PRINT:
-		if (!logger.isEnabled()) {
-			printData(std::cout, registerFile[ra]);
-		}
-
-		logger.forEachLogStream([this, ra](::util::logging::Logger::LogStream stream){
-			printHexNumberFormattedWithBase(stream << '\n', registerFile[ra]);
-		});
-
-		break;
-
-	case PRINTI: {
-		Immediate const immediate = fetchImmediate();
-		printHexNumberFormattedWithBase(std::cout, immediate);
-
-		logger << ", ";
-		logger.forEachLogStream([immediate](::util::logging::Logger::LogStream stream){
-			printHexNumberFormattedWithBase(stream, immediate);
-		});
-		break;
-	}
-
-	case PRINTSTR: {
-		std::string const str = memory.readString(registerFile[ra]);
-		if (!logger.isEnabled()) {
-			std::cout << str;
-		}
-
-		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
-			stream << '\n' << str;
-		});
-
-		break;
-	}
-
 	default:
 		throw util::OpcodeError(instruction.getOpcode());
 	}

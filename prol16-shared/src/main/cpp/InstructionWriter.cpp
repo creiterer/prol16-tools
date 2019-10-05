@@ -156,23 +156,6 @@ void InstructionWriter::writeShrc(Register const ra) {
 	instructionBuffer.push_back(Instruction(SHRC, ra));
 }
 
-void InstructionWriter::writePrint(Register const ra) {
-	util::checkRegisterIsValid(ra);
-
-	instructionBuffer.push_back(Instruction(PRINT, ra));
-}
-
-void InstructionWriter::writePrinti(Immediate const immediate) {
-	instructionBuffer.push_back(Instruction(PRINTI));
-	instructionBuffer.push_back(immediate);
-}
-
-void InstructionWriter::writePrintstr(Register const ra) {
-	util::checkRegisterIsValid(ra);
-
-	instructionBuffer.push_back(Instruction(PRINTSTR, ra));
-}
-
 void InstructionWriter::writeImmediate(Immediate const immediate) {
 	instructionBuffer.push_back(immediate);
 }
