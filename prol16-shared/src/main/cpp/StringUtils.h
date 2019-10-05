@@ -10,7 +10,9 @@
 
 #include "MathUtils.h"
 
+#include <array>
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <type_traits>
@@ -58,6 +60,16 @@ std::vector<T> encode(std::string str) {
 	std::memcpy(buffer.data(), str.c_str(), cStringLength);
 
 	return buffer;
+}
+
+template <typename... Args>
+std::string format(char const * const formatString, Args const... args) {
+	size_t const bufferSize = 100;
+	std::array<char, bufferSize> buffer = {0};
+
+	snprintf(buffer.data(), bufferSize, formatString, args...);
+
+	return buffer.data();
 }
 
 }	// namespace util

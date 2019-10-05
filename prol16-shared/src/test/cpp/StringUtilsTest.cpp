@@ -272,3 +272,11 @@ TEST(StringUtilsTest, testHandleEscapeSequences) {
 	str = "\\rtest\\r";
 	ASSERT_EQ("\rtest\r", handleEscapeSequences(str));
 }
+
+TEST(StringUtilsTest, testFormat) {
+	ASSERT_EQ("", format(""));
+	ASSERT_EQ("test", format("test"));
+	ASSERT_EQ("test", format("%s", "test"));
+	ASSERT_EQ("prefix data suffix", format("prefix %s suffix", "data"));
+	ASSERT_EQ("some value = 2", format("some value = %d", 2));
+}
