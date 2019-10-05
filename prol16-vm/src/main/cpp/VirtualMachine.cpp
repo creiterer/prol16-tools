@@ -10,6 +10,8 @@
 #include "NotImplementedError.h"
 #include "OpcodeError.h"
 #include "Prol16ExeFile.h"
+#include "RuntimeLibrary.h"
+#include "StringUtils.h"
 
 #include <algorithm>
 #include <functional>
@@ -128,9 +130,15 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		registerFile[ra] = registerFile[rb];
 		break;
 
-	case JUMP:
-		setProgramCounter(registerFile[ra]);
+	case JUMP: {
+		Address const targetAddress = registerFile[ra];
+		if (rtlib::isRuntimeLibFunctionAddress(targetAddress)) {
+			executeRuntimeLibFunction(targetAddress);
+		} else {
+			setProgramCounter(targetAddress);
+		}
 		break;
+	}
 
 	case JUMPC:
 		if (carryFlag) {
@@ -348,6 +356,53 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 	}
 
 	setZeroFlag(registerFile[ra]);
+}
+
+void VirtualMachine::executeRuntimeLibFunction(Address const address) {
+	using namespace PROL16::rtlib;
+
+	switch (address) {
+	case PRINT:
+		if (!logger.isEnabled()) {
+			printData(std::cout, registerFile[4]);
+		}
+
+		logger.forEachLogStream([this](::util::logging::Logger::LogStream stream){
+			util::printHexNumberFormattedWithBase(stream << '\n', registerFile[4]);
+		});
+
+		break;
+
+	case PRINTSTR: {
+		std::string const str = memory.readString(registerFile[4]);
+		if (!logger.isEnabled()) {
+			std::cout << str;
+		}
+
+		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
+			stream << '\n' << str;
+		});
+
+		break;
+	}
+
+	case MUL:
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+		registerFile[4] = registerFile[4] * registerFile[6];
+		break;
+	case DIV:
+	case DIVU:
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+		registerFile[4] = registerFile[4] / registerFile[6];
+		break;
+	case MOD:
+	case MODU:
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+		registerFile[4] = registerFile[4] % registerFile[6];
+		break;
+	default:
+		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call"));
+	}
 }
 
 void VirtualMachine::printInfo(std::string const &message) const {

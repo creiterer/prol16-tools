@@ -69,6 +69,7 @@ private:
 	void executeDec(Register const ra);
 	void executeShl(Register const ra, bool const withCarry = false);
 	void executeShr(Register const ra, bool const withCarry = false);
+	void executeRuntimeLibFunction(Address const address);
 
 	void printInfo(std::string const &message) const;
 	void printProgramCounter(std::ostream &stream) const;
