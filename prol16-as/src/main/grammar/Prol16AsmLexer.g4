@@ -76,7 +76,7 @@ Register : ProgramCounterRegister | ReturnAddressRegister | StackPointerRegister
 
 String : ('"' ~["]+ '"') | ('\'' ~[\u0027]+ '\'') ;	// \u0027 is the character '
 
-Identifier : (Letter | Dot) ('_'? (Letter | Dot | DecimalDigit))* ;
+Identifier : (Letter | Dot | '_') ('_'? (Letter | Dot | DecimalDigit))* ;
 
 /**
  * Definition of things that should be skipped
