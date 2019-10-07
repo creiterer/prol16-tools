@@ -67,6 +67,7 @@ std::string format(char const * const formatString, Args const... args) {
 	size_t const bufferSize = 100;
 	std::array<char, bufferSize> buffer = {0};
 
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
 	snprintf(buffer.data(), bufferSize, formatString, args...);
 
 	return buffer.data();
