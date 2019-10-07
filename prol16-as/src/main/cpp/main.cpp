@@ -61,14 +61,14 @@ int main(int const argc, char const * const argv[]) {
 
 		CommonTokenStream tokens(&lexer);
 
-		Prol16ExeFileWriter p16ExeFile(filename.getWithCustomExtension(Prol16ExeFile::Extension));
-
 		PROL16::Prol16AsmParser parser(&tokens);
 		parser.addErrorListener(&countingErrorListener);
 
 		tree::ParseTree *parseTree = parser.prol16AsmFile();
 
-		cout << "compiling '" << filename.asString() << "' to '" << p16ExeFile.getFilename() << "': ";
+		std::string const p16ExeFilename = filename.getWithCustomExtension(Prol16ExeFile::Extension);
+
+		cout << "compiling '" << filename.asString() << "' to '" << p16ExeFilename << "': ";
 		if (countingErrorListener.hasFoundErrors()) {
 			cout << "FAILED: " << countingErrorListener.getErrorCount() << " error(s) detected while parsing" << endl;
 			return 2;
@@ -81,14 +81,13 @@ int main(int const argc, char const * const argv[]) {
 		PROL16::Prol16AsmListener asmListener(instructionWriter, labelListener.getLabels());
 		tree::ParseTreeWalker::DEFAULT.walk(&asmListener, parseTree);
 
-		try {
-			p16ExeFile.writeFileHeader(labelListener.getLabelAddress(EntryPointName));
-		} catch (std::out_of_range const&) {
-			cout << "FAILED: Could not find address of entry point '" << EntryPointName << "'" << endl;
-			return 2;
-		}
+		Prol16ExeFileWriter p16ExeFile(p16ExeFilename, labelListener.getLabels(), labelListener.getNextInstructionAddress());
+		p16ExeFile.writeFileHeader(EntryPointName);
+		p16ExeFile.writeSymbolTable();
 
 		instructionWriter.writeBufferToStream(p16ExeFile.stream());
+
+		p16ExeFile.writeSymbolNames();
 
 		cout << "SUCCEEDED" << endl;
 		cout << "========== Compilation Finished ==========" << endl;
