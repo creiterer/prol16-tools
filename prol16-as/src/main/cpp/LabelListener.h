@@ -88,6 +88,8 @@ public:
 
 	void addLabel(std::string const &labelName, int const offset = 0);
 
+	inline Address getNextInstructionAddress() const { return commandCounter.getNextInstructionAddress(); }
+
 private:
 	CommandCounter commandCounter;
 	LabelTable labelTable;
