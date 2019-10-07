@@ -41,7 +41,7 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 		setupCommandInterpreter();
 	}
 
-	logger << "starting program execution at address ";
+	logger << "starting execution of program '" << filename << "' at address ";
 	logger.forEachLogStream([this, entryPointAddress](Logger::LogStream stream){
 		util::printHexNumberFormattedWithBase(stream, entryPointAddress);
 		util::printHexNumberFormattedWithBase(stream << " (css=", memory.getCodeSegmentSize());
