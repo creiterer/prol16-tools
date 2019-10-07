@@ -23,6 +23,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/InstructionWriter.cpp
     ${MAIN_CPP_DIR}/CommandInterpreter.cpp
     ${MAIN_CPP_DIR}/RuntimeLibrary.cpp
+    ${MAIN_CPP_DIR}/MemoryUtils.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})

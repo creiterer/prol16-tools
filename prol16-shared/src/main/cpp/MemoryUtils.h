@@ -9,12 +9,15 @@
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_MEMORYUTILS_H_INCLUDED
 
 #include <cstdint>
+#include <string>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util { namespace memory {
 
 using Data = uint16_t;
 using Address = uint16_t;
+
+unsigned calcStringSpaceInMemory(std::string const &str);
 
 }	// namespace memory
 }	// namespace util

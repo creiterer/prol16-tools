@@ -12,7 +12,8 @@ set(TEST_CPP_SOURCES
     ${TEST_CPP_DIR}/FileUtilsTest.cpp
     ${TEST_CPP_DIR}/ArgumentParserTest.cpp
     ${TEST_CPP_DIR}/InstructionWriterTest.cpp
-    ${TEST_CPP_DIR}/RuntimeLibraryTest.cpp    
+    ${TEST_CPP_DIR}/RuntimeLibraryTest.cpp
+    ${TEST_CPP_DIR}/MemoryUtilsTest.cpp
 )
 
 # add directory of main include files (needed for the test executable)
