@@ -9,6 +9,7 @@
 #define PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_LABELLISTENER_H_INCLUDED
 
 #include "CommandCounter.h"
+#include "LabelUtils.h"
 #include "MemoryUtils.h"
 #include "NumberUtils.h"
 #include "Prol16AsmParserBaseListener.h"
@@ -21,9 +22,9 @@ namespace PROL16 {
 
 class LabelListener final : public Prol16AsmParserBaseListener {
 public:
-	using LabelName = std::string;
-	using LabelValue = util::Immediate;
-	using LabelTable = std::unordered_map<LabelName, LabelValue>;
+	using LabelName = util::LabelName;
+	using LabelValue = util::LabelValue;
+	using LabelTable = util::LabelTable;
 
 	using Address = PROL16::util::memory::Address;
 
