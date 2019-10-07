@@ -36,10 +36,12 @@ public:
 	Filename appendToName(std::string const &appendix);
 	Filename appendToName(std::string const &appendix) const;
 
+	Filename replaceExtensionWith(std::string const &extension);
+
 private:
 	std::string name;
 	std::string const path;
-	std::string const extension;
+	std::string extension;
 };
 
 }	// namespace util

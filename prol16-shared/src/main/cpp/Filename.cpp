@@ -92,6 +92,12 @@ Filename Filename::appendToName(std::string const &appendix) const {
 	return Filename(path, name + appendix, extension);
 }
 
+Filename Filename::replaceExtensionWith(std::string const &extension) {
+	this->extension = extension;
+
+	return *this;
+}
+
 }	// namespace util
 
 bool operator==(util::Filename const &lhs, char const * const rhs) {
