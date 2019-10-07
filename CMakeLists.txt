@@ -60,4 +60,4 @@ add_subdirectory(prol16-dis)
 add_subdirectory(prol16-vm)
 
 set_target_properties(prol16shared prol16-as prol16-dis prol16-vm
-    PROPERTIES CXX_CLANG_TIDY "clang-tidy")
+    PROPERTIES CXX_CLANG_TIDY "clang-tidy-7")
