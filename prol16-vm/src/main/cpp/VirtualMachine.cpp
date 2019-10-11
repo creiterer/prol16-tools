@@ -30,8 +30,12 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
   commandInterpreter(nullptr), shouldPrintDecimal(shouldPrintDecimal) {
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
 
+	symbolTable = p16ExeFile.getSymbolTable();
+	logger << "symbol table (size=" << symbolTable.size() << ")\n";
+	symbolTable.logTo(logger);
+
 	// needs to be done before setting the program counter due to the
-	// 'if (address >= memory.getCodeSegme' check
+	// 'if (address >= memory.getCodeSegment()' check
 	memory.initializeCodeSegment(p16ExeFile.getCodeSegment());
 
 	VirtualMemory::Address const entryPointAddress = p16ExeFile.getEntryPointAddress();
@@ -394,9 +398,15 @@ void VirtualMachine::printInstructionOperandValues(std::ostream &stream, Mnemoni
 												   Register const ra, Register const rb) const {
 	switch (util::numberOfRegisterOperands(mnemonic)) {
 	case 0: break;
-	case 1:
-		printRegisterValue(stream << '(', ra)  << ')';
+	case 1: {
+		Data const registerValue = registerFile[ra];
+		printRegisterValue(stream << '(', ra);
+		if (isAnyJump(mnemonic) && symbolTable.contains(registerValue)) {
+			stream << '=' << symbolTable.getSymbolName(registerValue);
+		}
+		stream << ')';
 		break;
+	}
 	case 2:
 		printRegisterValue(stream << '(', ra);
 		printRegisterValue(stream << '|', rb)  << ')';

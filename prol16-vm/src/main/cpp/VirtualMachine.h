@@ -19,6 +19,7 @@
 #include "NonCopyable.h"
 #include "NumberUtils.h"
 #include "RegisterUtils.h"
+#include "SymbolTable.h"
 
 #include <cstdint>
 #include <ios>
@@ -51,6 +52,7 @@ private:
 	Flag carryFlag;
 	Flag zeroFlag;
 	VirtualMemory::Address &programCounter;
+	util::SymbolTable symbolTable;
 	::util::logging::Logger &logger;
 	std::unique_ptr<::util::CommandInterpreter> commandInterpreter;
 	bool const shouldPrintDecimal;
