@@ -7,6 +7,7 @@
 
 #include "SymbolTable.h"
 
+#include "NumberUtils.h"
 #include "StringUtils.h"
 
 #include <algorithm>
@@ -27,6 +28,20 @@ SymbolTable SymbolTable::create(LabelTable const &labels, Address const stringsS
 	return SymbolTable(symbolMap);
 }
 
+SymbolTable SymbolTable::create(SymbolAddressTable const &symbolAddressTable, StringTable const &stringTable) {
+	if (symbolAddressTable.size() != stringTable.size()) {
+		throw std::runtime_error(::util::format("size of symbol address table (%hd) does not match size of string table (%hd)",
+												symbolAddressTable.size(), stringTable.size()));
+	}
+
+	SymbolMap symbolMap;
+	for (auto const &entry : symbolAddressTable) {
+		symbolMap.emplace(entry.first, std::make_pair(stringTable.at(entry.second), entry.second));
+	}
+
+	return SymbolTable(symbolMap);
+}
+
 SymbolTable::Address SymbolTable::getSymbolAddress(std::string const &symbolName) const {
 	auto found = std::find_if(symbolMap.cbegin(), symbolMap.cend(), [symbolName](SymbolMap::value_type const &value){
 		return value.second.first == symbolName;
@@ -37,6 +52,33 @@ SymbolTable::Address SymbolTable::getSymbolAddress(std::string const &symbolName
 	}
 
 	return found->first;
+}
+
+SymbolTable::StringTable SymbolTable::getStringTable() const {
+	StringTable stringTable;
+	for (Entry const &entry : symbolMap) {
+		stringTable.emplace(entry.second.second, entry.second.first);
+	}
+
+	return stringTable;
+}
+
+bool SymbolTable::contains(Address const symbolAddress) const {
+	return symbolMap.count(symbolAddress) > 0;
+}
+
+bool SymbolTable::contains(std::string const &symbolName) const {
+	auto found = std::find_if(symbolMap.cbegin(), symbolMap.cend(), [symbolName](SymbolMap::value_type const &value){
+		return value.second.first == symbolName;
+	});
+
+	return found != symbolMap.cend();
+}
+
+void SymbolTable::logTo(::util::logging::Logger &logger) const {
+	for (Entry const &entry : symbolMap) {
+		logger << formatAsHexNumberWithBase(entry.first) << " = " << entry.second.first << '\n';
+	}
 }
 
 SymbolTable::SymbolTable(SymbolMap symbolMap) : symbolMap(std::move(symbolMap)) {
