@@ -28,6 +28,14 @@ void Logger::forEachLogStream(std::function<void(LogStream)> const &function) {
 	}
 }
 
+Logger::LogStreams& Logger::ifDisabledLogTo(LogStreams &logStreams) {
+	if (enabled) {
+		return this->logStreams;
+	}
+
+	return logStreams;
+}
+
 std::streamsize Logger::setWidth(std::streamsize const width) {
 	oldWidth = logStreams.front().get().width();
 

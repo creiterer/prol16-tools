@@ -45,6 +45,7 @@ public:
 	inline void disable() { enabled = false; }
 
 	void forEachLogStream(std::function<void(LogStream)> const &function);
+	LogStreams& ifDisabledLogTo(LogStreams &logStreams);
 
 	std::streamsize setWidth(std::streamsize const width);
 	void restoreWidth();
@@ -97,5 +98,14 @@ private:
 
 }	// namespace logging
 }	// namespace util
+
+template <typename T>
+::util::logging::Logger::LogStreams& operator<<(::util::logging::Logger::LogStreams &logStreams, T const &value) {
+	for (::util::logging::Logger::LogStream logStream : logStreams) {
+		logStream << value;
+	}
+
+	return logStreams;
+}
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_LOGGER_H_INCLUDED */
