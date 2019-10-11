@@ -90,4 +90,15 @@ std::string handleEscapeSequences(std::string str) {
 	return str;
 }
 
+std::string getPadded(std::string str, unsigned const alignment) {
+	pad(str, alignment);
+	return str;
+}
+
+void pad(std::string &str, unsigned const alignment) {
+	while (((str.length() + 1) % alignment) != 0) {
+		str.push_back('\0');
+	}
+}
+
 }	// namespace util

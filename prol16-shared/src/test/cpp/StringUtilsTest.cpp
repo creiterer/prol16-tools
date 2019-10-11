@@ -280,3 +280,22 @@ TEST(StringUtilsTest, testFormat) {
 	ASSERT_EQ("prefix data suffix", format("prefix %s suffix", "data"));
 	ASSERT_EQ("some value = 2", format("some value = %d", 2));
 }
+
+TEST(StringUtilsTest, testGetPadded) {
+	std::string const str("test");
+	ASSERT_EQ(5, getPadded(str, 1).size() + 1);
+
+	std::string const padded2 = getPadded(str, 2);
+	ASSERT_EQ(6, padded2.size() + 1);
+	ASSERT_EQ('\0', padded2[5]);
+
+	std::string const padded3 = getPadded(str, 3);
+	ASSERT_EQ(6, padded3.size() + 1);
+	ASSERT_EQ('\0', padded3[5]);
+
+	std::string const padded4 = getPadded(str, 4);
+	ASSERT_EQ(8, padded4.size() + 1);
+	ASSERT_EQ('\0', padded4[5]);
+	ASSERT_EQ('\0', padded4[6]);
+	ASSERT_EQ('\0', padded4[7]);
+}

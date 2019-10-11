@@ -46,13 +46,14 @@ std::string getUnquoted(std::string str);
 
 std::string handleEscapeSequences(std::string str);
 
+void pad(std::string &str, unsigned const alignment);
+std::string getPadded(std::string str, unsigned const alignment);
+
 template <typename T>
 std::vector<T> encode(std::string str) {
 	static_assert(std::is_integral<T>::value, "encode() requires an integral value type for the returned buffer.");
 
-	while (((str.length() + 1) % sizeof(T)) != 0) {
-		str.push_back('\0');
-	}
+	pad(str, sizeof(T));
 	size_t const cStringLength = str.length() + 1;	// +1 for '\0'
 	assert(util::isMultiple(sizeof(T), cStringLength));
 
