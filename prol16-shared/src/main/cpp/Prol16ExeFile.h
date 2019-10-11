@@ -8,9 +8,11 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILE_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILE_H_INCLUDED
 
+#include "CodeSegment.h"
 #include "FileUtils.h"
 #include "MemoryUtils.h"
 #include "ScopedFileStream.h"
+#include "SymbolTable.h"
 
 #include <array>
 #include <fstream>
@@ -26,15 +28,14 @@ public:
 	using Address = memory::Address;
 	using Data = memory::Data;
 
-	using CodeSegment = std::vector<Data>;
-
 	static char const * const Extension;
 
 	static unsigned const MagicNumberSize = 4;
 	static std::array<unsigned char, MagicNumberSize> const MagicNumber;
 
 	static unsigned const EntryPointAddressOffset = MagicNumberSize;
-	static unsigned const CodeSegmentOffset = EntryPointAddressOffset + sizeof(Address);
+	static unsigned const SymbolTableSizeOffset = EntryPointAddressOffset + sizeof(Address);
+	static unsigned const SymbolTableOffset = SymbolTableSizeOffset + sizeof(Data);
 
 	static Prol16ExeFile parse(std::string const &filename);
 	static Prol16ExeFile parse(::util::ScopedFileStream<std::ifstream> &sourceStream);
@@ -42,17 +43,19 @@ public:
 
 	inline Address getEntryPointAddress() const { return entryPointAddress; }
 	inline CodeSegment getCodeSegment() const { return codeSegment; }
+	inline SymbolTable getSymbolTable() const { return symbolTable; }
 
 private:
 	Address const entryPointAddress;
 	CodeSegment const codeSegment;
+	SymbolTable const symbolTable;
 
 	static Prol16ExeFile parse(::util::FileBuffer const &buffer, std::string const &filename);
 
 	static void checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename);
 	static void checkFileStartsWithMagicNumber(::util::FileBuffer const &buffer, std::string const &filename);
 
-	Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment);
+	Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment, SymbolTable symbolTable);
 };
 
 }	// namespace util

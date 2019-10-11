@@ -112,10 +112,3 @@ TEST(DisassemblerTest, testMissingEntryPoint) {
 
 	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), Prol16ExeParseError);
 }
-
-TEST(DisassemblerTest, testEmptyCodeSegment) {
-	ScopedFileStream<std::ifstream> inputStream("resources/empty_code_segment.p16", std::ifstream::binary);
-	std::ostringstream outputStream;
-
-	ASSERT_THROW(PROL16::Disassembler disassembler(inputStream, outputStream), Prol16ExeParseError);
-}

@@ -8,6 +8,7 @@
 #ifndef PROL16_ASM_PROL16_DIS_SRC_MAIN_CPP_DISASSEMBLER_H_INCLUDED
 #define PROL16_ASM_PROL16_DIS_SRC_MAIN_CPP_DISASSEMBLER_H_INCLUDED
 
+#include "CodeSegment.h"
 #include "Instruction.h"
 #include "MemoryUtils.h"
 #include "NonCopyable.h"
@@ -26,7 +27,7 @@ public:
 	using Immediate = util::Immediate;
 	using Instruction = util::Instruction;
 	using Address = PROL16::util::memory::Address;
-	using CodeSegment = util::Prol16ExeFile::CodeSegment;
+	using CodeSegment = util::CodeSegment;
 
 	using SourceStream = ::util::ScopedFileStream<std::ifstream>;
 

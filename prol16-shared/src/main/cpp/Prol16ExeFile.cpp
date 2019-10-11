@@ -12,6 +12,7 @@
 #include "Prol16ExeParseError.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cstring>
 #include <sstream>
 #include <stdexcept>
@@ -41,11 +42,27 @@ Prol16ExeFile Prol16ExeFile::parse(::util::FileBuffer const &buffer, std::string
 
 	auto const entryPointAddress = ::util::readValue<Address>(buffer, EntryPointAddressOffset);
 
-	CodeSegment::size_type const codeSegmentSize = (buffer.size() - CodeSegmentOffset) / sizeof(CodeSegment::value_type);
-	CodeSegment codeSegment(codeSegmentSize);
-	std::memcpy(codeSegment.data(), buffer.data() + CodeSegmentOffset, buffer.size() - CodeSegmentOffset);
+	auto const symbolTableSize = ::util::readValue<Data>(buffer, SymbolTableSizeOffset);
+	assert(symbolTableSize != 0);
 
-	return Prol16ExeFile(entryPointAddress, std::move(codeSegment));
+	std::vector<std::pair<Address, Address>> symbolAddresses(symbolTableSize);
+	// NOLINTNEXTLINE(bugprone-undefined-memory-manipulation)
+	std::memcpy(symbolAddresses.data(), buffer.data() + SymbolTableOffset, symbolTableSize * (2 * sizeof(Address)));
+
+	SymbolTable::SymbolAddressTable symbolAddressTable;
+	for (auto const &entry : symbolAddresses) {
+		symbolAddressTable.emplace(entry.first, entry.second);
+	}
+
+	unsigned const codeSegmentOffset = SymbolTableOffset + symbolTableSize * (2 * sizeof(Address));
+	CodeSegment codeSegment = CodeSegment::createFromFileBuffer(buffer, codeSegmentOffset);
+
+	SymbolTable::StringTable stringTable;
+	for (auto const &entry : symbolAddresses) {
+		stringTable.emplace(entry.second, codeSegment.readString(entry.second));
+	}
+
+	return Prol16ExeFile(entryPointAddress, std::move(codeSegment), SymbolTable::create(symbolAddressTable, stringTable));
 }
 
 void Prol16ExeFile::checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename) {
@@ -53,21 +70,16 @@ void Prol16ExeFile::checkFileSize(::util::FileBuffer::size_type const bufferSize
 		throw Prol16ExeParseError(filename, Prol16ExeParseError::ErrorType::MagicNumberSize);
 	}
 
-	if (bufferSize < CodeSegmentOffset) {
+	if (bufferSize < SymbolTableSizeOffset) {
 		throw Prol16ExeParseError(filename, Prol16ExeParseError::ErrorType::EntryPoint);
 	}
 
-	if (bufferSize == CodeSegmentOffset) {
-		throw Prol16ExeParseError(filename, Prol16ExeParseError::ErrorType::CodeSegment);
+	if (bufferSize < SymbolTableOffset) {
+		throw Prol16ExeParseError(filename, Prol16ExeParseError::ErrorType::SymbolTableSize);
 	}
 
-	if (!::util::isMultiple(sizeof(Data), bufferSize - CodeSegmentOffset)) {
-		std::ostringstream errorMessage;
-		errorMessage << "actual buffer size of the code segment (" << bufferSize - CodeSegmentOffset << ") ";
-		errorMessage << "isn't a multiple of the data size (" << sizeof(Data) << "); ";
-		errorMessage << "this indicates incomplete instructions!";
-
-		throw std::runtime_error(errorMessage.str());
+	if (bufferSize == SymbolTableOffset) {
+		throw Prol16ExeParseError(filename, Prol16ExeParseError::ErrorType::SymbolTable);
 	}
 }
 
@@ -77,8 +89,10 @@ void Prol16ExeFile::checkFileStartsWithMagicNumber(::util::FileBuffer const &buf
 	}
 }
 
-Prol16ExeFile::Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment)
-: entryPointAddress(entryPointAddress), codeSegment(std::move(codeSegment)) {}
+Prol16ExeFile::Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment, SymbolTable symbolTable)
+: entryPointAddress(entryPointAddress), codeSegment(std::move(codeSegment)), symbolTable(std::move(symbolTable)) {
+
+}
 
 }	// namespace util
 }	// namespace PROL16

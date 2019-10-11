@@ -106,7 +106,7 @@ TEST(VirtualMemoryTest, testInitializationFromFileWithIncompleteInstruction) {
 }
 
 TEST(VirtualMemoryTest, testReading) {
-	std::vector<VirtualMemory::Data> codeSegment{
+	PROL16::util::CodeSegment::Segment segment{
 			0x0000,	// 0000
 			0x0400,	// 0001
 			0x0800, // 0002
@@ -136,7 +136,7 @@ TEST(VirtualMemoryTest, testReading) {
 	};
 
 	VirtualMemory memory;
-	memory.initializeCodeSegment(codeSegment);
+	memory.initializeCodeSegment(PROL16::util::CodeSegment(segment));
 
 	ASSERT_EQ(0x0000, memory.read(0x0000));
 	ASSERT_EQ(0x0dee, memory.read(0x0019));
@@ -156,7 +156,7 @@ TEST(VirtualMemoryTest, testReading) {
 	ASSERT_EQ(4, memoryRange.size());
 	ASSERT_EQ(expectedRange, memoryRange);
 
-	ASSERT_EQ(codeSegment, memory.readRange(0x0000, 0x0019));
+	ASSERT_EQ(segment, memory.readRange(0x0000, 0x0019));
 
 	// does not throw because it is not out of the size of the memory
 	// -> it "just" reads an invalid value

@@ -8,6 +8,7 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 
+#include "CodeSegment.h"
 #include "MemoryUtils.h"
 #include "NonCopyable.h"
 #include "Prol16ExeFile.h"
@@ -55,7 +56,7 @@ public:
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
 
 	void initializeFromFile(std::string const &filename);
-	void initializeCodeSegment(util::Prol16ExeFile::CodeSegment const &codeSegment);
+	void initializeCodeSegment(util::CodeSegment const &codeSegment);
 
 private:
 	Memory memory{0};
