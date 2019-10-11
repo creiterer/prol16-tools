@@ -30,8 +30,10 @@ FileBuffer readEntireStream(util::ScopedFileStream<std::ifstream> &stream);
 FileBuffer readEntireStream(std::ifstream &stream, std::string const &filename = "");
 
 std::string getBufferAsString(FileBuffer const &buffer);
+char const* getBufferAsCString(FileBuffer const &buffer, FileBuffer::size_type const offset = 0);
 
 void writeStringToStream(std::ostream &stream, std::string const &str);
+void writeStringPaddedToStream(std::ostream &stream, std::string str, unsigned const alignment);
 
 template <typename T>
 void writeValueBinary(std::ostream &stream, T value) {

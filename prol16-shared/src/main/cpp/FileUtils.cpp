@@ -8,6 +8,7 @@
 #include "FileUtils.h"
 
 #include "ScopedFileStream.h"
+#include "StringUtils.h"
 
 #include <cassert>
 #include <sstream>
@@ -63,8 +64,18 @@ std::string getBufferAsString(FileBuffer const &buffer) {
 	return std::string(reinterpret_cast<char const*>(buffer.data()), buffer.size());
 }
 
+char const* getBufferAsCString(FileBuffer const &buffer, FileBuffer::size_type const offset) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	return reinterpret_cast<char const*>(buffer.data() + offset);
+}
+
 void writeStringToStream(std::ostream &stream, std::string const &str) {
 	stream.write(str.c_str(), str.length() + 1);	// +1 for terminating null character
+}
+
+void writeStringPaddedToStream(std::ostream &stream, std::string str, unsigned const alignment) {
+	pad(str, alignment);
+	writeStringToStream(stream, str);
 }
 
 } 	// namespace util
