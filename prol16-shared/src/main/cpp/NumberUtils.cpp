@@ -7,6 +7,8 @@
 
 #include "NumberUtils.h"
 
+#include "StringUtils.h"
+
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
@@ -66,6 +68,10 @@ std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number)
 
 std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number) {
 	return printHexNumberFormatted(stream << "0x", number);
+}
+
+std::string formatAsHexNumberWithBase(Number const number) {
+	return ::util::format("0x%04hX", number);
 }
 
 }	// namespace util

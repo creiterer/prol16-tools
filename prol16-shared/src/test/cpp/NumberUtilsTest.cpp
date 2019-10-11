@@ -23,3 +23,8 @@ TEST(NumberUtilsTest, testParseNumber) {
 	ASSERT_EQ(42405, parseNumber("1010_0101_1010_0101b"));
 }
 
+TEST(NumberUtilsTest, testFormatAsHexNumberWithBase) {
+	ASSERT_EQ("0x0000", formatAsHexNumberWithBase(0));
+	ASSERT_EQ("0x000F", formatAsHexNumberWithBase(0xF));
+	ASSERT_EQ("0xFFFF", formatAsHexNumberWithBase(0xFFFF));
+}
