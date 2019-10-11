@@ -25,6 +25,12 @@ Prol16ExeParseError::Prol16ExeParseError(std::string const &filename, ErrorType 
 	case ErrorType::EntryPoint:
 		errorMessageStream << "does not contain a valid entry point address";
 		break;
+	case ErrorType::SymbolTableSize:
+		errorMessageStream << "does not contain the size of the symbol table";
+		break;
+	case ErrorType::SymbolTable:
+		errorMessageStream << "does not contain a valid symbol table";
+		break;
 	case ErrorType::CodeSegment:
 		errorMessageStream << "does not contain a valid code segment";
 		break;

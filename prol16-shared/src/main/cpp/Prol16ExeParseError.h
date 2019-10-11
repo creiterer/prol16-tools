@@ -20,6 +20,8 @@ public:
 		MagicNumberSize,
 		MagicNumberValue,
 		EntryPoint,
+		SymbolTableSize,
+		SymbolTable,
 		CodeSegment,
 	};
 
