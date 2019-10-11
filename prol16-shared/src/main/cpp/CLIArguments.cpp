@@ -25,7 +25,7 @@ bool CLIArguments::isSet(std::string const &flagName) const {
 	}
 }
 
-bool CLIArguments::isSet(flags::FlagName const &flagName) const {
+bool CLIArguments::isSet(ArgumentName const &flagName) const {
 	return flags.at(flagName.longName);
 }
 
@@ -37,6 +37,10 @@ std::string const& CLIArguments::operator[](std::string const &argumentName) con
 		// argumentName was not the long name -> assume it is the short name -> try to map it to the long name
 		return arguments.at(shortToLongNameMap.at(argumentName));
 	}
+}
+
+std::string const& CLIArguments::operator[](ArgumentName const &argumentName) const {
+	return operator[](argumentName.longName);
 }
 
 }	// namespace cli

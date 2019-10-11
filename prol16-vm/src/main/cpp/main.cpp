@@ -8,9 +8,10 @@
 #include "VirtualMachine.h"
 
 #include "ArgumentParser.h"
+#include "CLIArgumentNames.h"
 #include "CLIArguments.h"
 #include "CLIError.h"
-#include "CLIFlags.h"
+#include "Logger.h"
 #include "RegisterUtils.h"
 #include "ScopedFileStream.h"
 
@@ -21,21 +22,20 @@ using std::cerr;
 using std::endl;
 
 static std::string const FILENAME_ARG_NAME = "PROL16_EXE_FILE";				// NOLINT(readability-identifier-naming)
-static std::string const LOGFILE_OPTION_NAME = "--log-file";				// NOLINT(readability-identifier-naming)
-static util::cli::flags::FlagName const DECIMAL_FLAG{"-d", "--decimal"};	// NOLINT(readability-identifier-naming)
+static util::cli::ArgumentName const DECIMAL_FLAG{"-d", "--decimal"};	// NOLINT(readability-identifier-naming)
 
 int main(int const argc, char const * const argv[]) {
 	try {
 		util::cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
-		argumentParser.addOptionalArgument(LOGFILE_OPTION_NAME, "prol16-vm.log");
+		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-vm.log");
 		argumentParser.addFlag(util::cli::flags::INTERACTIVE, false);
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 		argumentParser.addFlag(DECIMAL_FLAG, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
 
-		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[LOGFILE_OPTION_NAME], std::ofstream::out);
+		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[util::cli::options::LOGFILE], std::ofstream::out);
 
 		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
 

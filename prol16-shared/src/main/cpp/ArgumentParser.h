@@ -9,9 +9,9 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_ARGUMENTPARSER_H_INCLUDED
 
+#include "CLIArgumentNames.h"
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
-#include "CLIFlags.h"
 #include "NonCopyable.h"
 
 #include <string>
@@ -32,10 +32,11 @@ public:
 
 	ArgumentParser& addOptionalArgument(std::string const &longName, std::string const &defaultValue);
 	ArgumentParser& addOptionalArgument(std::string const &shortName, std::string const &longName, std::string const &defaultValue);
+	ArgumentParser& addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue);
 
 	ArgumentParser& addFlag(std::string const &longName, bool const defaultValue = false);
 	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue = false);
-	ArgumentParser& addFlag(flags::FlagName const &flagName, bool const defaultValue = false);
+	ArgumentParser& addFlag(ArgumentName const &flagName, bool const defaultValue = false);
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 	CLIArguments parseArguments(int const argc, char const * const argv[]) const;

@@ -51,6 +51,10 @@ ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &shortName
 	return *this;
 }
 
+ArgumentParser& ArgumentParser::addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue) {
+	return addOptionalArgument(optionName.shortName, optionName.longName, defaultValue);
+}
+
 ArgumentParser& ArgumentParser::addFlag(std::string const &longName, bool const defaultValue) {
 	assert(!longName.empty());
 
@@ -73,17 +77,8 @@ ArgumentParser& ArgumentParser::addFlag(std::string const &shortName, std::strin
 	return *this;
 }
 
-ArgumentParser& ArgumentParser::addFlag(flags::FlagName const &flagName, bool const defaultValue) {
-	assert(!flagName.shortName.empty());
-	assert(!flagName.longName.empty());
-
-	auto const result = flags.emplace(flagName.longName, defaultValue);
-	assert(result.second);
-
-	auto const result2 = shortToLongNameMapping.emplace(flagName.shortName, flagName.longName);
-	assert(result2.second);
-
-	return *this;
+ArgumentParser& ArgumentParser::addFlag(ArgumentName const &flagName, bool const defaultValue) {
+	return addFlag(flagName.shortName, flagName.longName, defaultValue);
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
