@@ -14,10 +14,12 @@
 #include "Prol16AsmParser.h"
 
 #include "ArgumentParser.h"
+#include "CLIArgumentNames.h"
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Filename.h"
 #include "InstructionWriter.h"
+#include "Logger.h"
 #include "Prol16ExeFile.h"
 #include "Prol16ExeFileWriter.h"
 #include "ScopedFileStream.h"
@@ -44,10 +46,17 @@ int main(int const argc, char const * const argv[]) {
 	try {
 		util::cli::ArgumentParser argumentParser;
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
+		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-as.log");
+		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
 
-		cout << "========== Compilation Started ==========" << endl;
+		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[util::cli::options::LOGFILE], std::ofstream::out);
+		util::logging::Logger::LogStreams alwaysLogStreams{std::cout};
+
+		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
+
+		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Compilation Started ==========\n";
 
 		util::Filename filename(cliArguments[FILENAME_ARG_NAME]);
 
@@ -68,10 +77,14 @@ int main(int const argc, char const * const argv[]) {
 
 		std::string const p16ExeFilename = filename.getWithCustomExtension(Prol16ExeFile::Extension);
 
-		cout << "compiling '" << filename.asString() << "' to '" << p16ExeFilename << "': ";
+		logger.ifDisabledLogTo(alwaysLogStreams) << "compiling '" << filename.asString() << "' to '" << p16ExeFilename << "': ";
 		if (countingErrorListener.hasFoundErrors()) {
-			cout << "FAILED: " << countingErrorListener.getErrorCount() << " error(s) detected while parsing" << endl;
+			logger.ifDisabledLogTo(alwaysLogStreams) << "FAILED: " << countingErrorListener.getErrorCount() << " error(s) detected while parsing\n";
 			return 2;
+		}
+
+		if (logger.isEnabled()) {
+			alwaysLogStreams << '\n';
 		}
 
 		PROL16::LabelListener labelListener;
@@ -81,16 +94,15 @@ int main(int const argc, char const * const argv[]) {
 		PROL16::Prol16AsmListener asmListener(instructionWriter, labelListener.getLabels());
 		tree::ParseTreeWalker::DEFAULT.walk(&asmListener, parseTree);
 
-		Prol16ExeFileWriter p16ExeFile(p16ExeFilename, labelListener.getLabels(), labelListener.getNextInstructionAddress());
+		Prol16ExeFileWriter p16ExeFile(p16ExeFilename,
+									   labelListener.getLabels(), labelListener.getNextInstructionAddress(),
+									   logger);
 		p16ExeFile.writeFileHeader(EntryPointName);
 		p16ExeFile.writeSymbolTable();
+		p16ExeFile.writeCodeSegment(instructionWriter.getInstructionBuffer());
 
-		instructionWriter.writeBufferToStream(p16ExeFile.stream());
-
-		p16ExeFile.writeSymbolNames();
-
-		cout << "SUCCEEDED" << endl;
-		cout << "========== Compilation Finished ==========" << endl;
+		logger.ifDisabledLogTo(alwaysLogStreams) << "SUCCEEDED\n";
+		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Compilation Finished ==========\n";
 
 		return 0;
 	} catch (util::cli::CLIError const &e) {
