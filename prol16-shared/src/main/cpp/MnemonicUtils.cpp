@@ -121,5 +121,9 @@ uint8_t numberOfRegisterOperands(Opcode const opcode) {
 	return numberOfRegisterOperands(getMnemonicOfOpcode(opcode));
 }
 
+bool isAnyJump(Mnemonic const mnemonic) {
+	return (mnemonic == JUMP) || (mnemonic == JUMPC) || (mnemonic == JUMPZ);
+}
+
 }	// namespace util
 }	// namespace PROL16

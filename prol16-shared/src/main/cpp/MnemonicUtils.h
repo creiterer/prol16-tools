@@ -63,6 +63,8 @@ uint8_t numberOfRegisterOperands(Mnemonic const mnemonic);
 
 uint8_t numberOfRegisterOperands(Opcode const opcode);
 
+bool isAnyJump(Mnemonic const mnemonic);
+
 }	// namespace util
 }	// namespace PROL16
 

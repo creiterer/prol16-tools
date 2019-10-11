@@ -123,3 +123,12 @@ TEST(MnemonicUtilsTest, testNumberOfRegisterOperands) {
 
 	ASSERT_THROW(numberOfRegisterOperands(0x5), std::invalid_argument);
 }
+
+TEST(MnemonicUtilsTest, testIsAnyJump) {
+	ASSERT_TRUE(isAnyJump(JUMP));
+	ASSERT_TRUE(isAnyJump(JUMPC));
+	ASSERT_TRUE(isAnyJump(JUMPZ));
+
+	ASSERT_FALSE(isAnyJump(NOP));
+	ASSERT_FALSE(isAnyJump(LOADI));
+}
