@@ -8,7 +8,9 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILEWRITER_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILEWRITER_H_INCLUDED
 
+#include "InstructionWriter.h"
 #include "LabelUtils.h"
+#include "Logger.h"
 #include "MemoryUtils.h"
 #include "NonCopyable.h"
 #include "SymbolTable.h"
@@ -22,11 +24,13 @@ namespace PROL16 { namespace util {
 class Prol16ExeFileWriter final : private ::util::NonCopyable {	// NOLINT(cppcoreguidelines-special-member-functions)
 public:
 	using Address = memory::Address;
+	using Data = memory::Data;
 
-	static memory::Data const MagicStdLibValue = 0xBAAD;
+	static Data const MagicStdLibValue = 0xBAAD;
 
 	Prol16ExeFileWriter(std::string const &filename,
-						LabelTable const &labels, Address const stringsStartAddress);
+						LabelTable const &labels, Address const stringsStartAddress,
+						::util::logging::Logger &logger);
 	~Prol16ExeFileWriter() override;
 
 	inline std::ofstream& stream() { return fileStream; }
@@ -34,16 +38,19 @@ public:
 
 	void writeFileHeader(std::string const &entryPointName);
 	void writeSymbolTable();
-	void writeSymbolNames();
+	void writeCodeSegment(InstructionWriter::InstructionBuffer const &buffer);
 
 private:
 	std::string const filename;
 	std::ofstream fileStream;
 	SymbolTable const symbolTable;
+	::util::logging::Logger &logger;
 
 	void writeMagicNumber();
 	void writeEntryPointAddress(std::string const &entryPointName);
-
+	void writeStringTable();
+	void logSymbolTableEntry(SymbolTable::Entry const &entry);
+	void logStringTableEntry(SymbolTable::StringTableEntry const &entry);
 };
 
 
