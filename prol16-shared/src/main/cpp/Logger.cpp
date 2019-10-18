@@ -8,6 +8,8 @@
 #include "Logger.h"
 
 #include <algorithm>
+#include <chrono>
+#include <ctime>
 #include <stdexcept>
 #include <utility>
 
@@ -100,6 +102,13 @@ void Logger::restoreFormat() {
 	restoreWidth();
 	restoreFillCharacter();
 	restoreAdjustment();
+}
+
+void Logger::logTimestamp(std::string const &prefix, std::string const &suffix) {
+	using namespace std::chrono;
+
+	time_t timeInfo = system_clock::to_time_t(system_clock::now());
+	logStreams << prefix << ctime(&timeInfo) << suffix;
 }
 
 void Logger::setAdjustmentAux(Adjustment const adjustment) {

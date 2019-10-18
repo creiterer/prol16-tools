@@ -14,6 +14,7 @@
 #include <initializer_list>
 #include <ios>
 #include <ostream>
+#include <string>
 #include <vector>
 
 namespace util { namespace logging {
@@ -59,6 +60,8 @@ public:
 	void setFormat(std::streamsize const width, char const fillCharacter);
 	void setFormat(std::streamsize const width, char const fillCharacter, Adjustment const adjustment);
 	void restoreFormat();
+
+	void logTimestamp(std::string const &prefix = "", std::string const &suffix = "");
 
 	template <typename T>
 	Logger& operator<<(T const &value) {
