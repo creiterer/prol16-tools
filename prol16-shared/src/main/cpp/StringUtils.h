@@ -43,8 +43,10 @@ void trim(std::string &str, std::string const &chars);
 void trimQuotes(std::string &str);
 
 std::string getUnquoted(std::string str);
+std::string getQuoted(std::string const &str);
 
 std::string handleEscapeSequences(std::string str);
+std::string getEscaped(std::string str);
 
 void pad(std::string &str, unsigned const alignment);
 std::string getPadded(std::string str, unsigned const alignment);

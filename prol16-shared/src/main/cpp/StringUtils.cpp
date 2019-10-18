@@ -74,6 +74,10 @@ std::string getUnquoted(std::string str) {
 	return str;
 }
 
+std::string getQuoted(std::string const &str) {
+	return '"' + str + '"';
+}
+
 std::string handleEscapeSequences(std::string str) {
 	size_t pos = str.find('\\');
 	while (pos != std::string::npos) {
@@ -85,6 +89,21 @@ std::string handleEscapeSequences(std::string str) {
 			}
 		}
 		pos = str.find('\\', pos + 1);
+	}
+
+	return str;
+}
+
+std::string getEscaped(std::string str) {
+	size_t pos = str.find_first_of("\n\r\t");
+	while (pos != std::string::npos) {
+		switch (str[pos]) {
+		case '\n': str.replace(pos, 1, "\\n"); break;
+		case '\r': str.replace(pos, 1, "\\r"); break;
+		case '\t': str.replace(pos, 1, "\\t"); break;
+		}
+
+		pos = str.find_first_of("\n\r\t", pos + 2);
 	}
 
 	return str;

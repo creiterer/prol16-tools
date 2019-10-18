@@ -241,6 +241,11 @@ TEST(StringUtilsTest, testGetUnquoted) {
 	ASSERT_EQ("test", getUnquoted(str));
 }
 
+TEST(StringUtilsTest, testGetQuoted) {
+	ASSERT_EQ("\"\"", getQuoted(""));
+	ASSERT_EQ("\"test\"", getQuoted("test"));
+}
+
 TEST(StringUtilsTest, testHandleEscapeSequences) {
 	std::string str;
 	ASSERT_TRUE(handleEscapeSequences(str).empty());
@@ -298,4 +303,13 @@ TEST(StringUtilsTest, testGetPadded) {
 	ASSERT_EQ('\0', padded4[5]);
 	ASSERT_EQ('\0', padded4[6]);
 	ASSERT_EQ('\0', padded4[7]);
+}
+
+TEST(StringUtilsTest, testGetEscaped) {
+	ASSERT_EQ("", getEscaped(""));
+	ASSERT_EQ("test", getEscaped("test"));
+	ASSERT_EQ("test\\n", getEscaped("test\n"));
+	ASSERT_EQ("\\ntest", getEscaped("\ntest"));
+	ASSERT_EQ("\\nte\\rst\\t", getEscaped("\nte\rst\t"));
+	ASSERT_EQ("\\n\\r\\t", getEscaped("\n\r\t"));
 }
