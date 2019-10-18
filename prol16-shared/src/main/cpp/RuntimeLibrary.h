@@ -39,6 +39,7 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 };
 
 PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &functionName);
+std::string getRuntimeLibFunctionName(RuntimeLibFunctionAddress const address);
 
 bool isRuntimeLibFunctionAddress(PROL16::util::memory::Address const address);
 

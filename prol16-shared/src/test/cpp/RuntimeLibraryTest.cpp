@@ -24,3 +24,7 @@ TEST(RuntimeLibraryTest, testisRuntimeLibFunctionAddress) {
 	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FF8));
 }
 
+TEST(RuntimeLibraryTest, testGetRuntimeLibFunctionName) {
+	ASSERT_EQ("_mul", getRuntimeLibFunctionName(MUL));
+	ASSERT_EQ("_print", getRuntimeLibFunctionName(PRINT));
+}
