@@ -35,9 +35,16 @@ int main(int const argc, char const * const argv[]) {
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
 
-		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[util::cli::options::LOGFILE], std::ofstream::out);
+		bool const verboseLoggingEnabled = cliArguments.isSet(util::cli::flags::VERBOSE);
 
-		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
+		util::logging::Logger logger(std::cout, verboseLoggingEnabled);
+
+		util::ScopedFileStream<std::ofstream> logFileStream;
+
+		if (verboseLoggingEnabled) {
+			logFileStream.open(cliArguments[util::cli::options::LOGFILE], std::ofstream::out);
+			logger.addLogStream(logFileStream.stream());
+		}
 
 		logger.logTimestamp("log created at: ", "\n");
 		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger,
