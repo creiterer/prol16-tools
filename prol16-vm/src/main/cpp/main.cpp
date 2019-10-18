@@ -39,6 +39,7 @@ int main(int const argc, char const * const argv[]) {
 
 		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
 
+		logger.logTimestamp("log created at: ", "\n");
 		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger,
 										cliArguments.isSet(util::cli::flags::INTERACTIVE), cliArguments.isSet(DECIMAL_FLAG));
 		prol16vm.run();
