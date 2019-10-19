@@ -248,17 +248,17 @@ void VirtualMachine::setZeroFlag(RegisterFile::Data const result) {
 	zeroFlag.set(result == 0);
 }
 
-void VirtualMachine::setCarryFlag(ArithmeticResult const result) {
+void VirtualMachine::setCarryFlag(ArithmeticResult const &result) {
 	// if the 16th bit is set, there was an overflow/underflow -> set carry
-	carryFlag.set((result & (1 << BitWidth)) != 0);
+	carryFlag.set(result.isOverflow(BitWidth));
 }
 
 void VirtualMachine::executeAdd(Register const ra, Register const rb, bool const withCarry) {
 	ArithmeticResult result = 0;
 	if (withCarry) {
-		result = static_cast<ArithmeticResult>(registerFile[ra]) + registerFile[rb] + (carryFlag ? 1 : 0);
+		result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) + registerFile[rb] + (carryFlag ? 1 : 0);
 	} else {
-		result = static_cast<ArithmeticResult>(registerFile[ra]) + registerFile[rb];
+		result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) + registerFile[rb];
 	}
 
 	registerFile[ra] = static_cast<RegisterFile::Data>(result);
@@ -269,9 +269,9 @@ void VirtualMachine::executeAdd(Register const ra, Register const rb, bool const
 void VirtualMachine::executeSub(Register const ra, Register const rb, bool const withCarry, bool const storeResult) {
 	ArithmeticResult result = 0;
 	if (withCarry) {
-		result = static_cast<ArithmeticResult>(registerFile[ra]) - registerFile[rb] - (carryFlag ? 1 : 0);
+		result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) - registerFile[rb] - (carryFlag ? 1 : 0);
 	} else {
-		result = static_cast<ArithmeticResult>(registerFile[ra]) - registerFile[rb];
+		result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) - registerFile[rb];
 	}
 
 	if (storeResult) {
@@ -284,7 +284,7 @@ void VirtualMachine::executeSub(Register const ra, Register const rb, bool const
 
 void VirtualMachine::executeInc(Register const ra) {
 	ArithmeticResult result = 0;
-	result = static_cast<ArithmeticResult>(registerFile[ra]) + 1;
+	result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) + 1;
 
 	registerFile[ra] = static_cast<RegisterFile::Data>(result);
 	setZeroFlag(registerFile[ra]);
@@ -293,7 +293,7 @@ void VirtualMachine::executeInc(Register const ra) {
 
 void VirtualMachine::executeDec(Register const ra) {
 	ArithmeticResult result = 0;
-	result = static_cast<ArithmeticResult>(registerFile[ra]) - 1;
+	result = static_cast<ArithmeticResult::ResultType>(registerFile[ra]) - 1;
 
 	registerFile[ra] = static_cast<RegisterFile::Data>(result);
 	setZeroFlag(registerFile[ra]);
@@ -362,6 +362,7 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 	case MUL:
 		logRuntimeLibCall(MUL);
+		executeMul(std::make_pair(4, 6), std::make_pair(4, 5));
 		break;
 	case DIV:
 		logRuntimeLibCall(DIV);
@@ -386,6 +387,13 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 	default:
 		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call"));
 	}
+}
+
+void VirtualMachine::executeMul(RegisterPair const &srcRegs,  RegisterPair const &destRegs) {
+	ArithmeticResult const result = static_cast<ArithmeticResult::ResultType>(registerFile[srcRegs.first]) * registerFile[srcRegs.second];
+
+	registerFile[destRegs.first] = result.getLow();
+	registerFile[destRegs.second] = result.getHigh();
 }
 
 void VirtualMachine::printInfo(std::string const &message) const {

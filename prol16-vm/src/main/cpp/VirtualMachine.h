@@ -12,6 +12,7 @@
 #include "RegisterFile.h"
 #include "VirtualMemory.h"
 
+#include "ArithmeticResult.h"
 #include "CommandInterpreter.h"
 #include "Instruction.h"
 #include "Logger.h"
@@ -33,11 +34,13 @@ namespace PROL16 {
 class VirtualMachine final : private ::util::NonCopyable {
 public:
 	using Register = util::Register;
+	using RegisterPair = util::RegisterPair;
 	using Mnemonic = util::Mnemonic;
 	using Immediate = util::Immediate;
 	using Address = VirtualMemory::Address;
 	using Data = VirtualMemory::Data;
-	using ArithmeticResult = uint32_t;
+	using ArithmeticResult = util::ArithmeticResult;
+	using ArithmeticResultType = ArithmeticResult::ResultType;
 	using Instruction = util::Instruction;
 
 	static uint8_t const BitWidth = 16;
@@ -65,7 +68,7 @@ private:
 
 	void setProgramCounter(VirtualMemory::Address const address);
 	void setZeroFlag(RegisterFile::Data const result);
-	void setCarryFlag(ArithmeticResult const result);
+	void setCarryFlag(ArithmeticResult const &result);
 
 	void executeAdd(Register const ra, Register const rb, bool const withCarry = false);
 	void executeSub(Register const ra, Register const rb, bool const withCarry = false, bool const storeResult = true);
@@ -74,6 +77,7 @@ private:
 	void executeShl(Register const ra, bool const withCarry = false);
 	void executeShr(Register const ra, bool const withCarry = false);
 	void executeRuntimeLibFunction(Address const address);
+	void executeMul(RegisterPair const &srcRegs,  RegisterPair const &destRegs);
 
 	void printInfo(std::string const &message) const;
 	void printProgramCounter(std::ostream &stream) const;

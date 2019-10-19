@@ -10,11 +10,13 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
 using Register = uint8_t;
+using RegisterPair = std::pair<Register, Register>;
 
 static Register const RegisterCount = 16;
 
