@@ -19,6 +19,7 @@
 #include "NonCopyable.h"
 #include "NumberUtils.h"
 #include "RegisterUtils.h"
+#include "RuntimeLibrary.h"
 #include "SymbolTable.h"
 
 #include <cstdint>
@@ -40,6 +41,7 @@ public:
 	using Instruction = util::Instruction;
 
 	static uint8_t const BitWidth = 16;
+	static size_t const InstructionLogWidth = 20;
 
 	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
 				   bool const interactive, bool const shouldPrintDecimal);
@@ -81,6 +83,8 @@ private:
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
 	std::ostream& printMemoryValue(std::ostream &stream, Address const address) const;
 	std::ostream& printData(std::ostream &stream, Data const data) const;
+
+	void logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address);
 
 	void setupCommandInterpreter();
 	void printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;

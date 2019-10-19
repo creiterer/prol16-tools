@@ -10,7 +10,6 @@
 #include "NotImplementedError.h"
 #include "OpcodeError.h"
 #include "Prol16ExeFile.h"
-#include "RuntimeLibrary.h"
 #include "StringUtils.h"
 
 #include <algorithm>
@@ -78,8 +77,6 @@ VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
 bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	using namespace util;
 
-	size_t const instructionLogWidth = 20;
-
 	logger.forEachLogStream(std::bind(&VirtualMachine::printState, this, std::placeholders::_1));
 
 	Mnemonic const mnemonic = instruction.getMnemonic();
@@ -87,7 +84,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 	Register const rb = instruction.getRb();
 
 	if (mnemonic != LOADI) {
-		logger.setFormat(instructionLogWidth, ' ', Logger::Adjustment::Left);
+		logger.setFormat(InstructionLogWidth, ' ', Logger::Adjustment::Left);
 		logger << instruction;
 		logger.restoreFormat();
 
@@ -109,7 +106,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		instructionStream << instruction;
 		printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
 
-		logger.setFormat(instructionLogWidth, ' ', Logger::Adjustment::Left);
+		logger.setFormat(InstructionLogWidth, ' ', Logger::Adjustment::Left);
 		logger << instructionStream.str();
 		logger.restoreFormat();
 
@@ -330,8 +327,12 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 	using namespace PROL16::rtlib;
 
+	logger << "\nexecuting runtime library function: ";
+
 	switch (address) {
 	case PRINT:
+		logger << "_print r4 (r4=" << util::formatAsHexNumberWithBase(registerFile[4]) << ")\n";
+
 		if (!logger.isEnabled()) {
 			printData(std::cout, registerFile[4]);
 		}
@@ -344,6 +345,10 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 	case PRINTSTR: {
 		std::string const str = memory.readString(registerFile[4]);
+
+		logger << "_printstr r4 (r4=" << util::formatAsHexNumberWithBase(registerFile[4]);
+		logger << '=' << ::util::getQuoted(::util::getEscaped(str)) << ")\n";
+
 		if (!logger.isEnabled()) {
 			std::cout << str;
 		}
@@ -356,16 +361,25 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 	}
 
 	case MUL:
-		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-		registerFile[4] = registerFile[4] * registerFile[6];
+		logRuntimeLibCall(MUL);
 		break;
 	case DIV:
+		logRuntimeLibCall(DIV);
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+		registerFile[4] = registerFile[4] / registerFile[6];
+		break;
 	case DIVU:
+		logRuntimeLibCall(DIVU);
 		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 		registerFile[4] = registerFile[4] / registerFile[6];
 		break;
 	case MOD:
+		logRuntimeLibCall(MOD);
+		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+		registerFile[4] = registerFile[4] % registerFile[6];
+		break;
 	case MODU:
+		logRuntimeLibCall(MODU);
 		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 		registerFile[4] = registerFile[4] % registerFile[6];
 		break;
@@ -436,6 +450,12 @@ std::ostream& VirtualMachine::printData(std::ostream &stream, Data const data) c
 	}
 
 	return stream;
+}
+
+void VirtualMachine::logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address) {
+	logger << rtlib::getRuntimeLibFunctionName(address) <<  " r4, r6 (";
+	logger << "r4=" << util::formatAsHexNumberWithBase(registerFile[4]) << '|';
+	logger << "r6=" << util::formatAsHexNumberWithBase(registerFile[6]) << ")\n";
 }
 
 void VirtualMachine::setupCommandInterpreter() {
