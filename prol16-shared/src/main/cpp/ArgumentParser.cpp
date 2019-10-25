@@ -11,14 +11,20 @@
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
 #include "CLIError.h"
+#include "StringUtils.h"
 
 #include <algorithm>
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
+#include <utility>
 
 namespace util { namespace cli {
+
+ArgumentParser::ArgumentParser(std::string description) : description(std::move(description)) {
+
+}
 
 ArgumentParser& ArgumentParser::addPositionalArgument(std::string const &name) {
 	assert(!name.empty());
@@ -82,7 +88,9 @@ ArgumentParser& ArgumentParser::addFlag(ArgumentName const &flagName, bool const
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
-CLIArguments ArgumentParser::parseArguments(int const argc, char const * const argv[]) const {
+CLIArguments ArgumentParser::parseArguments(int const argc, char const * const argv[]) {
+	appName = argv[0];
+
 	ArgumentVector positionalArgumentsCopy = positionalArguments;
 	ArgumentMap optionalArgumentsCopy = optionalArguments;
 	FlagMap flagsCopy = flags;
@@ -93,6 +101,10 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 	for (int i = 1; i < argc; ++i) {
 		std::string const argumentValue = argv[i];
 		std::string longOptionName;
+
+		if (argumentValue == flags::HELP) {
+			return CLIArguments(true);
+		}
 
 		try {
 			longOptionName = shortToLongNameMapping.at(argumentValue);
@@ -109,7 +121,7 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 			if (argc <= i + 1) {
 				std::ostringstream errorMessage;
 				errorMessage << "no value provided for '" << argumentValue << "'";
-				throw CLIError(errorMessage.str(), getUsageMessage(argv[0]));
+				throw CLIError(errorMessage.str(), getUsageMessage());
 			}
 
 			cliArgumentsBuilder.addArgument(longOptionName, argv[++i]);
@@ -120,13 +132,13 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 		} else {
 			std::ostringstream errorMessage;
 			errorMessage << "invalid argument '" << argumentValue << "'";
-			throw CLIError(errorMessage.str(), getUsageMessage(argv[0]));
+			throw CLIError(errorMessage.str(), getUsageMessage());
 		}
 	}
 
 	// check if all positional arguments were covered
 	if (!positionalArgumentsCopy.empty()) {
-		throw CLIError("not all positional arguments were specified", getUsageMessage(argv[0]));
+		throw CLIError("not all positional arguments were specified", getUsageMessage());
 	}
 
 	// add default values of the optional arguments
@@ -142,26 +154,37 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 	return cliArgumentsBuilder.build();
 }
 
-std::string ArgumentParser::getUsageMessage(std::string const &appName) const {
+std::string ArgumentParser::getUsageMessage() const {
 	std::ostringstream usageMessage;
+
+	if (!description.empty()) {
+		usageMessage << description << '\n';
+	}
+
 	usageMessage << "Usage: " << appName;
 
 	std::unordered_set<ArgumentMap::mapped_type> alreadyCoveredLongNames;
 
 	for (auto const &argument : shortToLongNameMapping) {
-		usageMessage << " [" << argument.first << ", " << argument.second << "]";
+		usageMessage << " [" << argument.first << '|' << argument.second;
+
+		if (optionalArguments.count(argument.second) > 0) {
+			usageMessage << ' ' << ::util::toUpper(::util::ltrim(argument.second, "-"));
+		}
+
+		usageMessage << ']';
 		alreadyCoveredLongNames.emplace(argument.second);
 	}
 
 	for (auto const &flag : flags) {
 		if (alreadyCoveredLongNames.find(flag.first) == alreadyCoveredLongNames.cend()) {
-			usageMessage << " [" << flag.first << "]";
+			usageMessage << " [" << flag.first << ']';
 		}
 	}
 
 	for (auto const &argument : optionalArguments) {
 		if (alreadyCoveredLongNames.find(argument.first) == alreadyCoveredLongNames.cend()) {
-			usageMessage << " [" << argument.first << "]";
+			usageMessage << " [" << argument.first << ' ' << ::util::toUpper(::util::ltrim(argument.second, "-")) << ']';
 		}
 	}
 
@@ -170,6 +193,10 @@ std::string ArgumentParser::getUsageMessage(std::string const &appName) const {
 	}
 
 	return usageMessage.str();
+}
+
+void ArgumentParser::showUsageMessage(std::ostream &stream) const {
+	stream << getUsageMessage() << '\n';
 }
 
 }	// namespace cli

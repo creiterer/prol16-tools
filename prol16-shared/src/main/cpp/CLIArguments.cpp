@@ -12,8 +12,10 @@
 
 namespace util { namespace cli {
 
+CLIArguments::CLIArguments(bool const isHelp) : help(isHelp) {}
+
 CLIArguments::CLIArguments(ArgumentMap arguments, FlagMap flags, ArgumentMap shortToLongNameMap)
-: arguments(std::move(arguments)), flags(std::move(flags)), shortToLongNameMap(std::move(shortToLongNameMap)) {}
+: arguments(std::move(arguments)), flags(std::move(flags)), shortToLongNameMap(std::move(shortToLongNameMap)), help(false) {}
 
 bool CLIArguments::isSet(std::string const &flagName) const {
 	try {

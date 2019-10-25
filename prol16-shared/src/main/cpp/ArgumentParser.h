@@ -26,7 +26,7 @@ public:
 	using ArgumentMap = CLIArgumentsBuilder::ArgumentMap;
 	using FlagMap = CLIArgumentsBuilder::FlagMap;
 
-	ArgumentParser() = default;
+	explicit ArgumentParser(std::string description = "");
 
 	ArgumentParser& addPositionalArgument(std::string const &name);
 
@@ -39,9 +39,10 @@ public:
 	ArgumentParser& addFlag(ArgumentName const &flagName, bool const defaultValue = false);
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
-	CLIArguments parseArguments(int const argc, char const * const argv[]) const;
+	CLIArguments parseArguments(int const argc, char const * const argv[]);
 
-	std::string getUsageMessage(std::string const &appName) const;
+	std::string getUsageMessage() const;
+	void showUsageMessage(std::ostream &stream) const;
 
 private:
 	// at positional arguments the position of the argument matters
@@ -51,6 +52,9 @@ private:
 	FlagMap flags;
 
 	ArgumentMap shortToLongNameMapping;
+
+	std::string appName;
+	std::string const description;
 };
 
 }	// namespace cli

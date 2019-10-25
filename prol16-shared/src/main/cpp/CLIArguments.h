@@ -20,6 +20,7 @@ public:
 	using ArgumentMap = std::unordered_map<std::string, std::string>;
 	using FlagMap = std::unordered_map<std::string, bool>;
 
+	explicit CLIArguments(bool const isHelp);
 	CLIArguments(ArgumentMap arguments, FlagMap flags, ArgumentMap shortToLongNameMap);
 
 	bool isSet(std::string const &flagName) const;
@@ -27,10 +28,13 @@ public:
 	std::string const& operator[](std::string const &argumentName) const;
 	std::string const& operator[](ArgumentName const &argumentName) const;
 
+	inline bool isHelp() const { return help; }
+
 private:
-	ArgumentMap arguments;
-	FlagMap flags;
-	ArgumentMap shortToLongNameMap;
+	ArgumentMap const arguments;
+	FlagMap const flags;
+	ArgumentMap const shortToLongNameMap;
+	bool const help;
 };
 
 }	// namespace cli
