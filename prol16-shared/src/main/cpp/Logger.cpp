@@ -107,6 +107,8 @@ void Logger::restoreFormat() {
 void Logger::logTimestamp(std::string const &prefix, std::string const &suffix) {
 	using namespace std::chrono;
 
+	if (!enabled) { return; }
+
 	time_t timeInfo = system_clock::to_time_t(system_clock::now());
 	logStreams << prefix << ctime(&timeInfo) << suffix;
 }
