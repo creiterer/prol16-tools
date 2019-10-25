@@ -32,6 +32,13 @@ TEST(StringUtilsTest, testToLower) {
 	ASSERT_EQ("upper_case_string", toLower("UPPER_CASE_STRING"));
 }
 
+TEST(StringUtilsTest, testToUpper) {
+	ASSERT_EQ("", toUpper(""));
+	ASSERT_EQ("LOWER_CASE_STRING", toUpper("lower_case_string"));
+	ASSERT_EQ("CAMELCASESTRING", toUpper("CamelCaseString"));
+	ASSERT_EQ("UPPER_CASE_STRING", toUpper("UPPER_CASE_STRING"));
+}
+
 TEST(StringUtilsTest, testPrepend) {
 	std::string str("");
 

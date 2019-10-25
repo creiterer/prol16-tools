@@ -27,6 +27,7 @@ void checkStringIsNotEmpty(std::string const &str);
 }	// namespace preconditions
 
 std::string toLower(std::string str);
+std::string toUpper(std::string str);
 
 void prepend(std::string &str, char const c);
 std::string prepend(std::string const &str, char const c);
@@ -35,6 +36,7 @@ void prepend(std::string &str, std::string const &prependee);
 std::string prepend(std::string const &str, std::string const &prependee);
 
 void ltrim(std::string &str, std::string const &chars);
+std::string ltrim(std::string const &str, std::string const &chars);
 
 void rtrim(std::string &str, std::string const &chars);
 
