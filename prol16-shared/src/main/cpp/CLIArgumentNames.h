@@ -19,6 +19,7 @@ struct ArgumentName final {
 
 namespace flags {
 
+static ArgumentName const HELP{"-h", "--help"};
 static ArgumentName const INTERACTIVE{"-i", "--interactive"};
 static ArgumentName const VERBOSE{"-v", "--verbose"};
 
@@ -33,5 +34,8 @@ static ArgumentName const LOGFILE{"-l", "--log-file"};
 
 }	// namespace cli
 }	// namespace util
+
+bool operator==(std::string const &lhs, ::util::cli::ArgumentName const &rhs);
+bool operator==(::util::cli::ArgumentName const &lhs, std::string const &rhs);
 
 #endif /* PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTNAMES_H_INCLUDED */
