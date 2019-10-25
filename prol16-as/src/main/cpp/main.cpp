@@ -44,12 +44,17 @@ static char const * const EntryPointName = "main";
 
 int main(int const argc, char const * const argv[]) {
 	try {
-		util::cli::ArgumentParser argumentParser;
+		util::cli::ArgumentParser argumentParser("PROL16 Assembler");
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-as.log");
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
+
+		if (cliArguments.isHelp()) {
+			argumentParser.showUsageMessage(std::cerr);
+			return 0;
+		}
 
 		util::ScopedFileStream<std::ofstream> logFileStream(cliArguments[util::cli::options::LOGFILE], std::ofstream::out);
 		util::logging::Logger::LogStreams alwaysLogStreams{std::cout};

@@ -56,11 +56,16 @@ int main(int const argc, char const * const argv[]) {
 	using namespace util;
 
 	try {
-		cli::ArgumentParser argumentParser;
+		cli::ArgumentParser argumentParser("PROL16 Disassembler");
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addFlag("-c", "--console", false);
 
 		cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
+
+		if (cliArguments.isHelp()) {
+			argumentParser.showUsageMessage(std::cerr);
+			return 0;
+		}
 
 		if (cliArguments.isSet("-c")) {
 			disassembleToConsole(cliArguments[FILENAME_ARG_NAME]);

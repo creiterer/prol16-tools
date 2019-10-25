@@ -26,7 +26,7 @@ static util::cli::ArgumentName const DECIMAL_FLAG{"-d", "--decimal"};	// NOLINT(
 
 int main(int const argc, char const * const argv[]) {
 	try {
-		util::cli::ArgumentParser argumentParser;
+		util::cli::ArgumentParser argumentParser("PROL16 Virtual Machine");
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-vm.log");
 		argumentParser.addFlag(util::cli::flags::INTERACTIVE, false);
@@ -34,6 +34,11 @@ int main(int const argc, char const * const argv[]) {
 		argumentParser.addFlag(DECIMAL_FLAG, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
+
+		if (cliArguments.isHelp()) {
+			argumentParser.showUsageMessage(std::cerr);
+			return 0;
+		}
 
 		bool const verboseLoggingEnabled = cliArguments.isSet(util::cli::flags::VERBOSE);
 
