@@ -25,8 +25,9 @@ using ::util::logging::Logger;
 
 VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
 							   bool const interactive, bool const shouldPrintDecimal)
-: carryFlag("carry flag"), zeroFlag("zero flag"), programCounter(registerFile.getProgramCounter()), logger(logger),
-  commandInterpreter(nullptr), shouldPrintDecimal(shouldPrintDecimal) {
+: registerFile(VirtualMemory::StackStartAddress), carryFlag("carry flag"), zeroFlag("zero flag"),
+  programCounter(registerFile.getProgramCounter()),
+  logger(logger), commandInterpreter(nullptr), shouldPrintDecimal(shouldPrintDecimal) {
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
 
 	symbolTable = p16ExeFile.getSymbolTable();

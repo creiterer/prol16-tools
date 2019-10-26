@@ -35,6 +35,8 @@ public:
 	static size_t const CodeSegmentOffset = 0;
 	static size_t const MaxCodeSegmentSize = 0x8000;
 
+	static size_t const StackStartAddress = 0xFFFF;		// starts at the very top of the memory and grows down
+
 	VirtualMemory();
 
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)

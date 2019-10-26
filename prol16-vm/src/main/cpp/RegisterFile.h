@@ -24,7 +24,7 @@ public:
 
 	static Data const MagicInitValue = 0xDEAD;
 
-	RegisterFile();
+	explicit RegisterFile(Data const initialStackPointerValue);
 
 	Data& operator[](Register const reg);
 
@@ -41,8 +41,12 @@ public:
 	void writeProgramCounter(Data const data);
 
 	Data readReturnAddress() const;
+
 	Data readStackPointer() const;
+	void writeStackPointer(Data const data);
+
 	Data readFramePointer() const;
+	void writeFramePointer(Data const data);
 
 private:
 	std::array<Data, util::RegisterCount> registerFile{0};

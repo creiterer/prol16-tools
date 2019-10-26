@@ -16,7 +16,10 @@
 using namespace PROL16;
 
 TEST(RegisterFileTest, testRegisterFileUsage) {
-	RegisterFile registerFile;
+	RegisterFile registerFile(0xFFFF);
+
+	ASSERT_EQ(0xFFFF, registerFile.readStackPointer());
+	ASSERT_EQ(0xFFFF, registerFile.readFramePointer());
 
 	registerFile.write(5, 0xCAFE);
 	ASSERT_EQ(0xCAFE, registerFile[5]);
@@ -29,6 +32,14 @@ TEST(RegisterFileTest, testRegisterFileUsage) {
 	registerFile.writeProgramCounter(0xBABE);
 	ASSERT_EQ(0xBABE, registerFile[0]);
 	ASSERT_EQ(0xBABE, registerFile.readProgramCounter());
+
+	registerFile.writeStackPointer(0xFACE);
+	ASSERT_EQ(0xFACE, registerFile[2]);
+	ASSERT_EQ(0xFACE, registerFile.readStackPointer());
+
+	registerFile.writeFramePointer(0xC0DE);
+	ASSERT_EQ(0xC0DE, registerFile[3]);
+	ASSERT_EQ(0xC0DE, registerFile.readFramePointer());
 
 	ASSERT_THROW(registerFile[16], util::RegisterError);
 	ASSERT_THROW(registerFile.read(16), util::RegisterError);

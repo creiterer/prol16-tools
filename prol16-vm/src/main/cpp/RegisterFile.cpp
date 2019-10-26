@@ -15,8 +15,10 @@ namespace PROL16 {
 
 RegisterFile::Data const RegisterFile::MagicInitValue;
 
-RegisterFile::RegisterFile() {
+RegisterFile::RegisterFile(Data const initialStackPointerValue) {
 	registerFile.fill(MagicInitValue);
+	writeStackPointer(initialStackPointerValue);
+	writeFramePointer(initialStackPointerValue);
 }
 
 RegisterFile::Data& RegisterFile::operator[](Register const reg) {
@@ -63,8 +65,16 @@ RegisterFile::Data RegisterFile::readStackPointer() const {
 	return read(util::getStackPointerRegister());
 }
 
+void RegisterFile::writeStackPointer(Data const data) {
+	write(util::getStackPointerRegister(), data);
+}
+
 RegisterFile::Data RegisterFile::readFramePointer() const {
 	return read(util::getFramePointerRegister());
+}
+
+void RegisterFile::writeFramePointer(Data const data) {
+	write(util::getFramePointerRegister(), data);
 }
 
 }	// namespace PROL16
