@@ -78,6 +78,13 @@ std::string format(char const * const formatString, Args const... args) {
 	return buffer.data();
 }
 
+template <typename T>
+std::string formatAsHexNumberWithBase(T const number) {
+	static_assert(std::is_integral<T>::value, "formatAsHexNumberWithBase() requires an integral value type for the number to be formatted.");
+
+	return ::util::format("0x%0*X", sizeof(T) * 2, number);
+}
+
 }	// namespace util
 
 #endif /* PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_STRINGUTILS_H_INCLUDED */

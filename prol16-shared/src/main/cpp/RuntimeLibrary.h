@@ -26,6 +26,7 @@ enum RuntimeLibFunctionAddress : PROL16::util::memory::Address {
 	DIVU = 0x7FFB,
 	MOD = 0x7FFA,
 	MODU = 0x7FF9,
+	PRINT32 = 0x7FF8,
 };
 
 static RuntimeLibFunctionTable const RuntimeLibFunctions = {
@@ -35,7 +36,8 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 		{"_div", DIV},
 		{"_divu", DIVU},
 		{"_mod", MOD},
-		{"_modu", MODU}
+		{"_modu", MODU},
+		{"_print32", PRINT32}
 };
 
 PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &functionName);

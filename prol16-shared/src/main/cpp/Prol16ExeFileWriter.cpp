@@ -10,6 +10,7 @@
 #include "FileUtils.h"
 #include "InstructionWriter.h"
 #include "NumberUtils.h"
+#include "PrintUtils.h"
 #include "Prol16ExeFile.h"
 #include "RegisterUtils.h"
 #include "StringUtils.h"
@@ -55,7 +56,7 @@ void Prol16ExeFileWriter::writeEntryPointAddress(std::string const &entryPointNa
 
 		logger.forEachLogStream([entryPointName, entryPointAddress](Logger::LogStream stream){
 			stream << "writing entry point address: entry point name = '" << entryPointName << "' | entry point address = ";
-			util::printHexNumberFormattedWithBase(stream, entryPointAddress);
+			::util::printHexNumberFormattedWithBase(stream, entryPointAddress);
 			stream << '\n';
 		});
 
@@ -95,9 +96,9 @@ void Prol16ExeFileWriter::writeStringTable() {
 void Prol16ExeFileWriter::logSymbolTableEntry(SymbolTable::Entry const &entry) {
 	logger.forEachLogStream([entry](Logger::LogStream stream){
 		stream << "writing symbol table entry: symbol address = ";
-		util::printHexNumberFormattedWithBase(stream, entry.first);
+		::util::printHexNumberFormattedWithBase(stream, entry.first);
 		stream << " | symbol name address = ";
-		util::printHexNumberFormattedWithBase(stream, entry.second.second);
+		::util::printHexNumberFormattedWithBase(stream, entry.second.second);
 		stream << '\n';
 	});
 }
@@ -105,7 +106,7 @@ void Prol16ExeFileWriter::logSymbolTableEntry(SymbolTable::Entry const &entry) {
 void Prol16ExeFileWriter::logStringTableEntry(SymbolTable::StringTableEntry const &entry) {
 	logger.forEachLogStream([entry](Logger::LogStream stream){
 		stream << "writing string table entry: symbol name address = ";
-		util::printHexNumberFormattedWithBase(stream, entry.first);
+		::util::printHexNumberFormattedWithBase(stream, entry.first);
 		stream << " | symbol name = '" << entry.second << "'\n";
 	});
 }

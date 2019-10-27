@@ -293,6 +293,21 @@ TEST(StringUtilsTest, testFormat) {
 	ASSERT_EQ("some value = 2", format("some value = %d", 2));
 }
 
+TEST(StringUtilsTest, testFormatAsHexNumberWithBase) {
+	ASSERT_EQ("0x00", formatAsHexNumberWithBase(static_cast<uint8_t>(0)));
+	ASSERT_EQ("0x0F", formatAsHexNumberWithBase(static_cast<uint8_t>(0xF)));
+	ASSERT_EQ("0xFF", formatAsHexNumberWithBase(static_cast<uint8_t>(0xFF)));
+
+	ASSERT_EQ("0x0000", formatAsHexNumberWithBase(static_cast<uint16_t>(0)));
+	ASSERT_EQ("0x000F", formatAsHexNumberWithBase(static_cast<uint16_t>(0xF)));
+	ASSERT_EQ("0xFFFF", formatAsHexNumberWithBase(static_cast<uint16_t>(0xFFFF)));
+
+	ASSERT_EQ("0x00000000", formatAsHexNumberWithBase(0));
+	ASSERT_EQ("0x0000000F", formatAsHexNumberWithBase(0xF));
+	ASSERT_EQ("0x0000FFFF", formatAsHexNumberWithBase(0xFFFF));
+	ASSERT_EQ("0xFFFFFFFF", formatAsHexNumberWithBase(0xFFFFFFFF));
+}
+
 TEST(StringUtilsTest, testGetPadded) {
 	std::string const str("test");
 	ASSERT_EQ(5, getPadded(str, 1).size() + 1);

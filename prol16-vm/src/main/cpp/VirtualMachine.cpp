@@ -9,6 +9,7 @@
 
 #include "NotImplementedError.h"
 #include "OpcodeError.h"
+#include "PrintUtils.h"
 #include "Prol16ExeFile.h"
 #include "StringUtils.h"
 
@@ -47,8 +48,8 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 
 	logger << "starting execution of program '" << filename << "' at address ";
 	logger.forEachLogStream([this, entryPointAddress](Logger::LogStream stream){
-		util::printHexNumberFormattedWithBase(stream, entryPointAddress);
-		util::printHexNumberFormattedWithBase(stream << " (css=", memory.getCodeSegmentSize());
+		::util::printHexNumberFormattedWithBase(stream, entryPointAddress);
+		::util::printHexNumberFormattedWithBase(stream << " (css=", memory.getCodeSegmentSize());
 		stream << ')';
 	});
 	logger << '\n';
@@ -105,7 +106,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 
 		std::ostringstream instructionStream;
 		instructionStream << instruction;
-		printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
+		::util::printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
 
 		logger.setFormat(InstructionLogWidth, ' ', Logger::Adjustment::Left);
 		logger << instructionStream.str();
@@ -235,9 +236,9 @@ void VirtualMachine::setProgramCounter(VirtualMemory::Address const address) {
 	if (address >= memory.getCodeSegmentSize()) {
 		std::ostringstream errorMessage;
 		errorMessage << "trying to set program counter (";
-		util::printHexNumberFormattedWithBase(errorMessage, programCounter) << ") ";
+		::util::printHexNumberFormattedWithBase(errorMessage, programCounter) << ") ";
 		errorMessage << "to an invalid address (";
-		util::printHexNumberFormattedWithBase(errorMessage, address) << ")";
+		::util::printHexNumberFormattedWithBase(errorMessage, address) << ")";
 
 		throw std::runtime_error(errorMessage.str());
 	}
@@ -332,27 +333,43 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 	switch (address) {
 	case PRINT:
-		logger << "_print r4 (r4=" << util::formatAsHexNumberWithBase(registerFile[4]) << ")\n";
-
 		if (!logger.isEnabled()) {
 			printData(std::cout, registerFile[4]);
 		}
 
-		logger.forEachLogStream([this](::util::logging::Logger::LogStream stream){
-			util::printHexNumberFormattedWithBase(stream << '\n', registerFile[4]);
+		logger.forEachLogStream([this](auto &stream){
+			stream << "_print r4 (";
+			printRegisterValue(stream, 4) << ")\n";
+			::util::printHexNumberFormattedWithBase(stream << '\n', registerFile[4]);
 		});
 
 		break;
 
+	case PRINT32: {
+		uint32_t const value = (static_cast<uint32_t>(registerFile[5]) << 16) + registerFile[4];
+		if (!logger.isEnabled()) {
+			printData(std::cout, value);
+		}
+
+		logger.forEachLogStream([this, value](auto &stream){
+			stream << "_print32 r4, r5 (";
+			printRegisterValue(stream, 4) << '|';
+			printRegisterValue(stream, 5) << ")\n";
+			::util::printHexNumberFormattedWithBase(stream << '\n', value);
+		});
+
+		break;
+	}
+
 	case PRINTSTR: {
 		std::string const str = memory.readString(registerFile[4]);
-
-		logger << "_printstr r4 (r4=" << util::formatAsHexNumberWithBase(registerFile[4]);
-		logger << '=' << ::util::getQuoted(::util::getEscaped(str)) << ")\n";
 
 		if (!logger.isEnabled()) {
 			std::cout << str;
 		}
+
+		logger << "_printstr r4 (r4=" << ::util::formatAsHexNumberWithBase(registerFile[4]);
+		logger << '=' << ::util::getQuoted(::util::getEscaped(str)) << ")\n";
 
 		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
 			stream << '\n' << str;
@@ -406,14 +423,14 @@ void VirtualMachine::printInfo(std::string const &message) const {
 }
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
-	util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
+	::util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
 }
 
 void VirtualMachine::printState(std::ostream &stream) const {
 	printProgramCounter(stream);
-	util::printHexNumberFormattedWithBase(stream << "|ra=", registerFile.readReturnAddress());
-	util::printHexNumberFormattedWithBase(stream << "|sp=", registerFile.readStackPointer());
-	util::printHexNumberFormattedWithBase(stream << "|fp=", registerFile.readFramePointer());
+	::util::printHexNumberFormattedWithBase(stream << "|ra=", registerFile.readReturnAddress());
+	::util::printHexNumberFormattedWithBase(stream << "|sp=", registerFile.readStackPointer());
+	::util::printHexNumberFormattedWithBase(stream << "|fp=", registerFile.readFramePointer());
 	stream << "|z=" << zeroFlag << "|c=" << carryFlag << ": ";
 }
 
@@ -439,23 +456,24 @@ void VirtualMachine::printInstructionOperandValues(std::ostream &stream, Mnemoni
 
 std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register const ra) const {
 	stream << util::getCanonicalRegisterName(ra);
-	util::printHexNumberFormattedWithBase(stream << '=', registerFile[ra]);
+	::util::printHexNumberFormattedWithBase(stream << '=', registerFile[ra]);
 
 	return stream;
 }
 
 std::ostream& VirtualMachine::printMemoryValue(std::ostream &stream, Address const address) const {
-	util::printHexNumberFormatted(stream, address);
-	util::printHexNumberFormattedWithBase(stream << ": ", memory.read(address));
+	::util::printHexNumberFormatted(stream, address);
+	::util::printHexNumberFormattedWithBase(stream << ": ", memory.read(address));
 
 	return stream;
 }
 
-std::ostream& VirtualMachine::printData(std::ostream &stream, Data const data) const {
+template <typename T>
+std::ostream& VirtualMachine::printData(std::ostream &stream, T const data) const {
 	if (shouldPrintDecimal) {
 		stream << data;
 	} else {
-		util::printHexNumberFormattedWithBase(stream, data);
+		::util::printHexNumberFormattedWithBase(stream, data);
 	}
 
 	return stream;
@@ -463,8 +481,8 @@ std::ostream& VirtualMachine::printData(std::ostream &stream, Data const data) c
 
 void VirtualMachine::logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address) {
 	logger << rtlib::getRuntimeLibFunctionName(address) <<  " r4, r6 (";
-	logger << "r4=" << util::formatAsHexNumberWithBase(registerFile[4]) << '|';
-	logger << "r6=" << util::formatAsHexNumberWithBase(registerFile[6]) << ")\n";
+	logger << "r4=" << ::util::formatAsHexNumberWithBase(registerFile[4]) << '|';
+	logger << "r6=" << ::util::formatAsHexNumberWithBase(registerFile[6]) << ")\n";
 }
 
 void VirtualMachine::setupCommandInterpreter() {

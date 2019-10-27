@@ -86,7 +86,9 @@ private:
 									   Register const ra, Register const rb) const;
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
 	std::ostream& printMemoryValue(std::ostream &stream, Address const address) const;
-	std::ostream& printData(std::ostream &stream, Data const data) const;
+
+	template <typename T>
+	std::ostream& printData(std::ostream &stream, T const data) const;
 
 	void logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address);
 

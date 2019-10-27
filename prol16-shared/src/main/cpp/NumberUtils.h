@@ -9,7 +9,6 @@
 #define PROL16_AS_SRC_MAIN_CPP_NUMBERUTILS_H_INCLUDED
 
 #include <cstdint>
-#include <ostream>
 #include <string>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
@@ -23,11 +22,6 @@ static int const DecimalBase = 10;
 static int const HexBase = 16;
 
 Number parseNumber(std::string number);
-
-std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number);
-std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number);
-
-std::string formatAsHexNumberWithBase(Number const number);
 
 }	// namespace util
 }	// namespace PROL16

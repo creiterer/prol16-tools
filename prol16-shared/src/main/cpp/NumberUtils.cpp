@@ -7,11 +7,8 @@
 
 #include "NumberUtils.h"
 
-#include "StringUtils.h"
-
 #include <algorithm>
 #include <cctype>
-#include <iomanip>
 
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
@@ -58,20 +55,6 @@ Number parseNumber(std::string number) {
 	}
 
 	return std::stoul(number, nullptr, getRadix(suffix));
-}
-
-std::ostream& printHexNumberFormatted(std::ostream &stream, Number const number) {
-	stream << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << number;
-
-	return stream;
-}
-
-std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, Number const number) {
-	return printHexNumberFormatted(stream << "0x", number);
-}
-
-std::string formatAsHexNumberWithBase(Number const number) {
-	return ::util::format("0x%04hX", number);
 }
 
 }	// namespace util
