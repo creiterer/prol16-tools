@@ -15,7 +15,8 @@
 
 namespace util {
 
-CommandInterpreter::CommandInterpreter(std::string prompt) : quit(false), prompt(std::move(prompt)) {
+CommandInterpreter::CommandInterpreter(std::string prompt)
+: quit(false), cont(false), continueCount(1), invocationCount(0), prompt(std::move(prompt)) {
 	registerCommand("q", "quit", 0, 0, "", [this](ArgumentVector const& /*unused*/){
 		quit = true;
 	});
@@ -63,22 +64,42 @@ void CommandInterpreter::registerCommand(std::string const &shortCommandName, st
 	argumentCountMap.emplace(longCommandName, std::make_pair(minArgCount, maxArgCount));
 }
 
-void CommandInterpreter::run() const {
-	if (isQuit()) {
+void CommandInterpreter::registerContinueCommand(std::string const &shortCommandName, std::string const &longCommandName,
+												 std::string const &helpMessage) {
+	registerCommand(shortCommandName, longCommandName, 0, 1, helpMessage, [this](ArgumentVector const &arguments){
+		cont = true;
+
+		if (arguments.size() == 1) {
+			continueCount = stoul(arguments.at(0));
+		} else {
+			continueCount = 1;
+		}
+	});
+
+}
+
+void CommandInterpreter::run() {
+	++invocationCount;
+	if (isQuit() || shouldContinue()) {
 		return;
 	}
 
-	showPrompt();
+	cont = false;
+	invocationCount = 0;
 
-	std::string command = getCommand();
-
-	while (!isCommandValid(command)) {
-		printInvalidCommandMessage(command);
+	do {
 		showPrompt();
-		command = getCommand();
-	}
 
-	parseAndExecuteCommand(command);
+		std::string command = getCommand();
+
+		while (!isCommandValid(command)) {
+			printInvalidCommandMessage(command);
+			showPrompt();
+			command = getCommand();
+		}
+
+		parseAndExecuteCommand(command);
+	} while (!isQuit() && !shouldContinue());
 }
 
 bool CommandInterpreter::isCommandValid(std::string const &command) const {
@@ -159,6 +180,10 @@ std::string CommandInterpreter::getCanonicalCommandName(std::string const &comma
 
 void CommandInterpreter::printInvalidCommandMessage(std::string const &command) {
 	std::cerr << "Invalid command '" << command << "'! Try command 'help'." << std::endl;
+}
+
+bool CommandInterpreter::shouldContinue() const {
+	return cont && (invocationCount < continueCount);
 }
 
 }	// namespace util
