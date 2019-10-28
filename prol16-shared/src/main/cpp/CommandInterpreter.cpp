@@ -92,7 +92,7 @@ bool CommandInterpreter::isCommandValid(std::string const &command) const {
 
 	std::string canonicalCommandName;
 	try {
-		canonicalCommandName = getCanonicalCommandName(command);
+		canonicalCommandName = getCanonicalCommandName(commandName);
 	} catch (std::out_of_range const&) {
 		return false;
 	}
@@ -150,7 +150,7 @@ void CommandInterpreter::parseAndExecuteCommand(std::string const &command) cons
 }
 
 std::string CommandInterpreter::getCanonicalCommandName(std::string const &command) const {
-	if (commandMap.find(command) != commandMap.cend()) {
+	if (commandMap.count(command) > 0) {
 		return command;
 	}
 
