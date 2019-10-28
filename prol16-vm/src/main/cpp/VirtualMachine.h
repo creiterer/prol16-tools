@@ -64,6 +64,7 @@ private:
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();
+	Immediate prefetchImmediate() const;
 	bool executeInstruction(Instruction const &instruction);
 
 	void setProgramCounter(VirtualMemory::Address const address);
@@ -84,6 +85,7 @@ private:
 	void printState(std::ostream &stream) const;
 	void printInstructionOperandValues(std::ostream &stream, Mnemonic const mnemonic,
 									   Register const ra, Register const rb) const;
+	void printInstruction(std::ostream &stream, Instruction const &instruction) const;
 	std::ostream& printRegisterValue(std::ostream &stream, Register const ra) const;
 	std::ostream& printMemoryValue(std::ostream &stream, Address const address) const;
 

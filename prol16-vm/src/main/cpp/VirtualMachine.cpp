@@ -59,11 +59,13 @@ void VirtualMachine::run() {
 	bool stopProgramExecution = false;
 
 	while ((programCounter < memory.getCodeSegmentSize()) && (!stopProgramExecution)) {
-		if (commandInterpreter != nullptr) {
+		Instruction instruction = fetchAndDecodeInstruction();
+
+		if (commandInterpreter != nullptr && !commandInterpreter->isQuit()) {
+			printInstruction(std::cerr, instruction);
 			commandInterpreter->run();
 		}
 
-		Instruction instruction = fetchAndDecodeInstruction();
 		stopProgramExecution = executeInstruction(instruction);
 	}
 }
@@ -74,6 +76,10 @@ VirtualMachine::Instruction VirtualMachine::fetchAndDecodeInstruction() {
 
 VirtualMachine::Immediate VirtualMachine::fetchImmediate() {
 	return memory[programCounter++];
+}
+
+VirtualMachine::Immediate VirtualMachine::prefetchImmediate() const {
+	return memory[programCounter];
 }
 
 bool VirtualMachine::executeInstruction(Instruction const &instruction) {
@@ -454,6 +460,28 @@ void VirtualMachine::printInstructionOperandValues(std::ostream &stream, Mnemoni
 	}
 }
 
+void VirtualMachine::printInstruction(std::ostream &stream, Instruction const &instruction) const {
+	Mnemonic const mnemonic = instruction.getMnemonic();
+	Register const ra = instruction.getRa();
+	Register const rb = instruction.getRb();
+
+	printState(stream);
+
+	std::ostringstream instructionStream;
+	instructionStream << instruction;
+
+	if (mnemonic == util::LOADI) {
+		Immediate const immediate = prefetchImmediate();
+		::util::printHexNumberFormattedWithBase(instructionStream << ", ", immediate);
+	}
+
+	stream << std::setfill(' ') << std::setw(InstructionLogWidth) << std::left << instructionStream.str();
+	stream << std::resetiosflags(std::ios::adjustfield);
+	printInstructionOperandValues(stream, mnemonic, ra, rb);
+
+	stream << '\n';
+}
+
 std::ostream& VirtualMachine::printRegisterValue(std::ostream &stream, Register const ra) const {
 	stream << util::getCanonicalRegisterName(ra);
 	::util::printHexNumberFormattedWithBase(stream << '=', registerFile[ra]);
@@ -491,6 +519,8 @@ void VirtualMachine::setupCommandInterpreter() {
 										std::bind(&VirtualMachine::printMemoryCommand, this, std::placeholders::_1));
 	commandInterpreter->registerCommand("r", "register", 1, 1, "REG_NUMBER -- print the given register",
 										std::bind(&VirtualMachine::printRegisterCommand, this, std::placeholders::_1));
+	commandInterpreter->registerContinueCommand("n", "next",
+												"[CONTINUE_COUNT] -- execute the next (CONTINUE_COUNT, default 1) instruction(s)");
 }
 
 void VirtualMachine::printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const {
