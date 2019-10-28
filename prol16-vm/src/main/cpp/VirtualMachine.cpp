@@ -501,10 +501,9 @@ void VirtualMachine::printMemoryCommand(::util::CommandInterpreter::ArgumentVect
 		Address const startAddress = stoul(arguments.at(0), nullptr, util::HexBase);
 		Address const endAddress = stoul(arguments.at(1), nullptr, util::HexBase);
 
-		VirtualMemory::MemoryRange memoryRange = memory.readRange(startAddress, endAddress);
-		std::for_each(memoryRange.cbegin(), memoryRange.cend(), [this](Data const data){
-			printMemoryValue(std::cerr, data) << '\n';
-		});
+		for (uint32_t address = startAddress; address <= endAddress; ++address) {
+			printMemoryValue(std::cerr, address) << '\n';
+		}
 	}
 }
 
