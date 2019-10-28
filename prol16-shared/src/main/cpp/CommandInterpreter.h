@@ -55,6 +55,7 @@ private:
 	unsigned continueCount;
 	unsigned invocationCount;
 	std::string const prompt;
+	std::string lastCommand;
 	CommandMap commandMap;
 	StringMap helpMessageMap;
 	StringMap shortToLongNameMapping;

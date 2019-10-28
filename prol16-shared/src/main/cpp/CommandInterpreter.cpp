@@ -92,12 +92,18 @@ void CommandInterpreter::run() {
 
 		std::string command = getCommand();
 
+		if (command.empty() && !lastCommand.empty()) {
+			parseAndExecuteCommand(lastCommand);
+			continue;
+		}
+
 		while (!isCommandValid(command)) {
 			printInvalidCommandMessage(command);
 			showPrompt();
 			command = getCommand();
 		}
 
+		lastCommand = command;
 		parseAndExecuteCommand(command);
 	} while (!isQuit() && !shouldContinue());
 }
