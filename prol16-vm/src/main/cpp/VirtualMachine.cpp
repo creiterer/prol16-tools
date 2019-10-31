@@ -519,6 +519,24 @@ void VirtualMachine::setupCommandInterpreter() {
 										std::bind(&VirtualMachine::printMemoryCommand, this, std::placeholders::_1));
 	commandInterpreter->registerCommand("r", "register", 1, 1, "REG_NUMBER -- print the given register",
 										std::bind(&VirtualMachine::printRegisterCommand, this, std::placeholders::_1));
+	commandInterpreter->registerCommand("s", "stack", 0, 0, "-- show the current stack",
+										[this](auto const &/*arguments*/){
+		size_t const stackStartAddress = VirtualMemory::StackStartAddress;
+		size_t const stackEndAddress = registerFile.readStackPointer();
+
+		for (size_t address = stackStartAddress; address >= stackEndAddress; --address) {
+			printMemoryValue(std::cerr, address) << '\n';
+		}
+	});
+	commandInterpreter->registerCommand("f", "frame", 0, 0, "-- show the current stack frame",
+										[this](auto const &/*arguments*/){
+		uint32_t const frameStartAddress = registerFile.readFramePointer();
+		uint32_t const frameEndAddress = registerFile.readStackPointer();
+
+		for (uint32_t address = frameStartAddress; address >= frameEndAddress; --address) {
+			printMemoryValue(std::cerr, address) << '\n';
+		}
+	});
 	commandInterpreter->registerContinueCommand("n", "next",
 												"[CONTINUE_COUNT] -- execute the next (CONTINUE_COUNT, default 1) instruction(s)");
 }
