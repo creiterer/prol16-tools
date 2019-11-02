@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-08-10
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Utility functions for various Prol16AsmParser context types.
  */
 
 #ifndef PROL16_TOOLS_PROL16_AS_SRC_MAIN_CPP_CONTEXTUTILS_H_INCLUDED

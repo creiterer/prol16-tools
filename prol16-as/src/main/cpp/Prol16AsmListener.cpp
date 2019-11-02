@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-12
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Listener collecting all the assembly instructions.
  */
 
 #include "Prol16AsmListener.h"

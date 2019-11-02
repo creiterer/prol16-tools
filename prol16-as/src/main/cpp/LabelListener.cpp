@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-30
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Listener collecting all labels and their addresses.
  */
 
 #include "LabelListener.h"

@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-30
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Error listener that counts the number of errors.
  */
 
 #ifndef PROL16_ASM_PROL16_AS_SRC_MAIN_CPP_COUNTINGERRORLISTENER_H_INCLUDED
