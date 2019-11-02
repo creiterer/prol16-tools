@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-02
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing the PROL16 memory.
  */
 
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED

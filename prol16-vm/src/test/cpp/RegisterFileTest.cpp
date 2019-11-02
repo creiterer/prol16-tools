@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-05
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Unit test of the RegisterFile class.
  */
 
 #include "RegisterFile.h"

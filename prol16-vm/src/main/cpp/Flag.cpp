@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-05
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a PROL16 flag (e.g. carry flag and zero flag).
  */
 
 #include "Flag.h"

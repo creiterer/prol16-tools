@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-05
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a PROL16 flag (e.g. carry flag and zero flag).
  */
 
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_FLAG_H_INCLUDED

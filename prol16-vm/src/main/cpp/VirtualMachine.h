@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-02
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class emulating a PROL16 target machine.
  */
 
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MACHINE_H_INCLUDED

@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-31
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Main function running the PROL16 virtual machine.
  */
 
 #include "VirtualMachine.h"
