@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-18
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Disassembler for PROL16 executable files.
  */
 
 #ifndef PROL16_ASM_PROL16_DIS_SRC_MAIN_CPP_DISASSEMBLER_H_INCLUDED

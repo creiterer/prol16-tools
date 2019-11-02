@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-25
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Unit test of the Disassembler class.
  */
 
 #include "Disassembler.h"
