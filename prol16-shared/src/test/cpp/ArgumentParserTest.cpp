@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-08-04
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Unit test of the ArgumentParser class.
  */
 
 #include "ArgumentParser.h"

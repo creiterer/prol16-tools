@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-04
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Unit tests for runtime library functions.
  */
 
 #include "RuntimeLibrary.h"

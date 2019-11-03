@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-18
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Unit tests for mnemonic utilities.
  */
 
 #include "MnemonicUtils.h"
