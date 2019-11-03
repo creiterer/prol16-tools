@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-16
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a PROL16 instruction.
  */
 
 #ifndef PROL16_AS_SRC_MAIN_CPP_INSTRUCTION_H_INCLUDED

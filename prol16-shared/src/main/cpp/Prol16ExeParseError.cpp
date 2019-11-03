@@ -2,7 +2,8 @@
  * @author		creiterer
  * @date 		2019-08-26
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Error class regarding errors that occur during parsing of
+ * 				a PROL16 exe file.
  */
 
 #include "Prol16ExeParseError.h"

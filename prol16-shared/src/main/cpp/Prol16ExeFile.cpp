@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-08-26
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a PROL16 executable file.
  */
 
 #include "Prol16ExeFile.h"

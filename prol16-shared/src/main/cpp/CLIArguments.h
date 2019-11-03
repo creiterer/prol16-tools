@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-26
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		This class holds parsed CLI arguments.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_CLIARGUMENTS_H_INCLUDED

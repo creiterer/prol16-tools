@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-18
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		This file contains various utilities for handling PROL16 mnemonics and opcodes.
  */
 
 #include "MnemonicUtils.h"

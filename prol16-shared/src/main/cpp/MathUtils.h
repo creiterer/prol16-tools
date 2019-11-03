@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-02
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Various math utilities.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_MATHUTILS_H_INCLUDED

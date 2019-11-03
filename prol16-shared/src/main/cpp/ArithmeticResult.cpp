@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-18
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing the result of a PROL16 arithmetic operation.
  */
 
 #include "ArithmeticResult.h"

@@ -2,7 +2,8 @@
  * @author		creiterer
  * @date 		2019-09-13
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		A command interpreter that parses commands from command line
+ * 				and executes associated actions.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_COMMANDINTERPRETER_H_INCLUDED

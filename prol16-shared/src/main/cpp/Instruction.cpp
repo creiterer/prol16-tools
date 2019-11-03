@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-16
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a PROL16 instruction.
  */
 
 #include "Instruction.h"

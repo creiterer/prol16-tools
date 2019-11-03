@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-26
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Error class for incomplete PROL16 instructions.
  */
 
 #include "IncompleteInstructionError.h"

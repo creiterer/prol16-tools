@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-08-10
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing errors for things that are not implemented yet.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_NOTIMPLEMENTEDERROR_H_INCLUDED

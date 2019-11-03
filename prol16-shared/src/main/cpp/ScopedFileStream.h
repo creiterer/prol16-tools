@@ -1,5 +1,12 @@
-#ifndef SCOPEDFILESTREAM_H_INCLUDED
-#define SCOPEDFILESTREAM_H_INCLUDED
+/**
+ * @author		creiterer
+ * @date 		2019-03-02
+ * @copyright 	Copyright (c) 2019 Christopher Reiterer
+ * @brief 		Utility class for scoping file streams.
+ */
+
+#ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_SCOPEDFILESTREAM_H_INCLUDED
+#define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_SCOPEDFILESTREAM_H_INCLUDED
 
 #include "NonCopyable.h"
 

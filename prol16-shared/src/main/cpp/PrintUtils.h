@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-27
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Utilities for printing.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PRINTUTILS_H_INCLUDED

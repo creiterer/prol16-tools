@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-08-25
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Helper class for writing PROL16 executable files.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILEWRITER_H_INCLUDED

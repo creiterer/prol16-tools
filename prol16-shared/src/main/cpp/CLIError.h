@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-26
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Class representing a command-line interface error.
  */
 
 #ifndef PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_CLIERROR_H_INCLUDED

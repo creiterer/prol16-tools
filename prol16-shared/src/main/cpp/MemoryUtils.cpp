@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-07
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Various memory utilities.
  */
 
 #include "MemoryUtils.h"

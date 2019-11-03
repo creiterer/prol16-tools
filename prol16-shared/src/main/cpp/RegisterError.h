@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-25
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Error class for invalid registers.
  */
 
 #ifndef PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_REGISTERERROR_H_INCLUDED

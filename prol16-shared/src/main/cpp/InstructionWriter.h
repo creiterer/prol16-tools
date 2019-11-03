@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-12
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Utility class for writing instructions to an instruction buffer.
  */
 
 #ifndef PROL16_AS_SRC_MAIN_CPP_INSTRUCTIONWRITER_H_INCLUDED

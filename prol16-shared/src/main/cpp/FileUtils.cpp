@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-04-02
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Various utility functions for different file operations.
  */
 
 #include "FileUtils.h"

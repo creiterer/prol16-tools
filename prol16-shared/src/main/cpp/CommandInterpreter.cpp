@@ -2,7 +2,8 @@
  * @author		creiterer
  * @date 		2019-09-13
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		A command interpreter that parses commands from command line
+ * 				and executes associated actions.
  */
 
 #include "CommandInterpreter.h"

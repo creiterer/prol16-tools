@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-07
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Utilities regarding labels.
  */
 
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_LABELUTILS_H_INCLUDED

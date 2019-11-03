@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-03-25
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		Error class representing invalid PROL16 opcodes.
  */
 
 #ifndef PROL16_ASM_PROL16_SHARED_SRC_MAIN_CPP_OPCODEERROR_H_INCLUDED

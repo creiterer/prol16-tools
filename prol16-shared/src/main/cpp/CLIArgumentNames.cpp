@@ -2,7 +2,8 @@
  * @author		creiterer
  * @date 		2019-10-25
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		This file contains some standard (i.e. used across all prol16 tools)
+ * 				CLI argument names for options and flags.
  */
 
 #include "CLIArgumentNames.h"

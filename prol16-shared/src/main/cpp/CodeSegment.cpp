@@ -2,7 +2,7 @@
  * @author		creiterer
  * @date 		2019-10-08
  * @copyright 	Copyright (c) 2019 Christopher Reiterer
- * @brief 		brief description
+ * @brief 		This class represents a PROL16 code segment.
  */
 
 #include "CodeSegment.h"
