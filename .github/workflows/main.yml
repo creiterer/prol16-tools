@@ -12,11 +12,16 @@ jobs:
     - uses: actions/checkout@v1
     - name: Initialize Build
       run: |
+        ls
         cd ..
+        ls
         bash prol16-tools/initBuild.sh
+        ls
     - name: Build
       run: |
+        ls
         cd build_prol16-tools
+        ls
         ninja -j4
     - name: Test
       run: ctest --output-on-failure
