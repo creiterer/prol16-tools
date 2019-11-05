@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    container: creiterer/cpp-buildenv:latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Initialize Build
+      run: |
+        cd ..
+        bash prol16-tools/initBuild.sh
+    - name: Build
+      run: |
+        cd build_prol16-tools
+        ninja -j4
+    - name: Test
+      run: ctest --output-on-failure
