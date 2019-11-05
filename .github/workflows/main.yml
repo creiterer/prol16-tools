@@ -11,17 +11,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Initialize Build
-      run: |
-        ls
-        cd ..
-        ls
-        bash prol16-tools/initBuild.sh
-        ls
+      run: bash prol16-tools/initBuild.sh
+      working-directory: ../
     - name: Build
-      run: |
-        ls
-        cd build_prol16-tools
-        ls
-        ninja -j4
+      run: ninja -j4
+      working-directory: ../build_prol16-tools
     - name: Test
       run: ctest --output-on-failure
+      working-directory: ../build_prol16-tools
