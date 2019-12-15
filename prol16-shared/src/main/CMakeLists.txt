@@ -28,6 +28,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/CodeSegment.cpp
     ${MAIN_CPP_DIR}/ArithmeticResult.cpp
     ${MAIN_CPP_DIR}/CLIArgumentNames.cpp
+    ${MAIN_CPP_DIR}/Flavor.cpp
 )
 
 add_library(prol16shared STATIC ${MAIN_CPP_SOURCES})
