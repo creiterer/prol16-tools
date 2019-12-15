@@ -28,6 +28,7 @@ static ArgumentName const VERBOSE{"-v", "--verbose"};
 
 namespace options {
 
+static ArgumentName const FLAVOR{"-f", "--flavor"};
 static ArgumentName const LOGFILE{"-l", "--log-file"};
 
 }	// namespace options
