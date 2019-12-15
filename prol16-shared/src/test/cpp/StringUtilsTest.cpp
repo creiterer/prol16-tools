@@ -251,6 +251,7 @@ TEST(StringUtilsTest, testGetUnquoted) {
 TEST(StringUtilsTest, testGetQuoted) {
 	ASSERT_EQ("\"\"", getQuoted(""));
 	ASSERT_EQ("\"test\"", getQuoted("test"));
+	ASSERT_EQ("'c'", getQuoted('c'));
 }
 
 TEST(StringUtilsTest, testHandleEscapeSequences) {

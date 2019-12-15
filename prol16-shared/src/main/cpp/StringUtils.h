@@ -46,6 +46,7 @@ void trimQuotes(std::string &str);
 
 std::string getUnquoted(std::string str);
 std::string getQuoted(std::string const &str);
+std::string getQuoted(char const c);
 
 std::string handleEscapeSequences(std::string str);
 std::string getEscaped(std::string str);

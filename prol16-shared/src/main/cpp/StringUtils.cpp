@@ -91,6 +91,10 @@ std::string getQuoted(std::string const &str) {
 	return '"' + str + '"';
 }
 
+std::string getQuoted(char const c) {
+	return '\'' + std::string{c} + '\'';
+}
+
 std::string handleEscapeSequences(std::string str) {
 	size_t pos = str.find('\\');
 	while (pos != std::string::npos) {
