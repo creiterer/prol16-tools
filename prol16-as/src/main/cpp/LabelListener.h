@@ -90,6 +90,8 @@ public:
 
 	inline Address getNextInstructionAddress() const { return commandCounter.getNextInstructionAddress(); }
 
+	inline bool containsLabel(std::string const &labelName) const { return labelTable.count(labelName) != 0; }
+
 private:
 	CommandCounter commandCounter;
 	LabelTable labelTable;

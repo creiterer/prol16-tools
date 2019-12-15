@@ -38,9 +38,10 @@ using PROL16::util::Prol16ExeFile;
 using PROL16::util::Prol16ExeFileWriter;
 using PROL16::util::InstructionWriter;
 
-static char const * const FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
+constexpr char const *FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(readability-identifier-naming)
 
-static char const * const EntryPointName = "main";
+constexpr char const *CEntryPointName = "main";
+constexpr char const *GoEntryPointName = "main.main";
 
 int main(int const argc, char const * const argv[]) {
 	try {
@@ -102,7 +103,13 @@ int main(int const argc, char const * const argv[]) {
 		Prol16ExeFileWriter p16ExeFile(p16ExeFilename,
 									   labelListener.getLabels(), labelListener.getNextInstructionAddress(),
 									   logger);
-		p16ExeFile.writeFileHeader(EntryPointName);
+
+		if (labelListener.containsLabel(CEntryPointName)) {
+			p16ExeFile.writeFileHeader(CEntryPointName);
+		} else {
+			p16ExeFile.writeFileHeader(GoEntryPointName);
+		}
+
 		p16ExeFile.writeSymbolTable();
 		p16ExeFile.writeCodeSegment(instructionWriter.getInstructionBuffer());
 
