@@ -25,6 +25,8 @@ public:
 	using ArgumentVector = std::vector<std::string>;
 	using ArgumentMap = CLIArgumentsBuilder::ArgumentMap;
 	using FlagMap = CLIArgumentsBuilder::FlagMap;
+	using Choices = std::vector<std::string>;
+	using ChoicesMap = std::unordered_map<std::string, Choices>;
 
 	explicit ArgumentParser(std::string description = "");
 
@@ -33,6 +35,7 @@ public:
 	ArgumentParser& addOptionalArgument(std::string const &longName, std::string const &defaultValue);
 	ArgumentParser& addOptionalArgument(std::string const &shortName, std::string const &longName, std::string const &defaultValue);
 	ArgumentParser& addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue);
+	ArgumentParser& addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue, Choices const &choices);
 
 	ArgumentParser& addFlag(std::string const &longName, bool const defaultValue = false);
 	ArgumentParser& addFlag(std::string const &shortName, std::string const &longName, bool const defaultValue = false);
@@ -52,6 +55,7 @@ private:
 	FlagMap flags;
 
 	ArgumentMap shortToLongNameMapping;
+	ChoicesMap choicesMap;
 
 	std::string appName;
 	std::string const description;

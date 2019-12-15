@@ -11,6 +11,7 @@
 #include "CLIArguments.h"
 #include "CLIArgumentsBuilder.h"
 #include "CLIError.h"
+#include "StreamUtils.h"
 #include "StringUtils.h"
 
 #include <algorithm>
@@ -59,6 +60,14 @@ ArgumentParser& ArgumentParser::addOptionalArgument(std::string const &shortName
 
 ArgumentParser& ArgumentParser::addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue) {
 	return addOptionalArgument(optionName.shortName, optionName.longName, defaultValue);
+}
+
+ArgumentParser& ArgumentParser::addOptionalArgument(ArgumentName const &optionName, std::string const &defaultValue, Choices const &choices) {
+	assert(!choices.empty());
+
+	choicesMap.emplace(optionName.longName, choices);
+
+	return addOptionalArgument(optionName, defaultValue);
 }
 
 ArgumentParser& ArgumentParser::addFlag(std::string const &longName, bool const defaultValue) {
@@ -122,6 +131,19 @@ CLIArguments ArgumentParser::parseArguments(int const argc, char const * const a
 				std::ostringstream errorMessage;
 				errorMessage << "no value provided for '" << argumentValue << "'";
 				throw CLIError(errorMessage.str(), getUsageMessage());
+			}
+
+			// check that the optional argument is one of the specified choices
+			if (choicesMap.count(longOptionName) != 0) {
+				auto const &choices = choicesMap.at(longOptionName);
+
+				if (std::none_of(choices.cbegin(), choices.cend(), [argv, i](auto const &choice){
+					return choice == argv[i+1];
+				})) {
+					std::ostringstream errorMessage;
+					errorMessage << "the value for '" << argumentValue << "' doesn't match one of " << choices;
+					throw CLIError(errorMessage.str(), getUsageMessage());
+				}
 			}
 
 			cliArgumentsBuilder.addArgument(longOptionName, argv[++i]);
