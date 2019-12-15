@@ -14,6 +14,7 @@
 
 #include "ArithmeticResult.h"
 #include "CommandInterpreter.h"
+#include "Flavor.h"
 #include "Instruction.h"
 #include "Logger.h"
 #include "MnemonicUtils.h"
@@ -47,7 +48,8 @@ public:
 	static size_t const InstructionLogWidth = 20;
 
 	VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
-				   bool const interactive, bool const shouldPrintDecimal);
+				   bool const interactive, bool const shouldPrintDecimal,
+				   ::util::Flavor const flavor);
 
 	void run();
 
@@ -61,6 +63,7 @@ private:
 	::util::logging::Logger &logger;
 	std::unique_ptr<::util::CommandInterpreter> commandInterpreter;
 	bool const shouldPrintDecimal;
+	::util::Flavor const flavor;
 
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();
@@ -78,7 +81,7 @@ private:
 	void executeShl(Register const ra, bool const withCarry = false);
 	void executeShr(Register const ra, bool const withCarry = false);
 	void executeRuntimeLibFunction(Address const address);
-	void executeMul(RegisterPair const &srcRegs,  RegisterPair const &destRegs);
+	void executeMul32(RegisterPair const &ra, RegisterPair const &rb, RegisterPair const &destRegs);
 
 	void printInfo(std::string const &message) const;
 	void printProgramCounter(std::ostream &stream) const;
@@ -92,11 +95,13 @@ private:
 	template <typename T>
 	std::ostream& printData(std::ostream &stream, T const data) const;
 
-	void logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address);
+	void logRuntimeLibCall(PROL16::util::memory::Address const address, Register const ra, Register const rb) const;
 
 	void setupCommandInterpreter();
 	void printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;
 	void printRegisterCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;
+
+	inline bool isGoFlavor() const noexcept { return flavor == ::util::Flavor::Go; }
 };
 
 }	// namespace PROL16

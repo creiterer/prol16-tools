@@ -19,7 +19,7 @@ PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &fu
 	return RuntimeLibFunctions.at(functionName);
 }
 
-std::string getRuntimeLibFunctionName(RuntimeLibFunctionAddress const address) {
+std::string getRuntimeLibFunctionName(PROL16::util::memory::Address const address) {
 	auto found = std::find_if(RuntimeLibFunctions.cbegin(), RuntimeLibFunctions.cend(), [address](RuntimeLibFunctionTable::value_type const &rtlibEntry){
 		return rtlibEntry.second == address;
 	});
@@ -31,10 +31,22 @@ std::string getRuntimeLibFunctionName(RuntimeLibFunctionAddress const address) {
 	return found->first;
 }
 
+std::string getRuntimeLibFunctionName(RuntimeLibFunctionAddress const address) {
+	return getRuntimeLibFunctionName(static_cast<PROL16::util::memory::Address>(address));
+}
+
 bool isRuntimeLibFunctionAddress(PROL16::util::memory::Address const address) {
 	return std::any_of(RuntimeLibFunctions.cbegin(), RuntimeLibFunctions.cend(), [address](RuntimeLibFunctionTable::value_type const &rtlibEntry){
 		return rtlibEntry.second == address;
 	});
+}
+
+bool isDiv32(PROL16::util::memory::Address const address) noexcept {
+	return (address == SDIV_I32) || (address == UDIV_I32);
+}
+
+bool isRem32(PROL16::util::memory::Address const address) noexcept {
+	return (address == SREM_I32) || (address == UREM_I32);
 }
 
 }	// namespace rtlib

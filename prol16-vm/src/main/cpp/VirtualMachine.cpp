@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 
@@ -25,10 +26,16 @@ namespace PROL16 {
 using ::util::logging::Logger;
 
 VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Logger &logger,
-							   bool const interactive, bool const shouldPrintDecimal)
+							   bool const interactive, bool const shouldPrintDecimal,
+							   ::util::Flavor const flavor)
 : registerFile(VirtualMemory::StackStartAddress), carryFlag("carry flag"), zeroFlag("zero flag"),
   programCounter(registerFile.getProgramCounter()),
-  logger(logger), commandInterpreter(nullptr), shouldPrintDecimal(shouldPrintDecimal) {
+  logger(logger), commandInterpreter(nullptr),
+  shouldPrintDecimal(shouldPrintDecimal), flavor(flavor) {
+	if (flavor == ::util::Flavor::Unknown) {
+		throw std::runtime_error("unknown flavor");
+	}
+
 	util::Prol16ExeFile const p16ExeFile = util::Prol16ExeFile::parse(filename);
 
 	symbolTable = p16ExeFile.getSymbolTable();
@@ -335,86 +342,164 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 	using namespace PROL16::rtlib;
 
-	logger << "\nexecuting runtime library function: ";
+	logger << "\nexecuting runtime library function (flavor=" << ::util::getFlavorAsString(flavor) << "): ";
 
 	switch (address) {
-	case PRINT:
+	case PRINT_UINT16: {
+		Register const reg = isGoFlavor() ? 5 : 4;
+
 		if (!logger.isEnabled()) {
-			printData(std::cout, registerFile[4]);
+			printData(std::cout, registerFile[reg]);
 		}
 
-		logger.forEachLogStream([this](auto &stream){
-			stream << "_print r4 (";
-			printRegisterValue(stream, 4) << ")\n";
-			::util::printHexNumberFormattedWithBase(stream << '\n', registerFile[4]);
+		logger.forEachLogStream([this, reg](auto &stream){
+			stream << getRuntimeLibFunctionName(PRINT_UINT16) << ' ' << PROL16::util::getCanonicalRegisterName(reg) << " (";
+			printRegisterValue(stream, reg) << ")\n";
+			::util::printHexNumberFormattedWithBase(stream << '\n', registerFile[reg]);
 		});
 
 		break;
+	}
 
-	case PRINT32: {
-		uint32_t const value = (static_cast<uint32_t>(registerFile[5]) << 16) + registerFile[4];
+	case PRINT_UINT32: {
+		Register const lowReg = isGoFlavor() ? 5 : 4;
+		Register const highReg = isGoFlavor() ? 6 : 5;
+		uint32_t const value = (static_cast<uint32_t>(registerFile[highReg]) << 16) + registerFile[lowReg];
 		if (!logger.isEnabled()) {
 			printData(std::cout, value);
 		}
 
-		logger.forEachLogStream([this, value](auto &stream){
-			stream << "_print32 r4, r5 (";
-			printRegisterValue(stream, 4) << '|';
-			printRegisterValue(stream, 5) << ")\n";
+		logger.forEachLogStream([this, value, lowReg, highReg](auto &stream){
+			stream << getRuntimeLibFunctionName(PRINT_UINT32) << ' ';
+			stream << PROL16::util::getCanonicalRegisterName(lowReg) << ' ';
+			stream << PROL16::util::getCanonicalRegisterName(highReg) << " (";
+			printRegisterValue(stream, lowReg) << '|';
+			printRegisterValue(stream, highReg) << ")\n";
 			::util::printHexNumberFormattedWithBase(stream << '\n', value);
 		});
 
 		break;
 	}
 
-	case PRINTSTR: {
-		std::string const str = memory.readString(registerFile[4]);
+	case PRINT_RUNE: {
+		Register const lowReg = isGoFlavor() ? 5 : 4;
+		Register const highReg = isGoFlavor() ? 6 : 5;
+
+		if (registerFile[highReg] != 0 || registerFile[lowReg] > std::numeric_limits<char>::max()) {
+			throw ::util::NotImplementedError("UTF-8 encoded runes");
+		}
+
+		auto const rune = static_cast<char>(registerFile[lowReg]);
+
+		if (!logger.isEnabled()) {
+			std::cout << rune;
+		}
+
+		logger << getRuntimeLibFunctionName(PRINT_RUNE) << ' ';
+		logger << PROL16::util::getCanonicalRegisterName(lowReg) << ' ';
+		logger << PROL16::util::getCanonicalRegisterName(highReg);
+		logger << " (" << PROL16::util::getCanonicalRegisterName(lowReg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[lowReg]);
+		logger << '=' << ::util::getQuoted(rune);
+		logger << '|' << PROL16::util::getCanonicalRegisterName(highReg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[highReg]);
+		logger << ")\n\n" << rune;
+
+		break;
+	}
+
+	case PRINT_STRING: {
+		Register const reg = isGoFlavor() ? 5 : 4;
+		std::string const str = memory.readString(registerFile[reg]);
 
 		if (!logger.isEnabled()) {
 			std::cout << str;
 		}
 
-		logger << "_printstr r4 (r4=" << ::util::formatAsHexNumberWithBase(registerFile[4]);
-		logger << '=' << ::util::getQuoted(::util::getEscaped(str)) << ")\n";
+		logger << getRuntimeLibFunctionName(PRINT_STRING) << ' ' << PROL16::util::getCanonicalRegisterName(reg);
+		logger << " (" << PROL16::util::getCanonicalRegisterName(reg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[reg]);
+		logger << '=' << ::util::getQuoted(::util::getEscaped(str));
 
-		logger.forEachLogStream([str](::util::logging::Logger::LogStream stream){
-			stream << '\n' << str;
-		});
+		if (isGoFlavor()) {
+			logger << '|' << PROL16::util::getCanonicalRegisterName(6) << '=' << registerFile[6];
+		}
+
+		logger << ")\n\n" << str;
 
 		break;
 	}
 
-	case MUL:
-		logRuntimeLibCall(MUL);
-		executeMul(std::make_pair(4, 6), std::make_pair(4, 5));
+	case PRINT_NL:
+		if (!logger.isEnabled()) {
+			std::cout << '\n';
+		}
+
+		logger << getRuntimeLibFunctionName(PRINT_NL) << '\n' << '\n';
+
 		break;
-	case DIV:
-		logRuntimeLibCall(DIV);
+
+	case PRINT_SPACE:
+		if (!logger.isEnabled()) {
+			std::cout << ' ';
+		}
+
+		logger << getRuntimeLibFunctionName(PRINT_SPACE) << '\n' << ' ';
+
+		break;
+
+	case MUL_I16: {
+		constexpr Register ra = 4;
+		constexpr Register rb = 5;
+
+		logRuntimeLibCall(MUL_I16, ra, rb);
+		registerFile[ra] = registerFile[ra] * registerFile[rb];
+		break;
+	}
+	case MUL_I32: {
+		constexpr Register raLow = 4;
+		constexpr Register raHigh = 5;
+		constexpr Register rbLow = 6;
+		constexpr Register rbHigh = 7;
+
+		logRuntimeLibCall(MUL_I32, raLow, rbLow);
+		executeMul32(std::make_pair(raLow, raHigh), std::make_pair(rbLow, rbHigh), std::make_pair(4, 5));
+		break;
+	}
+	case SDIV_I16:
+	case UDIV_I16:
+	case SDIV_I32:
+	case UDIV_I32: {
+		constexpr Register ra = 4;
+		Register const rb = isDiv32(address) ? 6 : 5;
+
+		logRuntimeLibCall(address, ra, rb);
+
 		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-		registerFile[4] = registerFile[4] / registerFile[6];
+		registerFile[4] = registerFile[ra] / registerFile[rb];
 		break;
-	case DIVU:
-		logRuntimeLibCall(DIVU);
+	}
+	case SREM_I16:
+	case UREM_I16:
+	case SREM_I32:
+	case UREM_I32: {
+		constexpr Register ra = 4;
+		Register const rb = isRem32(address) ? 6 : 5;
+
+		logRuntimeLibCall(address, ra, rb);
+
 		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-		registerFile[4] = registerFile[4] / registerFile[6];
+		registerFile[4] = registerFile[ra] % registerFile[rb];
 		break;
-	case MOD:
-		logRuntimeLibCall(MOD);
-		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-		registerFile[4] = registerFile[4] % registerFile[6];
-		break;
-	case MODU:
-		logRuntimeLibCall(MODU);
-		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-		registerFile[4] = registerFile[4] % registerFile[6];
-		break;
+	}
 	default:
-		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call"));
+		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call", address));
 	}
 }
 
-void VirtualMachine::executeMul(RegisterPair const &srcRegs,  RegisterPair const &destRegs) {
-	ArithmeticResult const result = static_cast<ArithmeticResult::ResultType>(registerFile[srcRegs.first]) * registerFile[srcRegs.second];
+void VirtualMachine::executeMul32(RegisterPair const &ra, RegisterPair const &rb, RegisterPair const &destRegs) {
+	if (registerFile[ra.second] != 0 || registerFile[rb.second] != 0) {
+		throw ::util::NotImplementedError("32-bit multiplication");
+	}
+
+	ArithmeticResult const result = static_cast<ArithmeticResult::ResultType>(registerFile[ra.first]) * registerFile[rb.first];
 
 	registerFile[destRegs.first] = result.getLow();
 	registerFile[destRegs.second] = result.getHigh();
@@ -455,7 +540,11 @@ void VirtualMachine::printInstructionOperandValues(std::ostream &stream, Mnemoni
 	}
 	case 2:
 		printRegisterValue(stream << '(', ra);
-		printRegisterValue(stream << '|', rb)  << ')';
+		printRegisterValue(stream << '|', rb);
+		if (mnemonic == util::LOAD) {
+			stream << "->" << memory[registerFile[rb]];
+		}
+		stream << ')';
 		break;
 	}
 }
@@ -507,10 +596,11 @@ std::ostream& VirtualMachine::printData(std::ostream &stream, T const data) cons
 	return stream;
 }
 
-void VirtualMachine::logRuntimeLibCall(rtlib::RuntimeLibFunctionAddress const address) {
-	logger << rtlib::getRuntimeLibFunctionName(address) <<  " r4, r6 (";
-	logger << "r4=" << ::util::formatAsHexNumberWithBase(registerFile[4]) << '|';
-	logger << "r6=" << ::util::formatAsHexNumberWithBase(registerFile[6]) << ")\n";
+void VirtualMachine::logRuntimeLibCall(PROL16::util::memory::Address const address, Register const ra, Register const rb) const {
+	logger << rtlib::getRuntimeLibFunctionName(address) << ' ' << PROL16::util::getCanonicalRegisterName(ra);
+	logger << ", " << PROL16::util::getCanonicalRegisterName(rb) << " (";
+	logger << "r4=" << ::util::formatAsHexNumberWithBase(registerFile[ra]) << '|';
+	logger << "r6=" << ::util::formatAsHexNumberWithBase(registerFile[rb]) << ")\n";
 }
 
 void VirtualMachine::setupCommandInterpreter() {

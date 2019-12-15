@@ -11,6 +11,7 @@
 #include "CLIArgumentNames.h"
 #include "CLIArguments.h"
 #include "CLIError.h"
+#include "Flavor.h"
 #include "Logger.h"
 #include "RegisterUtils.h"
 #include "ScopedFileStream.h"
@@ -29,6 +30,7 @@ int main(int const argc, char const * const argv[]) {
 		util::cli::ArgumentParser argumentParser("PROL16 Virtual Machine");
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-vm.log");
+		argumentParser.addOptionalArgument(util::cli::options::FLAVOR, "go", {"c", "go"});
 		argumentParser.addFlag(util::cli::flags::INTERACTIVE, false);
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 		argumentParser.addFlag(DECIMAL_FLAG, false);
@@ -52,8 +54,12 @@ int main(int const argc, char const * const argv[]) {
 		}
 
 		logger.logTimestamp("log created at: ", "\n");
+
+		util::Flavor const flavor = util::determineFlavor(cliArguments[util::cli::options::FLAVOR]);
+
 		PROL16::VirtualMachine prol16vm(cliArguments[FILENAME_ARG_NAME], logger,
-										cliArguments.isSet(util::cli::flags::INTERACTIVE), cliArguments.isSet(DECIMAL_FLAG));
+										cliArguments.isSet(util::cli::flags::INTERACTIVE), cliArguments.isSet(DECIMAL_FLAG),
+										flavor);
 		prol16vm.run();
 
 		return 0;
