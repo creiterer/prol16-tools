@@ -317,7 +317,7 @@ void VirtualMachine::executeDec(Register const ra) {
 
 void VirtualMachine::executeShl(Register const ra, bool const withCarry) {
 	// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-	carryFlag.set((registerFile[ra] & 0x8000) != 0);
+	bool const newCarryValue = (registerFile[ra] & 0x8000) != 0;
 	registerFile[ra] <<= 1;
 
 	if (withCarry && carryFlag.isSet()) {
@@ -325,10 +325,11 @@ void VirtualMachine::executeShl(Register const ra, bool const withCarry) {
 	}
 
 	setZeroFlag(registerFile[ra]);
+	carryFlag.set(newCarryValue);
 }
 
 void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
-	carryFlag.set((registerFile[ra] & 0x0001) != 0);
+	bool const newCarryValue = (registerFile[ra] & 0x0001) != 0;
 	registerFile[ra] >>= 1;
 
 	if (withCarry && carryFlag.isSet()) {
@@ -337,6 +338,7 @@ void VirtualMachine::executeShr(Register const ra, bool const withCarry) {
 	}
 
 	setZeroFlag(registerFile[ra]);
+	carryFlag.set(newCarryValue);
 }
 
 void VirtualMachine::executeRuntimeLibFunction(Address const address) {
