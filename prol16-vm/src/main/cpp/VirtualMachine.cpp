@@ -482,6 +482,17 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		registerFile[4] = registerFile[ra] % registerFile[rb];
 		break;
 	}
+	case MEMCPY: {
+		constexpr Register destinationReg = 4;
+		constexpr Register sourceReg = 5;
+		constexpr Register numBytesReg = 6;
+
+		logRuntimeLibCall(address, destinationReg, sourceReg, numBytesReg);
+
+		memory.memcpy(registerFile[destinationReg], registerFile[sourceReg], registerFile[numBytesReg]);
+
+		break;
+	}
 	default:
 		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call", address));
 	}

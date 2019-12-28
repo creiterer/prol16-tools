@@ -35,6 +35,7 @@ enum RuntimeLibFunctionAddress : PROL16::util::memory::Address {
 	UDIV_I32 = 0x7FF2,
 	SREM_I32 = 0x7FF1,
 	UREM_I32 = 0x7FF0,
+	MEMCPY = 0x7FEF,
 };
 
 static RuntimeLibFunctionTable const RuntimeLibFunctions = {
@@ -54,7 +55,8 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 		{"__prol16_sdiv_i32", SDIV_I32},
 		{"__prol16_udiv_i32", UDIV_I32},
 		{"__prol16_srem_i32", SREM_I32},
-		{"__prol16_urem_i32", UREM_I32}
+		{"__prol16_urem_i32", UREM_I32},
+		{"memcpy", MEMCPY}
 };
 
 PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &functionName);
