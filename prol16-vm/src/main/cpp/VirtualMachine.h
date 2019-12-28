@@ -95,7 +95,16 @@ private:
 	template <typename T>
 	std::ostream& printData(std::ostream &stream, T const data) const;
 
-	void logRuntimeLibCall(PROL16::util::memory::Address const address, Register const ra, Register const rb) const;
+	template <typename... Registers>
+	void logRegisterNames(Register const reg, Registers const... registers) const;
+	void logRegisterNames(Register const reg) const;
+
+	template <typename... Registers>
+	void logRegisterValues(Register const reg, Registers const... registers) const;
+	void logRegisterValues(Register const reg) const;
+
+	template <typename... Registers>
+	void logRuntimeLibCall(PROL16::util::memory::Address const address, Registers const... registers) const;
 
 	void setupCommandInterpreter();
 	void printMemoryCommand(::util::CommandInterpreter::ArgumentVector const &arguments) const;

@@ -354,11 +354,8 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 			printData(std::cout, registerFile[reg]);
 		}
 
-		logger.forEachLogStream([this, reg](auto &stream){
-			stream << getRuntimeLibFunctionName(PRINT_UINT16) << ' ' << PROL16::util::getCanonicalRegisterName(reg) << " (";
-			printRegisterValue(stream, reg) << ")\n";
-			::util::printHexNumberFormattedWithBase(stream << '\n', registerFile[reg]);
-		});
+		logRuntimeLibCall(address, reg);
+		logger << '\n' << ::util::formatAsHexNumberWithBase(registerFile[reg]);
 
 		break;
 	}
@@ -367,18 +364,13 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		Register const lowReg = isGoFlavor() ? 5 : 4;
 		Register const highReg = isGoFlavor() ? 6 : 5;
 		uint32_t const value = (static_cast<uint32_t>(registerFile[highReg]) << 16) + registerFile[lowReg];
+
 		if (!logger.isEnabled()) {
 			printData(std::cout, value);
 		}
 
-		logger.forEachLogStream([this, value, lowReg, highReg](auto &stream){
-			stream << getRuntimeLibFunctionName(PRINT_UINT32) << ' ';
-			stream << PROL16::util::getCanonicalRegisterName(lowReg) << ' ';
-			stream << PROL16::util::getCanonicalRegisterName(highReg) << " (";
-			printRegisterValue(stream, lowReg) << '|';
-			printRegisterValue(stream, highReg) << ")\n";
-			::util::printHexNumberFormattedWithBase(stream << '\n', value);
-		});
+		logRuntimeLibCall(address, lowReg, highReg);
+		logger << '\n' << ::util::formatAsHexNumberWithBase(value);
 
 		break;
 	}
@@ -388,7 +380,7 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		Register const highReg = isGoFlavor() ? 6 : 5;
 
 		if (registerFile[highReg] != 0 || registerFile[lowReg] > std::numeric_limits<char>::max()) {
-			throw ::util::NotImplementedError("UTF-8 encoded runes");
+			throw ::util::NotImplementedError(::util::format("UTF-8 encoded runes (%#hx %#hx)", registerFile[highReg], registerFile[lowReg]));
 		}
 
 		auto const rune = static_cast<char>(registerFile[lowReg]);
@@ -398,8 +390,7 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		}
 
 		logger << getRuntimeLibFunctionName(PRINT_RUNE) << ' ';
-		logger << PROL16::util::getCanonicalRegisterName(lowReg) << ' ';
-		logger << PROL16::util::getCanonicalRegisterName(highReg);
+		logRegisterNames(lowReg, highReg);
 		logger << " (" << PROL16::util::getCanonicalRegisterName(lowReg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[lowReg]);
 		logger << '=' << ::util::getQuoted(rune);
 		logger << '|' << PROL16::util::getCanonicalRegisterName(highReg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[highReg]);
@@ -598,11 +589,33 @@ std::ostream& VirtualMachine::printData(std::ostream &stream, T const data) cons
 	return stream;
 }
 
-void VirtualMachine::logRuntimeLibCall(PROL16::util::memory::Address const address, Register const ra, Register const rb) const {
-	logger << rtlib::getRuntimeLibFunctionName(address) << ' ' << PROL16::util::getCanonicalRegisterName(ra);
-	logger << ", " << PROL16::util::getCanonicalRegisterName(rb) << " (";
-	logger << "r4=" << ::util::formatAsHexNumberWithBase(registerFile[ra]) << '|';
-	logger << "r6=" << ::util::formatAsHexNumberWithBase(registerFile[rb]) << ")\n";
+template <typename... Registers>
+void VirtualMachine::logRegisterNames(Register const reg, Registers const... registers) const {
+	logger << PROL16::util::getCanonicalRegisterName(reg) << ", ";
+	logRegisterNames(registers...);
+}
+
+void VirtualMachine::logRegisterNames(Register const reg) const {
+	logger << PROL16::util::getCanonicalRegisterName(reg);
+}
+
+template <typename... Registers>
+void VirtualMachine::logRegisterValues(Register const reg, Registers const... registers) const {
+	logger << PROL16::util::getCanonicalRegisterName(reg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[reg]) << '|';
+	logRegisterValues(registers...);
+}
+
+void VirtualMachine::logRegisterValues(Register const reg) const {
+	logger << PROL16::util::getCanonicalRegisterName(reg) << '=' << ::util::formatAsHexNumberWithBase(registerFile[reg]);
+}
+
+template <typename... Registers>
+void VirtualMachine::logRuntimeLibCall(PROL16::util::memory::Address const address, Registers const... registers) const {
+	logger << rtlib::getRuntimeLibFunctionName(address) << ' ';
+	logRegisterNames(registers...);
+	logger << " (";
+	logRegisterValues(registers...);
+	logger << ")\n";
 }
 
 void VirtualMachine::setupCommandInterpreter() {
