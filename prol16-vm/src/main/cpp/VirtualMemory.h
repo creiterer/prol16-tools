@@ -54,6 +54,12 @@ public:
 
 	MemoryRange readRange(Address const startAddress, Address const endAddress) const;
 
+	/**
+	 *
+	 * @param numBytes Number of 8-bit bytes to copy.
+	 */
+	void memcpy(Address const destination, Address const source, size_t const numBytes);
+
 	inline size_t size() const { return memory.size(); }
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
 

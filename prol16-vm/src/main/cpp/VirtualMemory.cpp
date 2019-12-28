@@ -9,6 +9,7 @@
 
 #include "FileUtils.h"
 #include "MathUtils.h"
+#include "StringUtils.h"
 
 #include <algorithm>
 #include <cstring>
@@ -39,6 +40,21 @@ VirtualMemory::MemoryRange VirtualMemory::readRange(Address const startAddress, 
 	}
 
 	return MemoryRange(std::next(memory.cbegin(), startAddress), std::next(memory.cbegin(), endAddress + 1));
+}
+
+void VirtualMemory::memcpy(Address const destination, Address const source, size_t const numBytes) {
+	// Since the PROL16 architecture has 16-bit bytes, but 'numBytes' is specified in 8-bit bytes,
+	// we need to halve 'numBytes' for these checks
+	size_t const num16BitBytes = numBytes / 2 + numBytes % 2;
+
+	if (!(source + num16BitBytes < size())) {
+		throw std::out_of_range(::util::format("source is out of valid memory range (source address = %#hx|8-bit bytes to copy = %u)", source, numBytes));
+	}
+	if (!(destination + num16BitBytes < size())) {
+		throw std::out_of_range(::util::format("destination is out of valid memory range (destination address = %#hx|8-bit bytes to copy = %u)", destination, numBytes));
+	}
+
+	std::memcpy(memory.data() + destination, memory.data() + source, numBytes);
 }
 
 void VirtualMemory::initializeFromFile(std::string const &filename) {

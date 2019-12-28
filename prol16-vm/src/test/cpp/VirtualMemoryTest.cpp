@@ -165,3 +165,52 @@ TEST(VirtualMemoryTest, testReading) {
 //	ASSERT_THROW(memory.readRange(0x0010, 0x0020), std::out_of_range);
 //	ASSERT_THROW(memory.readRange(0x0020, 0x0020), std::out_of_range);
 }
+
+TEST(VirtualMemoryTest, testMemcpy) {
+	PROL16::util::CodeSegment::Segment segment{
+			0x0000,	// 0000
+			0x0400,	// 0001
+			0x0800, // 0002
+			0x8080,	// 0003
+			0x0c20,	// 0004
+			0x1020,	// 0005
+			0x3020,	// 0006
+			0x2000,	// 0007
+			0x2800,	// 0008
+			0x2c00,	// 0009
+			0x4020,	// 000A
+			0x4420,	// 000B
+			0x4820,	// 000C
+			0x4c20,	// 000D
+			0x5020,	// 000E
+			0x5420,	// 000F
+			0x5820,	// 0010
+			0x5c20,	// 0011
+			0x6020,	// 0012
+			0x6820,	// 0013
+			0x6c20,	// 0014
+			0x7020,	// 0015
+			0x7420,	// 0016
+			0x7820,	// 0017
+			0x7c20,	// 0018
+			0x0dee	// 0019
+	};
+
+	VirtualMemory memory;
+	memory.initializeCodeSegment(PROL16::util::CodeSegment(segment));
+
+	memory.memcpy(0x0010, 0x0005, 10);
+
+	VirtualMemory::MemoryRange destinationRange = memory.readRange(0x0010, 0x0014);
+	VirtualMemory::MemoryRange sourceRange = memory.readRange(0x0005, 0x0009);
+	VirtualMemory::MemoryRange expectedRange{
+		0x1020,	// 0005
+		0x3020,	// 0006
+		0x2000,	// 0007
+		0x2800,	// 0008
+		0x2c00,	// 0009
+	};
+
+	ASSERT_EQ(expectedRange, destinationRange);
+	ASSERT_EQ(sourceRange, destinationRange);
+}
