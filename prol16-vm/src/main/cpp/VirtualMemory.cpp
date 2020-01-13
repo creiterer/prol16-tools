@@ -57,6 +57,15 @@ void VirtualMemory::memcpy(Address const destination, Address const source, size
 	std::memcpy(memory.data() + destination, memory.data() + source, numBytes);
 }
 
+VirtualMemory::Address VirtualMemory::incrementHeapBreak(size_t const numBytes) {
+	auto const priorHeapBreak = heapBreak;
+
+	size_t const num16BitBytes = numBytes / 2 + numBytes % 2;
+	heapBreak += num16BitBytes;
+
+	return priorHeapBreak;
+}
+
 void VirtualMemory::initializeFromFile(std::string const &filename) {
 	::util::FileBuffer buffer = ::util::readEntireFile(filename);
 	if (!::util::isMultiple(sizeof(Data), buffer.size())) {

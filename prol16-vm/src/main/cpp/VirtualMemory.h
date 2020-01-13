@@ -30,12 +30,14 @@ public:
 
 	using MemoryRange = std::vector<Data>;
 
-	static Data const MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
+	static constexpr Data MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
 
-	static size_t const CodeSegmentOffset = 0;
-	static size_t const MaxCodeSegmentSize = 0x8000;
+	static constexpr size_t CodeSegmentOffset = 0;
+	static constexpr size_t MaxCodeSegmentSize = 0x8000;
 
-	static size_t const StackStartAddress = 0xFFFF;		// starts at the very top of the memory and grows down
+	static constexpr size_t DataSegmentOffset = CodeSegmentOffset + MaxCodeSegmentSize;
+	static constexpr size_t HeapStartAddress = DataSegmentOffset;
+	static constexpr size_t StackStartAddress = 0xFFFF;		// starts at the very top of the memory and grows down
 
 	VirtualMemory();
 
@@ -60,6 +62,13 @@ public:
 	 */
 	void memcpy(Address const destination, Address const source, size_t const numBytes);
 
+	/**
+	 *
+	 * @param numBytes Number of 8-bit bytes to increase the heap break.
+	 * @return The prior heap break value.
+	 */
+	Address incrementHeapBreak(size_t const numBytes);
+
 	inline size_t size() const { return memory.size(); }
 	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
 
@@ -69,6 +78,7 @@ public:
 private:
 	Memory memory{0};
 	size_t codeSegmentSize{0};
+	Address heapBreak{HeapStartAddress};
 };
 
 }	// namespace PROL16
