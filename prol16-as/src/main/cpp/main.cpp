@@ -62,7 +62,7 @@ int main(int const argc, char const * const argv[]) {
 
 		util::logging::Logger logger({std::cout, logFileStream.stream()}, cliArguments.isSet(util::cli::flags::VERBOSE));
 
-		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Compilation Started ==========\n";
+		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Assembling Started ==========\n";
 
 		util::Filename filename(cliArguments[FILENAME_ARG_NAME]);
 
@@ -114,7 +114,7 @@ int main(int const argc, char const * const argv[]) {
 		p16ExeFile.writeCodeSegment(instructionWriter.getInstructionBuffer());
 
 		logger.ifDisabledLogTo(alwaysLogStreams) << "SUCCEEDED\n";
-		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Compilation Finished ==========\n";
+		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Assembling Finished ==========\n";
 
 		return 0;
 	} catch (util::cli::CLIError const &e) {
