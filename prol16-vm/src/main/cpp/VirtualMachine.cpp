@@ -480,6 +480,7 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 		// NOLINTNEXTLINE(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 		registerFile[4] = registerFile[ra] % registerFile[rb];
+
 		break;
 	}
 	case MEMCPY: {
@@ -490,6 +491,15 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		logRuntimeLibCall(address, destinationReg, sourceReg, numBytesReg);
 
 		memory.memcpy(registerFile[destinationReg], registerFile[sourceReg], registerFile[numBytesReg]);
+
+		break;
+	}
+	case SBRK: {
+		constexpr Register reg = 4;
+
+		logRuntimeLibCall(address, reg);
+
+		registerFile[reg] = memory.incrementHeapBreak(registerFile[reg]);
 
 		break;
 	}

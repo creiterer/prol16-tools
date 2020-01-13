@@ -13,25 +13,18 @@ using namespace PROL16::rtlib;
 
 TEST(RuntimeLibraryTest, testisRuntimeLibFunctionAddress) {
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFF));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFE));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFD));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFC));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFB));
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFA));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF9));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF8));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF7));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF6));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF5));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF4));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF3));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF2));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF1));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF0));
+	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FF9));
+
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FEF));
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FE6));
+	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FE5));
+
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FDF));
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FDE));
+	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FDD));
 
 	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x0));
-	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FEE));
 }
 
 TEST(RuntimeLibraryTest, testGetRuntimeLibFunctionName) {
