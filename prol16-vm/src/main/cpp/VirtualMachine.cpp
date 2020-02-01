@@ -537,7 +537,7 @@ void VirtualMachine::printInfo(std::string const &message) const {
 }
 
 void VirtualMachine::printProgramCounter(std::ostream &stream) const {
-	::util::printHexNumberFormattedWithBase(stream << "pc=", programCounter-1);
+	::util::printHexNumberFormattedWithBase<Address>(stream << "pc=", programCounter-1);
 }
 
 void VirtualMachine::printState(std::ostream &stream) const {
