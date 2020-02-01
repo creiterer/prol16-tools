@@ -45,6 +45,19 @@ enum RuntimeLibFunctionAddress : PROL16::util::memory::Address {
 	MEMSET = 0x7FDE,
 	SBRK = 0x7FDD,
 
+	/// Go-specific stuff (0x7FC*)
+	GO_RUNTIME_ERROR = 0x7FCF,
+	GO_NEW = 0x7FCE,
+	GO_TYPE_HASH_IDENTITY =0x7FCD,
+	GO_TYPE_HASH_IDENTITY_DESCRIPTOR =0x7FCC,
+	GO_TYPE_HASH_INTERFACE =0x7FCB,
+	GO_TYPE_HASH_INTERFACE_DESCRIPTOR =0x7FCA,
+	GO_TYPE_HASH_ERROR_DESCRIPTOR =0x7FC9,
+	GO_TYPE_EQUAL_IDENTITY =0x7FC8,
+	GO_TYPE_EQUAL_IDENTITY_DESCRIPTOR =0x7FC7,
+	GO_TYPE_EQUAL_INTERFACE =0x7FC6,
+	GO_TYPE_EQUAL_INTERFACE_DESCRIPTOR =0x7FC5,
+	GO_TYPE_EQUAL_ERROR_DESCRIPTOR =0x7FC4,
 };
 
 static RuntimeLibFunctionTable const RuntimeLibFunctions = {
@@ -73,6 +86,20 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 		{"memcpy", MEMCPY},
 		{"memset", MEMSET},
 		{"__prol16_sbrk", SBRK},
+
+		/// Go-specific stuff
+		{"__go_runtime_error", GO_RUNTIME_ERROR},
+		{"__go_new", GO_NEW},
+		{"__go_type_hash_identity", GO_TYPE_HASH_IDENTITY},
+		{"__go_type_hash_identity_descriptor", GO_TYPE_HASH_IDENTITY_DESCRIPTOR},
+		{"__go_type_hash_interface", GO_TYPE_HASH_INTERFACE},
+		{"__go_type_hash_interface_descriptor", GO_TYPE_HASH_INTERFACE_DESCRIPTOR},
+		{"__go_type_hash_error_descriptor", GO_TYPE_HASH_ERROR_DESCRIPTOR},
+		{"__go_type_equal_identity", GO_TYPE_EQUAL_IDENTITY},
+		{"__go_type_equal_identity_descriptor", GO_TYPE_EQUAL_IDENTITY_DESCRIPTOR},
+		{"__go_type_equal_interface", GO_TYPE_EQUAL_INTERFACE},
+		{"__go_type_equal_interface_descriptor", GO_TYPE_EQUAL_INTERFACE_DESCRIPTOR},
+		{"__go_type_equal_error_descriptor", GO_TYPE_EQUAL_ERROR_DESCRIPTOR}
 };
 
 PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &functionName);

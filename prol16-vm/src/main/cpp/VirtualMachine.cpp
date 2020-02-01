@@ -7,6 +7,9 @@
 
 #include "VirtualMachine.h"
 
+#include "GoRuntime.h"
+#include "GoRuntimeError.h"
+#include "IntegerUtils.h"
 #include "NotImplementedError.h"
 #include "OpcodeError.h"
 #include "PrintUtils.h"
@@ -536,6 +539,36 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 		break;
 	}
+	case GO_NEW:
+		logRuntimeLibCall(address, 5, 6);
+		go::rtlib::goNew(registerFile, memory);
+		break;
+
+	case GO_TYPE_HASH_IDENTITY:
+		throw ::util::NotImplementedError("__go_type_hash_identity");
+	case GO_TYPE_HASH_IDENTITY_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_hash_identity_descriptor");
+	case GO_TYPE_HASH_INTERFACE:
+		throw ::util::NotImplementedError("__go_type_hash_interface");
+	case GO_TYPE_HASH_INTERFACE_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_hash_interface_descriptor");
+	case GO_TYPE_HASH_ERROR_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_hash_error_descriptor");
+
+	case GO_TYPE_EQUAL_IDENTITY:
+		throw ::util::NotImplementedError("__go_type_equal_identity");
+	case GO_TYPE_EQUAL_IDENTITY_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_equal_identity_descriptor");
+	case GO_TYPE_EQUAL_INTERFACE:
+		throw ::util::NotImplementedError("__go_type_equal_interface");
+	case GO_TYPE_EQUAL_INTERFACE_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_equal_interface_descriptor");
+	case GO_TYPE_EQUAL_ERROR_DESCRIPTOR:
+		throw ::util::NotImplementedError("__go_type_equal_error_descriptor");
+
+	case GO_RUNTIME_ERROR:
+		throw go::rtlib::GoRuntimeError(static_cast<go::rtlib::GoRuntimeError::RuntimeErrorKind>(::util::integer::mergeValues(registerFile[6], registerFile[5])));
+
 	default:
 		throw std::runtime_error(::util::format("Invalid address (%#hx) for runtime library function call", address));
 	}

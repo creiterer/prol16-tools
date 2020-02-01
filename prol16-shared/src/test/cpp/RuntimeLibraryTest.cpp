@@ -24,6 +24,9 @@ TEST(RuntimeLibraryTest, testisRuntimeLibFunctionAddress) {
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FDD));
 	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FDC));
 
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FCF));
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FC4));
+	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7F3));
 
 	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x0));
 }

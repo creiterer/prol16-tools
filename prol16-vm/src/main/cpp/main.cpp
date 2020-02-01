@@ -12,6 +12,7 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Flavor.h"
+#include "GoRuntimeError.h"
 #include "Logger.h"
 #include "RegisterUtils.h"
 #include "ScopedFileStream.h"
@@ -63,6 +64,9 @@ int main(int const argc, char const * const argv[]) {
 		prol16vm.run();
 
 		return 0;
+	} catch (PROL16::go::rtlib::GoRuntimeError const &e) {
+		cerr << "\nGo Runtime Error: " << e.what() << endl;
+		return 3;
 	} catch (util::cli::CLIError const &e) {
 		cerr << "\nCLI Error: " << e.what() << endl;
 		return 2;
