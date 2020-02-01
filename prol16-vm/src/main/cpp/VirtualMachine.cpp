@@ -516,6 +516,17 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 
 		break;
 	}
+	case MEMSET: {
+		constexpr Register destinationReg = 4;
+		constexpr Register valueReg = 5;
+		constexpr Register numBytesReg = 6;
+
+		logRuntimeLibCall(address, destinationReg, valueReg, numBytesReg);
+
+		memory.memset(registerFile[destinationReg], registerFile[valueReg], registerFile[numBytesReg]);
+
+		break;
+	}
 	case SBRK: {
 		constexpr Register reg = 4;
 

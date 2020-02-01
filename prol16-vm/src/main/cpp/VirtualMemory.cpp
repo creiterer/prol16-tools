@@ -57,6 +57,18 @@ void VirtualMemory::memcpy(Address const destination, Address const source, size
 	std::memcpy(memory.data() + destination, memory.data() + source, numBytes);
 }
 
+void VirtualMemory::memset(Address const destination, Data const value, size_t const numBytes) {
+	// Since the PROL16 architecture has 16-bit bytes, but 'numBytes' is specified in 8-bit bytes,
+	// we need to halve 'numBytes' for these checks
+	size_t const num16BitBytes = numBytes / 2 + numBytes % 2;
+
+	if (!(destination + num16BitBytes < size())) {
+		throw std::out_of_range(::util::format("destination is out of valid memory range (destination address = %#hx|8-bit bytes to copy = %u)", destination, numBytes));
+	}
+
+	std::memset(memory.data() + destination, value, numBytes);
+}
+
 VirtualMemory::Address VirtualMemory::incrementHeapBreak(size_t const numBytes) {
 	auto const priorHeapBreak = heapBreak;
 

@@ -42,7 +42,9 @@ enum RuntimeLibFunctionAddress : PROL16::util::memory::Address {
 
 	/// memory stuff (0x7FD*)
 	MEMCPY = 0x7FDF,
-	SBRK = 0x7FDE,
+	MEMSET = 0x7FDE,
+	SBRK = 0x7FDD,
+
 };
 
 static RuntimeLibFunctionTable const RuntimeLibFunctions = {
@@ -69,7 +71,8 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 
 		/// memory stuff
 		{"memcpy", MEMCPY},
-		{"__prol16_sbrk", SBRK}
+		{"memset", MEMSET},
+		{"__prol16_sbrk", SBRK},
 };
 
 PROL16::util::memory::Address getRuntimeLibFunctionAddress(std::string const &functionName);

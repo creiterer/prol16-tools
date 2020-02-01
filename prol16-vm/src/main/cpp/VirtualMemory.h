@@ -57,10 +57,16 @@ public:
 	MemoryRange readRange(Address const startAddress, Address const endAddress) const;
 
 	/**
-	 *
+	 * @see http://www.cplusplus.com/reference/cstring/memcpy/
 	 * @param numBytes Number of 8-bit bytes to copy.
 	 */
 	void memcpy(Address const destination, Address const source, size_t const numBytes);
+
+	/**
+	 * http://www.cplusplus.com/reference/cstring/memset/
+	 * @param numBytes Number of 8-bit bytes to copy.
+	 */
+	void memset(Address const destination, Data const value, size_t const numBytes);
 
 	/**
 	 *
