@@ -83,7 +83,7 @@ int main(int const argc, char const * const argv[]) {
 
 		std::string const p16ExeFilename = filename.getWithCustomExtension(Prol16ExeFile::Extension);
 
-		logger.ifDisabledLogTo(alwaysLogStreams) << "compiling '" << filename.asString() << "' to '" << p16ExeFilename << "': ";
+		logger.ifDisabledLogTo(alwaysLogStreams) << "assembling '" << filename.asString() << "' to '" << p16ExeFilename << "': ";
 		if (countingErrorListener.hasFoundErrors()) {
 			logger.ifDisabledLogTo(alwaysLogStreams) << "FAILED: " << countingErrorListener.getErrorCount() << " error(s) detected while parsing\n";
 			return 2;
