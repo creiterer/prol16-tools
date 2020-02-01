@@ -8,7 +8,8 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PRINTUTILS_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PRINTUTILS_H_INCLUDED
 
-#include <iomanip>
+#include "StringUtils.h"
+
 #include <ostream>
 #include <type_traits>
 
@@ -18,7 +19,7 @@ template <typename T>
 std::ostream& printHexNumberFormatted(std::ostream &stream, T const number) {
 	static_assert(std::is_integral<T>::value, "printHexNumberFormatted() requires an integral value type for the number to be printed.");
 
-	stream << std::hex << std::uppercase << std::setfill('0') << std::setw(sizeof(T) * 2) << number;
+	stream << formatAsHexNumber(number);
 
 	return stream;
 }
@@ -27,7 +28,9 @@ template <typename T>
 std::ostream& printHexNumberFormattedWithBase(std::ostream &stream, T const number) {
 	static_assert(std::is_integral<T>::value, "printHexNumberFormattedWithBase() requires an integral value type for the number to be printed.");
 
-	return printHexNumberFormatted(stream << "0x", number);
+	stream << formatAsHexNumberWithBase(number);
+
+	return stream;
 }
 
 } 	// namespace util
