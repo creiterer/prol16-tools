@@ -41,7 +41,7 @@ TEST(RegisterFileTest, testRegisterFileUsage) {
 	ASSERT_EQ(0xC0DE, registerFile[3]);
 	ASSERT_EQ(0xC0DE, registerFile.readFramePointer());
 
-	ASSERT_THROW(registerFile[16], util::RegisterError);
-	ASSERT_THROW(registerFile.read(16), util::RegisterError);
-	ASSERT_THROW(registerFile.write(16, 0xABBA), util::RegisterError);
+	ASSERT_THROW(registerFile[32], util::RegisterError);
+	ASSERT_THROW(registerFile.read(32), util::RegisterError);
+	ASSERT_THROW(registerFile.write(32, 0xABBA), util::RegisterError);
 }

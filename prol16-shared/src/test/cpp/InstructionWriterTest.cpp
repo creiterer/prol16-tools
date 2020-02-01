@@ -102,71 +102,71 @@ TEST(InstructionWriterTest, testWritingMultipleInstructions) {
 TEST(InstructionWriterTest, testRegisterOutOfRange) {
 	InstructionWriter instructionWriter;
 
-	ASSERT_THROW(instructionWriter.writeLoadi(16, 0xAAAA), RegisterError);
+	ASSERT_THROW(instructionWriter.writeLoadi(32, 0xAAAA), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeLoad(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeLoad(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeLoad(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeLoad(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeLoad(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeLoad(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeStore(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeStore(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeStore(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeStore(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeStore(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeStore(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeMove(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeMove(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeMove(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeMove(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeMove(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeMove(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeJump(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeJump(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeJumpc(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeJumpc(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeJumpz(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeJumpz(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeAnd(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAnd(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAnd(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAnd(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAnd(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAnd(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeOr(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeOr(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeOr(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeOr(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeOr(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeOr(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeXor(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeXor(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeXor(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeXor(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeXor(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeXor(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeNot(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeNot(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeAdd(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAdd(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAdd(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAdd(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAdd(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAdd(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeAddc(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAddc(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeAddc(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAddc(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAddc(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeAddc(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeSub(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeSub(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeSub(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSub(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSub(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSub(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeSubc(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeSubc(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeSubc(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSubc(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSubc(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeSubc(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeComp(16, 0), RegisterError);
-	ASSERT_THROW(instructionWriter.writeComp(0, 16), RegisterError);
-	ASSERT_THROW(instructionWriter.writeComp(16, 16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeComp(32, 0), RegisterError);
+	ASSERT_THROW(instructionWriter.writeComp(0, 32), RegisterError);
+	ASSERT_THROW(instructionWriter.writeComp(32, 32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeInc(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeInc(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeDec(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeDec(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeShl(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeShl(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeShr(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeShr(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeShlc(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeShlc(32), RegisterError);
 
-	ASSERT_THROW(instructionWriter.writeShrc(16), RegisterError);
+	ASSERT_THROW(instructionWriter.writeShrc(32), RegisterError);
 }
 
 TEST(InstructionWriterTest, testWritingDataWords) {

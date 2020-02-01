@@ -18,7 +18,7 @@ TEST(RegisterUtilsTest, testIsRegisterValid) {
 	ASSERT_TRUE(isRegisterValid(RegisterCount-1));
 
 	ASSERT_FALSE(isRegisterValid(RegisterCount));
-	ASSERT_FALSE(isRegisterValid(20));
+	ASSERT_FALSE(isRegisterValid(40));
 }
 
 TEST(RegisterUtilsTest, testValidateRegister) {
@@ -60,9 +60,9 @@ TEST(RegisterUtilsTest, testGetCanonicalRegisterName) {
 	ASSERT_EQ("r0", getCanonicalRegisterName("r0"));
 	ASSERT_EQ("r0", getCanonicalRegisterName("R0"));
 	ASSERT_EQ("r0", getCanonicalRegisterName("0"));
-	ASSERT_EQ("r15", getCanonicalRegisterName("r15"));
-	ASSERT_EQ("r15", getCanonicalRegisterName("R15"));
-	ASSERT_EQ("r15", getCanonicalRegisterName("15"));
+	ASSERT_EQ("r31", getCanonicalRegisterName("r31"));
+	ASSERT_EQ("r31", getCanonicalRegisterName("R31"));
+	ASSERT_EQ("r31", getCanonicalRegisterName("31"));
 
 	ASSERT_EQ("rsp", getCanonicalRegisterName("rsp"));
 	ASSERT_EQ("rsp", getCanonicalRegisterName("RSP"));
@@ -78,7 +78,7 @@ TEST(RegisterUtilsTest, testGetCanonicalRegisterName) {
 	ASSERT_EQ("rra", getCanonicalRegisterName(1));
 	ASSERT_EQ("rsp", getCanonicalRegisterName(2));
 	ASSERT_EQ("rfp", getCanonicalRegisterName(3));
-	ASSERT_EQ("r15", getCanonicalRegisterName(15));
+	ASSERT_EQ("r31", getCanonicalRegisterName(31));
 }
 
 TEST(RegisterUtilsTest, testGetSpecialRegisters) {
@@ -121,9 +121,9 @@ TEST(RegisterUtilsTest, testIsSpecialRegister) {
 	ASSERT_FALSE(isSpecialRegister("ip"));
 
 	ASSERT_FALSE(isSpecialRegister("r5"));
-	ASSERT_FALSE(isSpecialRegister("r15"));
+	ASSERT_FALSE(isSpecialRegister("r31"));
 	ASSERT_FALSE(isSpecialRegister(4));
-	ASSERT_FALSE(isSpecialRegister(15));
+	ASSERT_FALSE(isSpecialRegister(31));
 }
 
 TEST(RegisterUtilsTest, testIsReturnAddressRegister) {
@@ -139,19 +139,19 @@ TEST(RegisterUtilsTest, testIsReturnAddressRegister) {
 	ASSERT_FALSE(isReturnAddressRegister("0"));
 	ASSERT_FALSE(isReturnAddressRegister("r0"));
 
-	ASSERT_FALSE(isReturnAddressRegister("15"));
-	ASSERT_FALSE(isReturnAddressRegister("r15"));
+	ASSERT_FALSE(isReturnAddressRegister("31"));
+	ASSERT_FALSE(isReturnAddressRegister("r31"));
 }
 
 TEST(RegisterUtilsTest, testParseRegisterNumber) {
 	ASSERT_EQ(0, parseRegisterNumber("r0"));
 	ASSERT_EQ(0, parseRegisterNumber("R0"));
 
-	ASSERT_EQ(15, parseRegisterNumber("r15"));
-	ASSERT_EQ(15, parseRegisterNumber("R15"));
+	ASSERT_EQ(31, parseRegisterNumber("r31"));
+	ASSERT_EQ(31, parseRegisterNumber("R31"));
 
-	ASSERT_EQ(16, parseRegisterNumber("r16"));
-	ASSERT_EQ(16, parseRegisterNumber("R16"));
+	ASSERT_EQ(32, parseRegisterNumber("r32"));
+	ASSERT_EQ(32, parseRegisterNumber("R32"));
 
 	ASSERT_EQ(0, parseRegisterNumber("rpc"));
 	ASSERT_EQ(0, parseRegisterNumber("RPC"));
@@ -166,8 +166,8 @@ TEST(RegisterUtilsTest, testParseRegisterNumber) {
 	ASSERT_EQ(3, parseRegisterNumber("RFP"));
 
 	ASSERT_EQ(0, parseRegisterNumber("0"));
-	ASSERT_EQ(15, parseRegisterNumber("15"));
-	ASSERT_EQ(16, parseRegisterNumber("16"));
+	ASSERT_EQ(31, parseRegisterNumber("31"));
+	ASSERT_EQ(32, parseRegisterNumber("32"));
 
 	ASSERT_EQ(0, parseRegisterNumber("pc"));
 	ASSERT_EQ(1, parseRegisterNumber("ra"));
@@ -181,20 +181,20 @@ TEST(RegisterUtilsTest, testParseRegisterNumberChecked) {
 	ASSERT_EQ(0, parseRegisterNumberChecked("r0"));
 	ASSERT_EQ(0, parseRegisterNumberChecked("R0"));
 
-	ASSERT_EQ(15, parseRegisterNumberChecked("r15"));
-	ASSERT_EQ(15, parseRegisterNumberChecked("R15"));
+	ASSERT_EQ(31, parseRegisterNumberChecked("r31"));
+	ASSERT_EQ(31, parseRegisterNumberChecked("R31"));
 
 	ASSERT_EQ(2, parseRegisterNumberChecked("rsp"));
 	ASSERT_EQ(2, parseRegisterNumberChecked("RSP"));
 
 	ASSERT_EQ(0, parseRegisterNumberChecked("0"));
-	ASSERT_EQ(15, parseRegisterNumberChecked("15"));
+	ASSERT_EQ(31, parseRegisterNumberChecked("31"));
 
 	ASSERT_EQ(1, parseRegisterNumberChecked("ra"));
 
-	ASSERT_THROW(parseRegisterNumberChecked("r16"), RegisterError);
-	ASSERT_THROW(parseRegisterNumberChecked("R16"), RegisterError);
-	ASSERT_THROW(parseRegisterNumberChecked("16"), RegisterError);
+	ASSERT_THROW(parseRegisterNumberChecked("r32"), RegisterError);
+	ASSERT_THROW(parseRegisterNumberChecked("R32"), RegisterError);
+	ASSERT_THROW(parseRegisterNumberChecked("32"), RegisterError);
 
 	ASSERT_THROW(parseRegisterNumberChecked("rip"), RegisterError);
 	ASSERT_THROW(parseRegisterNumberChecked("RIP"), RegisterError);
