@@ -69,8 +69,9 @@ public:
 	 */
 	Address incrementHeapBreak(size_t const numBytes);
 
-	inline size_t size() const { return memory.size(); }
-	inline size_t getCodeSegmentSize() const { return codeSegmentSize; }
+	inline size_t size() const noexcept { return memory.size(); }
+	inline size_t getCodeSegmentSize() const noexcept { return codeSegmentSize; }
+	inline bool isCodeAddressValid(Address const address) const noexcept { return address < getCodeSegmentSize(); }
 
 	void initializeFromFile(std::string const &filename);
 	void initializeCodeSegment(util::CodeSegment const &codeSegment);

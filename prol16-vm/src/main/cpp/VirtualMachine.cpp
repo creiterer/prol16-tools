@@ -46,23 +46,31 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 	// 'if (address >= memory.getCodeSegment()' check
 	memory.initializeCodeSegment(p16ExeFile.getCodeSegment());
 
-	VirtualMemory::Address const entryPointAddress = p16ExeFile.getEntryPointAddress();
-	setProgramCounter(entryPointAddress);
+	entryPointAddress = p16ExeFile.getEntryPointAddress();
+	initFuncAddress = p16ExeFile.getInitFuncAddress();
 
 	if (interactive) {
 		setupCommandInterpreter();
 	}
 
-	logger << "starting execution of program '" << filename << "' at address ";
-	logger.forEachLogStream([this, entryPointAddress](Logger::LogStream stream){
-		::util::printHexNumberFormattedWithBase(stream, entryPointAddress);
-		::util::printHexNumberFormattedWithBase(stream << " (css=", memory.getCodeSegmentSize());
-		stream << ')';
-	});
-	logger << '\n';
+	logger << "executing program '" << filename << "' (css=";
+	logger << ::util::formatAsHexNumberWithBase(memory.getCodeSegmentSize()) << ")\n";
 }
 
 void VirtualMachine::run() {
+	if (memory.isCodeAddressValid(initFuncAddress)) {
+		run(initFuncAddress, "init func");
+	}
+
+	run(entryPointAddress, "entry point");
+}
+
+void VirtualMachine::run(Address const startAddress, std::string const &description) {
+	logger << "starting execution of " << description << " at address ";
+	logger << ::util::formatAsHexNumberWithBase(startAddress) << '\n';
+
+	setProgramCounter(startAddress);
+
 	bool stopProgramExecution = false;
 
 	while ((programCounter < memory.getCodeSegmentSize()) && (!stopProgramExecution)) {
@@ -246,7 +254,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 }
 
 void VirtualMachine::setProgramCounter(VirtualMemory::Address const address) {
-	if (address >= memory.getCodeSegmentSize()) {
+	if (!memory.isCodeAddressValid(address)) {
 		std::ostringstream errorMessage;
 		errorMessage << "trying to set program counter (";
 		::util::printHexNumberFormattedWithBase(errorMessage, programCounter) << ") ";

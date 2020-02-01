@@ -18,6 +18,7 @@
 #include "CLIArguments.h"
 #include "CLIError.h"
 #include "Filename.h"
+#include "Flavor.h"
 #include "InstructionWriter.h"
 #include "Logger.h"
 #include "Prol16ExeFile.h"
@@ -42,12 +43,14 @@ constexpr char const *FILENAME_ARG_NAME = "PROL16_ASSEMBLY_FILE"; 	// NOLINT(rea
 
 constexpr char const *CEntryPointName = "main";
 constexpr char const *GoEntryPointName = "main.main";
+constexpr char const *GoInitFuncName = "__go_init_main";
 
 int main(int const argc, char const * const argv[]) {
 	try {
 		util::cli::ArgumentParser argumentParser("PROL16 Assembler");
 		argumentParser.addPositionalArgument(FILENAME_ARG_NAME);
 		argumentParser.addOptionalArgument(util::cli::options::LOGFILE, "prol16-as.log");
+		argumentParser.addOptionalArgument(util::cli::options::FLAVOR, "go", {"c", "go"});
 		argumentParser.addFlag(util::cli::flags::VERBOSE, false);
 
 		util::cli::CLIArguments const cliArguments = argumentParser.parseArguments(argc, argv);
@@ -65,6 +68,7 @@ int main(int const argc, char const * const argv[]) {
 		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Assembling Started ==========\n";
 
 		util::Filename filename(cliArguments[FILENAME_ARG_NAME]);
+		util::Flavor const flavor = util::determineFlavor(cliArguments[util::cli::options::FLAVOR]);
 
 		ScopedFileStream<std::ifstream> inputFileStream(filename.asString(), std::ifstream::in);
 		ANTLRInputStream inputStream(inputFileStream.stream());
@@ -104,10 +108,15 @@ int main(int const argc, char const * const argv[]) {
 									   labelListener.getLabels(), labelListener.getNextInstructionAddress(),
 									   logger);
 
-		if (labelListener.containsLabel(CEntryPointName)) {
+		switch (flavor) {
+		case util::Flavor::Go:
+			p16ExeFile.writeFileHeader(GoEntryPointName, GoInitFuncName);
+			break;
+		case util::Flavor::C:
 			p16ExeFile.writeFileHeader(CEntryPointName);
-		} else {
-			p16ExeFile.writeFileHeader(GoEntryPointName);
+			break;
+		default:
+			throw std::runtime_error("unknown flavor");
 		}
 
 		p16ExeFile.writeSymbolTable();

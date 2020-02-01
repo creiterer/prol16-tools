@@ -19,6 +19,8 @@ using Data = uint16_t;
 using Address = uint16_t;
 using Segment = std::vector<Data>;
 
+constexpr Address InvalidCodeAddress = 0xFFFF;
+
 unsigned calcStringSpaceInMemory(std::string const &str);
 
 }	// namespace memory

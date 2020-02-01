@@ -34,7 +34,8 @@ public:
 	static constexpr std::array<unsigned char, MagicNumberSize> MagicNumber = {0x7F, 'P', '1', '6'};
 
 	static constexpr unsigned EntryPointAddressOffset = MagicNumberSize;
-	static constexpr unsigned SymbolTableSizeOffset = EntryPointAddressOffset + sizeof(Address);
+	static constexpr unsigned InitFuncAddressOffset = EntryPointAddressOffset + sizeof(Address);
+	static constexpr unsigned SymbolTableSizeOffset = InitFuncAddressOffset + sizeof(Address);
 	static constexpr unsigned SymbolTableOffset = SymbolTableSizeOffset + sizeof(Data);
 
 	static Prol16ExeFile parse(std::string const &filename);
@@ -42,11 +43,13 @@ public:
 	static Prol16ExeFile parse(std::ifstream &sourceStream, std::string const &filename = "");
 
 	inline Address getEntryPointAddress() const noexcept { return entryPointAddress; }
+	inline Address getInitFuncAddress() const noexcept { return initFuncAddress; }
 	inline CodeSegment getCodeSegment() const noexcept { return codeSegment; }
 	inline SymbolTable getSymbolTable() const noexcept { return symbolTable; }
 
 private:
 	Address const entryPointAddress;
+	Address const initFuncAddress;
 	CodeSegment const codeSegment;
 	SymbolTable const symbolTable;
 
@@ -55,7 +58,7 @@ private:
 	static void checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename);
 	static void checkFileStartsWithMagicNumber(::util::FileBuffer const &buffer, std::string const &filename);
 
-	Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment, SymbolTable symbolTable);
+	Prol16ExeFile(Address const entryPointAddress, Address const initFuncAddress, CodeSegment codeSegment, SymbolTable symbolTable);
 };
 
 }	// namespace util

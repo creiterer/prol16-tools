@@ -39,10 +39,11 @@ Prol16ExeFileWriter::~Prol16ExeFileWriter() {
 	fileStream.close();
 }
 
-void Prol16ExeFileWriter::writeFileHeader(std::string const &entryPointName) {
+void Prol16ExeFileWriter::writeFileHeader(std::string const &entryPointName, std::string const &initFuncName) {
 	logger << "writing file header ...\n";
 	writeMagicNumber();
-	writeEntryPointAddress(entryPointName);
+	writeSymbolAddress(entryPointName, "entry point");
+	writeSymbolAddress(initFuncName, "init func");
 }
 
 void Prol16ExeFileWriter::writeMagicNumber() {
@@ -50,19 +51,27 @@ void Prol16ExeFileWriter::writeMagicNumber() {
 	std::copy(Prol16ExeFile::MagicNumber.cbegin(), Prol16ExeFile::MagicNumber.cend(), ostreamItor);
 }
 
-void Prol16ExeFileWriter::writeEntryPointAddress(std::string const &entryPointName) {
-	try {
-		Address const entryPointAddress = symbolTable.getSymbolAddress(entryPointName);
+void Prol16ExeFileWriter::writeSymbolAddress(std::string const &symbolName, std::string const &symbolDescription) {
+	if (symbolName.empty()) {
+		::util::writeValueBinary(fileStream, util::memory::InvalidCodeAddress);
+		return;
+	}
 
-		logger.forEachLogStream([entryPointName, entryPointAddress](Logger::LogStream stream){
-			stream << "writing entry point address: entry point name = '" << entryPointName << "' | entry point address = ";
-			::util::printHexNumberFormattedWithBase(stream, entryPointAddress);
+	try {
+		Address const symbolAddress = symbolTable.getSymbolAddress(symbolName);
+
+		logger.forEachLogStream([&symbolName, &symbolAddress, &symbolDescription](Logger::LogStream stream){
+			stream << "writing " << symbolDescription << " address: ";
+			stream << symbolDescription << " name = '" << symbolName << "' | ";
+			stream << symbolDescription << " address = ";
+			::util::printHexNumberFormattedWithBase(stream, symbolAddress);
 			stream << '\n';
 		});
 
-		::util::writeValueBinary(fileStream, entryPointAddress);
+		::util::writeValueBinary(fileStream, symbolAddress);
 	} catch (std::out_of_range const&) {
-		throw std::runtime_error(::util::format("FAILED: Writing PROL16 exe file: Writing file header: Could not find address of entry point '%s'", entryPointName.c_str()));
+		throw std::runtime_error(::util::format("FAILED: Writing PROL16 exe file: Writing file header: Could not find address of %s '%s'",
+												symbolDescription.c_str(), symbolName.c_str()));
 	}
 }
 

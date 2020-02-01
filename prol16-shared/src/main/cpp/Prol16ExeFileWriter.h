@@ -36,7 +36,7 @@ public:
 	inline std::ofstream& stream() { return fileStream; }
 	inline std::string getFilename() const { return filename; }
 
-	void writeFileHeader(std::string const &entryPointName);
+	void writeFileHeader(std::string const &entryPointName, std::string const &initFuncName = "");
 	void writeSymbolTable();
 	void writeCodeSegment(InstructionWriter::InstructionBuffer const &buffer);
 
@@ -47,7 +47,7 @@ private:
 	::util::logging::Logger &logger;
 
 	void writeMagicNumber();
-	void writeEntryPointAddress(std::string const &entryPointName);
+	void writeSymbolAddress(std::string const &symbolName, std::string const &symbolDescription);
 	void writeStringTable();
 	void logSymbolTableEntry(SymbolTable::Entry const &entry);
 	void logStringTableEntry(SymbolTable::StringTableEntry const &entry);

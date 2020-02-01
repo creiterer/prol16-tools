@@ -64,7 +64,10 @@ private:
 	std::unique_ptr<::util::CommandInterpreter> commandInterpreter;
 	bool const shouldPrintDecimal;
 	::util::Flavor const flavor;
+	Address entryPointAddress;
+	Address initFuncAddress;
 
+	void run(Address const startAddress, std::string const &description);
 	Instruction fetchAndDecodeInstruction();
 	Immediate fetchImmediate();
 	Immediate prefetchImmediate() const;

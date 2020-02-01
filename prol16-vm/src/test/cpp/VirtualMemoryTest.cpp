@@ -7,6 +7,8 @@
 
 #include "VirtualMemory.h"
 
+#include "MemoryUtils.h"
+
 #include <stdexcept>
 
 #include "gtest/gtest.h"
@@ -157,6 +159,11 @@ TEST(VirtualMemoryTest, testReading) {
 	ASSERT_EQ(expectedRange, memoryRange);
 
 	ASSERT_EQ(segment, memory.readRange(0x0000, 0x0019));
+
+	ASSERT_TRUE(memory.isCodeAddressValid(0x0000));
+	ASSERT_TRUE(memory.isCodeAddressValid(0x0019));
+	ASSERT_FALSE(memory.isCodeAddressValid(0x0020));
+	ASSERT_FALSE(memory.isCodeAddressValid(PROL16::util::memory::InvalidCodeAddress));
 
 	// does not throw because it is not out of the size of the memory
 	// -> it "just" reads an invalid value

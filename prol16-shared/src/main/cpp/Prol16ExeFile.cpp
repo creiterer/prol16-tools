@@ -41,6 +41,7 @@ Prol16ExeFile Prol16ExeFile::parse(::util::FileBuffer const &buffer, std::string
 	checkFileStartsWithMagicNumber(buffer, filename);
 
 	auto const entryPointAddress = ::util::readValue<Address>(buffer, EntryPointAddressOffset);
+	auto const initFuncAddress = ::util::readValue<Address>(buffer, InitFuncAddressOffset);
 
 	auto const symbolTableSize = ::util::readValue<Data>(buffer, SymbolTableSizeOffset);
 	assert(symbolTableSize != 0);
@@ -62,7 +63,7 @@ Prol16ExeFile Prol16ExeFile::parse(::util::FileBuffer const &buffer, std::string
 		stringTable.emplace(entry.second, codeSegment.readString(entry.second));
 	}
 
-	return Prol16ExeFile(entryPointAddress, std::move(codeSegment), SymbolTable::create(symbolAddressTable, stringTable));
+	return Prol16ExeFile(entryPointAddress, initFuncAddress, std::move(codeSegment), SymbolTable::create(symbolAddressTable, stringTable));
 }
 
 void Prol16ExeFile::checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename) {
@@ -89,8 +90,8 @@ void Prol16ExeFile::checkFileStartsWithMagicNumber(::util::FileBuffer const &buf
 	}
 }
 
-Prol16ExeFile::Prol16ExeFile(Address const entryPointAddress, CodeSegment codeSegment, SymbolTable symbolTable)
-: entryPointAddress(entryPointAddress), codeSegment(std::move(codeSegment)), symbolTable(std::move(symbolTable)) {
+Prol16ExeFile::Prol16ExeFile(Address const entryPointAddress, Address const initFuncAddress, CodeSegment codeSegment, SymbolTable symbolTable)
+: entryPointAddress(entryPointAddress), initFuncAddress(initFuncAddress), codeSegment(std::move(codeSegment)), symbolTable(std::move(symbolTable)) {
 
 }
 
