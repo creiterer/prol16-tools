@@ -15,7 +15,8 @@ namespace PROL16 { namespace util {
 RegisterError::RegisterError(Register const reg) {
 	std::ostringstream errorMessageStream;
 
-	errorMessageStream << "register 'r" << reg << "' is out of the range of allowed registers (rpc, rra, rsp, rfp, r4 -- r" << RegisterCount-1 << ')';
+	// the cast is necessary because uint8_t is interpreted as character and not as number!
+	errorMessageStream << "register 'r" << static_cast<unsigned>(reg) << "' is out of the range of allowed registers (rpc, rra, rsp, rfp, r4 -- r" << RegisterCount-1 << ')';
 	errorMessage = errorMessageStream.str();
 }
 
