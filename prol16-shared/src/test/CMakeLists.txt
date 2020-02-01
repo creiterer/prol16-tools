@@ -18,6 +18,7 @@ set(TEST_CPP_SOURCES
     ${TEST_CPP_DIR}/CLIArgumentNamesTest.cpp
     ${TEST_CPP_DIR}/PrintUtilsTest.cpp
     ${TEST_CPP_DIR}/StreamUtilsTest.cpp
+    ${TEST_CPP_DIR}/IntegerUtilsTest.cpp
 )
 
 # add directory of main include files (needed for the test executable)
