@@ -16,7 +16,7 @@ namespace PROL16 { namespace util {
 bool isNumber(Prol16AsmParser::ExpressionContext const * const expression);
 bool isIdentifier(Prol16AsmParser::ExpressionContext const * const expression);
 
-bool isNumber(Prol16AsmParser::DataWordStoreContext const * const context);
+bool isImmediate(Prol16AsmParser::DataWordStoreContext const * const context);
 bool isString(Prol16AsmParser::DataWordStoreContext const * const context);
 }	// namespace util
 }	// namespace PROL16

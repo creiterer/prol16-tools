@@ -120,7 +120,7 @@ void LabelListener::enterShrcInstruction(Prol16AsmParser::ShrcInstructionContext
 }
 
 void LabelListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) {
-	if (util::isNumber(context)) {
+	if (util::isImmediate(context)) {
 		++commandCounter;
 	} else if (util::isString(context)) {
 		std::string const str = ::util::getUnquoted(::util::handleEscapeSequences(context->string->getText()));

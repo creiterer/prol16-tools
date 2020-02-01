@@ -182,8 +182,8 @@ void Prol16AsmListener::enterCommandCounterLoad(Prol16AsmParser::CommandCounterL
 }
 
 void Prol16AsmListener::enterDataWordStore(Prol16AsmParser::DataWordStoreContext *context) {
-	if (util::isNumber(context)) {
-		instructionWriter.writeImmediate(util::parseNumber(context->number->getText()));
+	if (util::isImmediate(context)) {
+		instructionWriter.writeImmediate(evaluateExpression(context->immediate));
 	} else if (util::isString(context)) {
 		instructionWriter.writeString(::util::getUnquoted(::util::handleEscapeSequences(context->string->getText())));
 	} else {

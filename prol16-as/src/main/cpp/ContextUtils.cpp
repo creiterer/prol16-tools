@@ -18,8 +18,8 @@ bool isIdentifier(Prol16AsmParser::ExpressionContext const * const expression) {
 	return expression->identifier != nullptr;
 }
 
-bool isNumber(Prol16AsmParser::DataWordStoreContext const * const context) {
-	return context->number != nullptr;
+bool isImmediate(Prol16AsmParser::DataWordStoreContext const * const context) {
+	return context->immediate != nullptr;
 }
 
 bool isString(Prol16AsmParser::DataWordStoreContext const * const context) {

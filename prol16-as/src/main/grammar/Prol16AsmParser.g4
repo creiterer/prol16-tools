@@ -135,7 +135,7 @@ shlcInstruction		: SHLC ra=Register ;
 shrcInstruction		: SHRC ra=Register ;
 
 commandCounterLoad : ORG address=expression ;
-dataWordStore : DB (number=Number | string=String) /* (Comma (numbers=Number | strings=String))* */ ;
+dataWordStore : DB (immediate=expression | string=String) /* (Comma (numbers=Number | strings=String))* */ ;
 symbolicConstantDefinition : EQU identifier=Identifier Comma number=Number ;
 macroDefinition : MACRO Identifier NEWLINE mnemonicStatement* ENDM ;
 macroCall : Identifier MacroCallOperator;
