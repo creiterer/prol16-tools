@@ -24,8 +24,9 @@ enum RuntimeLibFunctionAddress : PROL16::util::memory::Address {
 	PRINT_UINT32 = 0x7FFE,
 	PRINT_RUNE = 0x7FFD,
 	PRINT_STRING = 0x7FFC,
-	PRINT_NL = 0x7FFB,
-	PRINT_SPACE = 0x7FFA,
+	PRINT_POINTER = 0x7FFB,
+	PRINT_NL = 0x7FFA,
+	PRINT_SPACE = 0x7FF9,
 
 	/// arithmetic stuff (0x7FE*)
 	MUL_I16 = 0x7FEF,
@@ -50,6 +51,7 @@ static RuntimeLibFunctionTable const RuntimeLibFunctions = {
 		{"__prol16_print_uint32", PRINT_UINT32},
 		{"__prol16_print_rune", PRINT_RUNE},
 		{"__prol16_print_string", PRINT_STRING},
+		{"__prol16_print_pointer", PRINT_POINTER},
 		{"__prol16_print_nl", PRINT_NL},
 		{"__prol16_print_space", PRINT_SPACE},
 

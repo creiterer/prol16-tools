@@ -429,6 +429,19 @@ void VirtualMachine::executeRuntimeLibFunction(Address const address) {
 		break;
 	}
 
+	case PRINT_POINTER: {
+		Register const reg = isGoFlavor() ? 5 : 4;
+
+		if (!logger.isEnabled()) {
+			printData(std::cout, registerFile[reg]);
+		}
+
+		logRuntimeLibCall(address, reg);
+		logger << '\n' << ::util::formatAsHexNumberWithBase(registerFile[reg]);
+
+		break;
+	}
+
 	case PRINT_NL:
 		if (!logger.isEnabled()) {
 			std::cout << '\n';

@@ -13,8 +13,8 @@ using namespace PROL16::rtlib;
 
 TEST(RuntimeLibraryTest, testisRuntimeLibFunctionAddress) {
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFF));
-	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FFA));
-	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FF9));
+	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FF9));
+	ASSERT_FALSE(isRuntimeLibFunctionAddress(0x7FF8));
 
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FEF));
 	ASSERT_TRUE(isRuntimeLibFunctionAddress(0x7FE6));
