@@ -21,8 +21,8 @@
 // NOLINTNEXTLINE(readability-identifier-naming)
 namespace PROL16 { namespace util {
 
-char const * const Prol16ExeFile::Extension{"p16"};
-std::array<unsigned char, Prol16ExeFile::MagicNumberSize> const Prol16ExeFile::MagicNumber{0x7F, 'P', '1', '6'};
+constexpr char const *Prol16ExeFile::Extension;
+constexpr std::array<unsigned char, Prol16ExeFile::MagicNumberSize> Prol16ExeFile::MagicNumber;
 
 Prol16ExeFile Prol16ExeFile::parse(std::string const &filename) {
 	return parse(::util::readEntireFile(filename), filename);

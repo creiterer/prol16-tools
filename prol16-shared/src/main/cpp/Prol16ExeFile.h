@@ -28,22 +28,22 @@ public:
 	using Address = memory::Address;
 	using Data = memory::Data;
 
-	static char const * const Extension;
+	static constexpr char const *Extension = "p16";
 
-	static unsigned const MagicNumberSize = 4;
-	static std::array<unsigned char, MagicNumberSize> const MagicNumber;
+	static constexpr unsigned MagicNumberSize = 4;
+	static constexpr std::array<unsigned char, MagicNumberSize> MagicNumber = {0x7F, 'P', '1', '6'};
 
-	static unsigned const EntryPointAddressOffset = MagicNumberSize;
-	static unsigned const SymbolTableSizeOffset = EntryPointAddressOffset + sizeof(Address);
-	static unsigned const SymbolTableOffset = SymbolTableSizeOffset + sizeof(Data);
+	static constexpr unsigned EntryPointAddressOffset = MagicNumberSize;
+	static constexpr unsigned SymbolTableSizeOffset = EntryPointAddressOffset + sizeof(Address);
+	static constexpr unsigned SymbolTableOffset = SymbolTableSizeOffset + sizeof(Data);
 
 	static Prol16ExeFile parse(std::string const &filename);
 	static Prol16ExeFile parse(::util::ScopedFileStream<std::ifstream> &sourceStream);
 	static Prol16ExeFile parse(std::ifstream &sourceStream, std::string const &filename = "");
 
-	inline Address getEntryPointAddress() const { return entryPointAddress; }
-	inline CodeSegment getCodeSegment() const { return codeSegment; }
-	inline SymbolTable getSymbolTable() const { return symbolTable; }
+	inline Address getEntryPointAddress() const noexcept { return entryPointAddress; }
+	inline CodeSegment getCodeSegment() const noexcept { return codeSegment; }
+	inline SymbolTable getSymbolTable() const noexcept { return symbolTable; }
 
 private:
 	Address const entryPointAddress;
