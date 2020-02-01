@@ -119,7 +119,7 @@ bool VirtualMachine::executeInstruction(Instruction const &instruction) {
 		break;
 
 	case SLEEP: // stop program execution
-		printInfo("stopping execution: reached 'sleep' instruction");
+		logger << "stopping execution: reached 'sleep' instruction\n";
 		return true;
 
 	case LOADI: {
