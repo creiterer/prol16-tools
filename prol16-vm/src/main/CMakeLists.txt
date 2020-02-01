@@ -8,6 +8,7 @@ set(MAIN_CPP_SOURCES
     ${MAIN_CPP_DIR}/RegisterFile.cpp
     ${MAIN_CPP_DIR}/Flag.cpp
     ${MAIN_CPP_DIR}/GoRuntimeError.cpp
+    ${MAIN_CPP_DIR}/GoRuntime.cpp        
 )
 
 add_executable(prol16-vm ${MAIN_CPP_SOURCES})
