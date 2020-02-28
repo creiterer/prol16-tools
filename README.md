@@ -62,7 +62,7 @@ ctest --output-on-failure
 
 ## Usage
 
-### Assembler - `prol16-as`
+### Assembler -- `prol16-as`
 The PROL16 assembler has a simple command-line interface:
 
 ```
@@ -80,7 +80,7 @@ To assemble some PROL16 assembly file `example.s` to a PROL16 executable file `e
 Optionally, you can turn on verbose logging with the `-v|--verbose` flag. 
 If verbose logging is enabled, it is also possible to specify a log file with the `-l|--log-file` option, which defaults to `prol16-as.log`.
 
-### Disassembler - `prol16-dis`
+### Disassembler -- `prol16-dis`
 The PROL16 disassembler also provides a simple command-line interface:
 
 ```
@@ -98,7 +98,7 @@ To disassemble some PROL16 executable file `example.p16` to a PROL16 assembly fi
 Optionally, you can write the assembly output to the console with the `-c|--console` flag.
 
 
-### Virtual Machine - `prol16-vm`
+### Virtual Machine -- `prol16-vm`
 The PROL16 virtual machine provides the following command-line interface:
 
 ```
