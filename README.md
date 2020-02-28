@@ -68,7 +68,7 @@ The PROL16 assembler has a simple command-line interface:
 ```
 ./prol16-as -h
 PROL16 Assembler
-Usage: ./prol16-as [-v|--verbose] [-l|--log-file LOG-FILE] PROL16_ASSEMBLY_FILE
+Usage: ./prol16-as [-v|--verbose] [-f|--flavor FLAVOR] [-l|--log-file LOG-FILE] PROL16_ASSEMBLY_FILE
 ```
 
 To assemble some PROL16 assembly file `example.s` to a PROL16 executable file `example.p16` run:
@@ -77,8 +77,9 @@ To assemble some PROL16 assembly file `example.s` to a PROL16 executable file `e
 ./prol16-as example.s
 ```
 
-Optionally, you can turn on verbose logging with the `-v|--verbose` flag. 
-If verbose logging is enabled, it is also possible to specify a log file with the `-l|--log-file` option, which defaults to `prol16-as.log`.
+This, by default, uses the appropriate flavor for PROL16 assembly files compiled from Go source files, which is `go`. If the assembly file is compiled from a C source file, it is necessary to tell this the PROL16 assembler by explicitly specifying the flavor via the `-f|--flavor` option. For C, it's `-f c`. Currently supported flavors are `go` (default) and `c`.
+
+Optionally, you can turn on verbose logging with the `-v|--verbose` flag, which, by default, logs to the console. If verbose logging is enabled, it is also possible to specify a log file with the `-l|--log-file` option, which defaults to `prol16-as.log`.
 
 ### Disassembler -- `prol16-dis`
 The PROL16 disassembler also provides a simple command-line interface:
@@ -104,7 +105,7 @@ The PROL16 virtual machine provides the following command-line interface:
 ```
 ./prol16-vm -h
 PROL16 Virtual Machine
-Usage: ./prol16-vm [-d|--decimal] [-v|--verbose] [-l|--log-file LOG-FILE] [-i|--interactive] PROL16_EXE_FILE
+Usage: ./prol16-vm [-d|--decimal] [-v|--verbose] [-i|--interactive] [-f|--flavor FLAVOR] [-l|--log-file LOG-FILE] PROL16_EXE_FILE
 ```
 
 To simply execute a PROL16 executable `example.p16` run:
@@ -112,6 +113,8 @@ To simply execute a PROL16 executable `example.p16` run:
 ```
 ./prol16-vm example.p16
 ```
+
+Like the [Assembler](#assembler----prol16-as), the VM uses by default the flavor for executables stemming from Go source files. To execute files that originate from C source files, it is necessary to specify the C flavor with `-f c`. The VM supports the same flavors as the assembler.
 
 To print numbers in decimal format, use the `-d|--decimal` flag.  
 To enable verbose logging, use the `-v|--verbose` flag. To optionally specify a dedicated log file, use the `-l|--log-file` option, which defaults to `prol16-vm.log`.
