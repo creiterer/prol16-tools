@@ -38,15 +38,15 @@ void disassembleToConsole(std::string const &filename) {
 }
 
 void disassembleToFile(util::Filename const &filename) {
-	cout << "========== Decompilation Started ==========" << endl;
+	cout << "========== Disassembling Started ==========" << endl;
 
 	ScopedFileStream<std::ofstream> assemblyFileStream(filename.appendToName("_dis").getWithCustomExtension("s"), std::ofstream::out);
-	cout << "decompiling '" << filename.asString() << "' to '" << assemblyFileStream.getFilename() << "': ";
+	cout << "disassembling '" << filename.asString() << "' to '" << assemblyFileStream.getFilename() << "': ";
 
 	disassemble(filename.asString(), assemblyFileStream);
 
 	cout << "SUCCEEDED" << endl;
-	cout << "========== Decompilation Finished ==========" << endl;
+	cout << "========== Disassembling Finished ==========" << endl;
 }
 
 }	// anonymous namespace
