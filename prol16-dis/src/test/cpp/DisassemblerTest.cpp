@@ -33,6 +33,10 @@ TEST(DisassemblerTest, testSingleInstruction) {
 	std::ostringstream expectedOutput;
 	expectedOutput << "init func address: 0000\n";
 	expectedOutput << "entry point address: 0000\n";
+	expectedOutput << '\n';
+	expectedOutput << "symbol table (size=1)\n";
+	expectedOutput << "0x0000 = \n";
+	expectedOutput << '\n';
 	expectedOutput << "0000:\tsleep\n";
 
 	ASSERT_EQ(expectedOutput.str(), outputStream.str());
@@ -48,6 +52,10 @@ TEST(DisassemblerTest, testMultipleInstructions) {
 	std::ostringstream expectedOutput;
 	expectedOutput << "init func address: 0000\n";
 	expectedOutput << "entry point address: 0000\n";
+	expectedOutput << '\n';
+	expectedOutput << "symbol table (size=1)\n";
+	expectedOutput << "0x0000 = \n";
+	expectedOutput << '\n';
 	expectedOutput << "0000:\t" << "nop" << std::endl;
 	expectedOutput << "0001:\t" << "sleep" << std::endl;
 	expectedOutput << "0002:\t" << "loadi rpc, 8080h" << std::endl;

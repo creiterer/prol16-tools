@@ -11,6 +11,7 @@
 #include "IncompleteInstructionError.h"
 #include "MnemonicUtils.h"
 #include "PrintUtils.h"
+#include "SymbolTable.h"
 
 #include <array>
 #include <iomanip>
@@ -34,24 +35,28 @@ void Disassembler::disassemble() {
 		destinationStream << "init func address: " << ::util::formatAsHexNumber(initFuncAddress) << '\n';
 	}
 
-	destinationStream << "entry point address: " << ::util::formatAsHexNumber(entryPointAddress) << '\n';
+	destinationStream << "entry point address: " << ::util::formatAsHexNumber(entryPointAddress) << "\n\n";
+
+	util::SymbolTable const symbolTable = prol16ExeFile.getSymbolTable();
+	destinationStream << "symbol table (size=" << symbolTable.size() << ")\n";
+	symbolTable.printTo(destinationStream);
+	destinationStream << '\n';
 
 	// NOLINTNEXTLINE(bugprone-too-small-loop-variable)
 	for (Address address = 0; address < codeSegment.size(); ++address) {
 		Instruction instruction = Instruction::decode(codeSegment.at(address));
 
-		::util::printHexNumberFormatted(destinationStream, address) << ":\t";
-		destinationStream << instruction;
+		destinationStream << ::util::formatAsHexNumber(address) << ":\t" << instruction;
 
 		if (instruction.is(util::LOADI)) {
 			try {
 				Immediate const immediate = codeSegment.at(++address);
-				::util::printHexNumberFormatted(destinationStream << ", ", immediate) << 'h' << std::endl;
+				destinationStream << ", " << ::util::formatAsHexNumber(immediate) << "h\n";
 			} catch (std::out_of_range const&) {
 				throw util::IncompleteInstructionError("failed to read immediate of '" + instruction.getMnemonicString() + "'");
 			}
 		} else {
-			destinationStream << std::endl;
+			destinationStream << '\n';
 		}
 	}
 }

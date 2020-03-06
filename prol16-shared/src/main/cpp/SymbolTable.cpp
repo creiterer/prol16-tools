@@ -76,8 +76,14 @@ bool SymbolTable::contains(std::string const &symbolName) const {
 }
 
 void SymbolTable::logTo(::util::logging::Logger &logger) const {
-	for (Entry const &entry : symbolMap) {
+	for (auto const &entry : symbolMap) {
 		logger << ::util::formatAsHexNumberWithBase(entry.first) << " = " << entry.second.first << '\n';
+	}
+}
+
+void SymbolTable::printTo(std::ostream &stream) const {
+	for (auto const &entry : symbolMap) {
+		stream << ::util::formatAsHexNumberWithBase(entry.first) << " = " << entry.second.first << '\n';
 	}
 }
 

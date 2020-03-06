@@ -13,6 +13,7 @@
 #include "MemoryUtils.h"
 
 #include <map>
+#include <ostream>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -56,6 +57,7 @@ public:
 	inline const_iterator cend() const noexcept { return symbolMap.cend(); }
 
 	void logTo(::util::logging::Logger &logger) const;
+	void printTo(std::ostream &stream) const;
 
 private:
 	SymbolMap symbolMap;
