@@ -36,7 +36,7 @@ public:
 	explicit CodeSegment(Segment codeSegment);
 	CodeSegment(std::initializer_list<value_type> codeSegment);
 
-	inline size_type size() const { return codeSegment.size(); }
+	inline size_type size() const noexcept { return codeSegment.size(); }
 
 	inline const_reference at(Address const address) const { return codeSegment.at(address); }
 
@@ -45,6 +45,8 @@ public:
 
 	inline const_iterator end() const noexcept { return codeSegment.end(); }
 	inline const_iterator cend() const noexcept { return codeSegment.cend(); }
+
+	inline bool isAddressValid(Address const address) const noexcept { return address < size(); }
 
 	std::string readString(Address const address) const;
 

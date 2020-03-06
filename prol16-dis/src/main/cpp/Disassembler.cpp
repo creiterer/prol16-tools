@@ -26,10 +26,15 @@ Disassembler::Disassembler(SourceStream &sourceStream, std::ostream &destination
 }
 
 void Disassembler::disassemble() {
+	Address const initFuncAddress = prol16ExeFile.getInitFuncAddress();
 	Address const entryPointAddress = prol16ExeFile.getEntryPointAddress();
-	::util::printHexNumberFormatted(destinationStream << "entry point address: ", entryPointAddress) << '\n';
-
 	CodeSegment const codeSegment = prol16ExeFile.getCodeSegment();
+
+	if (codeSegment.isAddressValid(initFuncAddress)) {
+		destinationStream << "init func address: " << ::util::formatAsHexNumber(initFuncAddress) << '\n';
+	}
+
+	destinationStream << "entry point address: " << ::util::formatAsHexNumber(entryPointAddress) << '\n';
 
 	// NOLINTNEXTLINE(bugprone-too-small-loop-variable)
 	for (Address address = 0; address < codeSegment.size(); ++address) {

@@ -31,6 +31,7 @@ TEST(DisassemblerTest, testSingleInstruction) {
 	disassembler.disassemble();
 
 	std::ostringstream expectedOutput;
+	expectedOutput << "init func address: 0000\n";
 	expectedOutput << "entry point address: 0000\n";
 	expectedOutput << "0000:\tsleep\n";
 
@@ -45,6 +46,7 @@ TEST(DisassemblerTest, testMultipleInstructions) {
 	disassembler.disassemble();
 
 	std::ostringstream expectedOutput;
+	expectedOutput << "init func address: 0000\n";
 	expectedOutput << "entry point address: 0000\n";
 	expectedOutput << "0000:\t" << "nop" << std::endl;
 	expectedOutput << "0001:\t" << "sleep" << std::endl;
