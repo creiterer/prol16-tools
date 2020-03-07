@@ -25,6 +25,7 @@ class Prol16ExeFileWriter final : private ::util::NonCopyable {	// NOLINT(cppcor
 public:
 	using Address = memory::Address;
 	using Data = memory::Data;
+	using Segment = InstructionWriter::Segment;
 
 	static Data const MagicStdLibValue = 0xBAAD;
 
@@ -38,7 +39,8 @@ public:
 
 	void writeFileHeader(std::string const &entryPointName, std::string const &initFuncName = "");
 	void writeSymbolTable();
-	void writeCodeSegment(InstructionWriter::InstructionBuffer const &buffer);
+	void writeCodeSegment(Segment const &segment);
+	void writeDataSegment(Segment const &segment);
 
 private:
 	std::string const filename;

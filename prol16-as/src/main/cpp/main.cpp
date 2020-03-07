@@ -120,7 +120,8 @@ int main(int const argc, char const * const argv[]) {
 		}
 
 		p16ExeFile.writeSymbolTable();
-		p16ExeFile.writeCodeSegment(instructionWriter.getInstructionBuffer());
+		p16ExeFile.writeCodeSegment(instructionWriter.getCodeSegment());
+		p16ExeFile.writeDataSegment(instructionWriter.getDataSegment());
 
 		logger.ifDisabledLogTo(alwaysLogStreams) << "SUCCEEDED\n";
 		logger.ifDisabledLogTo(alwaysLogStreams) << "========== Assembling Finished ==========\n";

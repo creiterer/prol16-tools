@@ -88,8 +88,14 @@ void Prol16ExeFileWriter::writeSymbolTable() {
 	}
 }
 
-void Prol16ExeFileWriter::writeCodeSegment(InstructionWriter::InstructionBuffer const &buffer) {
-	::util::writeBufferToStream(fileStream, buffer);
+void Prol16ExeFileWriter::writeCodeSegment(Segment const &segment) {
+	::util::writeValueBinary<Data>(fileStream, segment.size());
+	::util::writeBufferToStream(fileStream, segment);
+}
+
+void Prol16ExeFileWriter::writeDataSegment(Segment const &segment) {
+	::util::writeValueBinary<Data>(fileStream, segment.size());
+	::util::writeBufferToStream(fileStream, segment);
 	writeStringTable();
 }
 

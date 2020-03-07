@@ -26,7 +26,7 @@ public:
 	using Immediate = util::Immediate;
 	using String = std::string;
 	using EncodedType = Instruction::EncodedType;
-	using InstructionBuffer = std::vector<EncodedType>;
+	using Segment = std::vector<EncodedType>;
 
 	InstructionWriter() = default;
 
@@ -82,14 +82,19 @@ public:
 
 	void writeString(String const &str);
 
-	void writeBufferToStream(std::ostream &stream) const;
+	inline Segment getCodeSegment() const noexcept { return codeSegment; }
+	inline void clearCodeSegment() { codeSegment.clear(); }
+	inline Instruction::EncodedType getLastInstruction() const { return codeSegment.back(); }
 
-	inline InstructionBuffer getInstructionBuffer() const { return instructionBuffer; }
-	inline void clearInstructionBuffer() { instructionBuffer.clear(); }
-	inline Instruction::EncodedType getLastInstruction() const { return instructionBuffer.back(); }
+	inline Segment getDataSegment() const noexcept { return dataSegment; }
+
+	inline void setCodeSegmentActive() noexcept { activeSegment = &codeSegment; }
+	inline void setDataSegmentActive() noexcept { activeSegment = &dataSegment; }
 
 private:
-	InstructionBuffer instructionBuffer;
+	Segment codeSegment;
+	Segment dataSegment;
+	Segment *activeSegment{nullptr};
 };
 
 } 	// namespace util

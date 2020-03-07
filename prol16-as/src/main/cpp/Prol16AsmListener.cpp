@@ -212,11 +212,11 @@ void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext */*cont
 }
 
 void Prol16AsmListener::enterTextSectionStart(Prol16AsmParser::TextSectionStartContext */*context*/) {
-
+	instructionWriter.setCodeSegmentActive();
 }
 
 void Prol16AsmListener::enterDataSectionStart(Prol16AsmParser::DataSectionStartContext */*context*/) {
-
+	instructionWriter.setDataSegmentActive();
 }
 
 util::InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {

@@ -22,22 +22,23 @@ using PROL16::util::RegisterError;
 		statement; \
 		auto actualValue = instructionWriter.getLastInstruction(); \
 		ASSERT_EQ(expectedValue, actualValue); \
-		instructionWriter.clearInstructionBuffer(); \
+		instructionWriter.clearCodeSegment(); \
 	} while (false)
 
 TEST(InstructionWriterTest, testAllInstructions) {
 	InstructionWriter instructionWriter;
+	instructionWriter.setCodeSegmentActive();
 
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeNop(), 0x0000);
 
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeSleep(), 0x0400);
 
 	instructionWriter.writeLoadi(14, 0xA5A5);
-	InstructionWriter::InstructionBuffer buffer = instructionWriter.getInstructionBuffer();
-	ASSERT_EQ(2, buffer.size());
-	ASSERT_EQ(0x9C0, buffer[0]);
-	ASSERT_EQ(0XA5A5, buffer[1]);
-	instructionWriter.clearInstructionBuffer();
+	InstructionWriter::Segment segment = instructionWriter.getCodeSegment();
+	ASSERT_EQ(2, segment.size());
+	ASSERT_EQ(0x9C0, segment[0]);
+	ASSERT_EQ(0XA5A5, segment[1]);
+	instructionWriter.clearCodeSegment();
 
 	TEST_INSTRUCTION_WRITE(instructionWriter.writeLoad(14, 15), 0x0DCF);
 
@@ -84,23 +85,25 @@ TEST(InstructionWriterTest, testAllInstructions) {
 
 TEST(InstructionWriterTest, testWritingMultipleInstructions) {
 	InstructionWriter instructionWriter;
+	instructionWriter.setCodeSegmentActive();
 
 	instructionWriter.writeLoadi(0, 0x8000);
 	instructionWriter.writeLoad(1, 0);
 	instructionWriter.writeInc(1);
 	instructionWriter.writeSleep();
 
-	InstructionWriter::InstructionBuffer instructionBuffer = instructionWriter.getInstructionBuffer();
-	ASSERT_EQ(5, instructionBuffer.size());
-	ASSERT_EQ(0x800, instructionBuffer[0]);
-	ASSERT_EQ(0x8000, instructionBuffer[1]);
-	ASSERT_EQ(0x0C20, instructionBuffer[2]);
-	ASSERT_EQ(0x6820, instructionBuffer[3]);
-	ASSERT_EQ(0x0400, instructionBuffer[4]);
+	InstructionWriter::Segment segment = instructionWriter.getCodeSegment();
+	ASSERT_EQ(5, segment.size());
+	ASSERT_EQ(0x800, segment[0]);
+	ASSERT_EQ(0x8000, segment[1]);
+	ASSERT_EQ(0x0C20, segment[2]);
+	ASSERT_EQ(0x6820, segment[3]);
+	ASSERT_EQ(0x0400, segment[4]);
 }
 
 TEST(InstructionWriterTest, testRegisterOutOfRange) {
 	InstructionWriter instructionWriter;
+	instructionWriter.setCodeSegmentActive();
 
 	ASSERT_THROW(instructionWriter.writeLoadi(32, 0xAAAA), RegisterError);
 
@@ -171,17 +174,18 @@ TEST(InstructionWriterTest, testRegisterOutOfRange) {
 
 TEST(InstructionWriterTest, testWritingDataWords) {
 	InstructionWriter instructionWriter;
+	instructionWriter.setDataSegmentActive();
 
-	TEST_INSTRUCTION_WRITE(instructionWriter.writeImmediate(0xA5A5), 0xA5A5);
-
+	instructionWriter.writeImmediate(0xA5A5);
 	instructionWriter.writeString("Hello World");
-	InstructionWriter::InstructionBuffer buffer = instructionWriter.getInstructionBuffer();
-	ASSERT_EQ(6, buffer.size());
-	ASSERT_EQ(('e' << 8) + 'H', buffer[0]);
-	ASSERT_EQ(('l' << 8) + 'l', buffer[1]);
-	ASSERT_EQ((' ' << 8) + 'o', buffer[2]);
-	ASSERT_EQ(('o' << 8) + 'W', buffer[3]);
-	ASSERT_EQ(('l' << 8) + 'r', buffer[4]);
-	ASSERT_EQ('d', buffer[5]);
-	instructionWriter.clearInstructionBuffer();
+	InstructionWriter::Segment segment = instructionWriter.getDataSegment();
+
+	ASSERT_EQ(7, segment.size());
+	ASSERT_EQ(0xA5A5, segment[0]);
+	ASSERT_EQ(('e' << 8) + 'H', segment[1]);
+	ASSERT_EQ(('l' << 8) + 'l', segment[2]);
+	ASSERT_EQ((' ' << 8) + 'o', segment[3]);
+	ASSERT_EQ(('o' << 8) + 'W', segment[4]);
+	ASSERT_EQ(('l' << 8) + 'r', segment[5]);
+	ASSERT_EQ('d', segment[6]);
 }
