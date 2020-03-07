@@ -211,6 +211,14 @@ void Prol16AsmListener::enterMacroCall(Prol16AsmParser::MacroCallContext */*cont
 	throw ::util::NotImplementedError("macro call");
 }
 
+void Prol16AsmListener::enterTextSectionStart(Prol16AsmParser::TextSectionStartContext */*context*/) {
+
+}
+
+void Prol16AsmListener::enterDataSectionStart(Prol16AsmParser::DataSectionStartContext */*context*/) {
+
+}
+
 util::InstructionWriter::Immediate Prol16AsmListener::evaluateExpression(Prol16AsmParser::ExpressionContext * const expression) const {
 	if (util::isNumber(expression)) {
 		return util::parseNumber(expression->number->getText());

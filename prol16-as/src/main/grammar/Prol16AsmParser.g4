@@ -49,7 +49,9 @@ assemblerStatement
 	| dataWordStore
 	| symbolicConstantDefinition
 	| macroDefinition
-	| macroCall)? NEWLINE
+	| macroCall
+	| textSectionStart
+	| dataSectionStart)? NEWLINE
 	;
 	
 /**
@@ -139,3 +141,5 @@ dataWordStore : DB (immediate=expression | string=String) /* (Comma (numbers=Num
 symbolicConstantDefinition : EQU identifier=Identifier Comma number=Number ;
 macroDefinition : MACRO Identifier NEWLINE mnemonicStatement* ENDM ;
 macroCall : Identifier MacroCallOperator;
+textSectionStart : TextSection ;
+dataSectionStart : DataSection ;

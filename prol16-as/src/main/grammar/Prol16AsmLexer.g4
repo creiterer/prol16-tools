@@ -63,6 +63,9 @@ EQU		: 'equ' | 'EQU' ;
 MACRO	: 'macro' | 'MACRO' ;
 ENDM	: 'endm' | 'ENDM' ;
 
+TextSection	: '.text' | '.TEXT' ;
+DataSection	: '.data' | '.DATA' ;
+
 Comma : ',' ;
 Colon : ':' ;
 MacroCallOperator : '()' ;

@@ -84,6 +84,10 @@ public:
 
 	void enterMacroCall(Prol16AsmParser::MacroCallContext */*context*/) override;
 
+	void enterTextSectionStart(Prol16AsmParser::TextSectionStartContext */*context*/) override;
+
+	void enterDataSectionStart(Prol16AsmParser::DataSectionStartContext */*context*/) override;
+
 private:
 	using SymbolName = std::string;
 	using SymbolValue = util::Immediate;
