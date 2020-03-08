@@ -35,6 +35,8 @@ char const* getBufferAsCString(FileBuffer const &buffer, FileBuffer::size_type c
 void writeStringToStream(std::ostream &stream, std::string const &str);
 void writeStringPaddedToStream(std::ostream &stream, std::string str, unsigned const alignment);
 
+std::string readString(FileBuffer const &buffer, FileBuffer::size_type const offset = 0);
+
 template <typename T>
 void writeValueBinary(std::ostream &stream, T value) {
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)

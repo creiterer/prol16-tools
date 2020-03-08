@@ -78,4 +78,9 @@ void writeStringPaddedToStream(std::ostream &stream, std::string str, unsigned c
 	writeStringToStream(stream, str);
 }
 
+std::string readString(FileBuffer const &buffer, FileBuffer::size_type const offset) {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	return std::string(reinterpret_cast<char const*>(buffer.data() + offset));
+}
+
 } 	// namespace util

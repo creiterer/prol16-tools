@@ -51,6 +51,13 @@ TEST(FileUtilsTest, testReadValue) {
 	ASSERT_EQ(255, value);
 }
 
+TEST(FileUtilsTest, testReadString) {
+	FileBuffer buffer{'H', 'e', 'l', 'l', 'o', '\0', 'W', 'o', 'r', 'l', 'd', '\0'};
+
+	ASSERT_EQ("Hello", readString(buffer));
+	ASSERT_EQ("World", readString(buffer, 6));
+}
+
 TEST(FileUtilsTest, testWriteBufferToStream) {
 	std::ostringstream stream;
 	Buffer<uint16_t> buffer{0xCAFE, 0xBABE, 0xDEAD, 0xD0DE};
