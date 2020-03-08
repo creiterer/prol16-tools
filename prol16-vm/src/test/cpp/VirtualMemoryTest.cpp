@@ -108,7 +108,7 @@ TEST(VirtualMemoryTest, testInitializationFromFileWithIncompleteInstruction) {
 }
 
 TEST(VirtualMemoryTest, testReading) {
-	PROL16::util::CodeSegment::Segment segment{
+	PROL16::util::Segment::MemorySegment segment{
 			0x0000,	// 0000
 			0x0400,	// 0001
 			0x0800, // 0002
@@ -138,7 +138,7 @@ TEST(VirtualMemoryTest, testReading) {
 	};
 
 	VirtualMemory memory;
-	memory.initializeCodeSegment(PROL16::util::CodeSegment(segment));
+	memory.initializeCodeSegment(PROL16::util::Segment(segment));
 
 	ASSERT_EQ(0x0000, memory.read(0x0000));
 	ASSERT_EQ(0x0dee, memory.read(0x0019));
@@ -174,7 +174,7 @@ TEST(VirtualMemoryTest, testReading) {
 }
 
 TEST(VirtualMemoryTest, testMemcpy) {
-	PROL16::util::CodeSegment::Segment segment{
+	PROL16::util::Segment::MemorySegment segment{
 			0x0000,	// 0000
 			0x0400,	// 0001
 			0x0800, // 0002
@@ -204,7 +204,7 @@ TEST(VirtualMemoryTest, testMemcpy) {
 	};
 
 	VirtualMemory memory;
-	memory.initializeCodeSegment(PROL16::util::CodeSegment(segment));
+	memory.initializeCodeSegment(PROL16::util::Segment(segment));
 
 	memory.memcpy(0x0010, 0x0005, 10);
 

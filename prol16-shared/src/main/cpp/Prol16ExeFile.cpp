@@ -56,7 +56,7 @@ Prol16ExeFile Prol16ExeFile::parse(::util::FileBuffer const &buffer, std::string
 	}
 
 	unsigned const codeSegmentOffset = SymbolTableOffset + symbolTableSize * (2 * sizeof(Address));
-	CodeSegment codeSegment = CodeSegment::createFromFileBuffer(buffer, codeSegmentOffset);
+	Segment codeSegment = Segment::createFromFileBuffer(buffer, codeSegmentOffset, (buffer.size() - codeSegmentOffset) / sizeof(Segment::value_type));
 
 	SymbolTable::StringTable stringTable;
 	for (auto const &entry : symbolAddresses) {

@@ -8,10 +8,10 @@
 #ifndef PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILE_H_INCLUDED
 #define PROL16_TOOLS_PROL16_SHARED_SRC_MAIN_CPP_PROL16EXEFILE_H_INCLUDED
 
-#include "CodeSegment.h"
 #include "FileUtils.h"
 #include "MemoryUtils.h"
 #include "ScopedFileStream.h"
+#include "Segment.h"
 #include "SymbolTable.h"
 
 #include <array>
@@ -44,13 +44,13 @@ public:
 
 	inline Address getEntryPointAddress() const noexcept { return entryPointAddress; }
 	inline Address getInitFuncAddress() const noexcept { return initFuncAddress; }
-	inline CodeSegment getCodeSegment() const noexcept { return codeSegment; }
+	inline Segment getCodeSegment() const noexcept { return codeSegment; }
 	inline SymbolTable getSymbolTable() const noexcept { return symbolTable; }
 
 private:
 	Address const entryPointAddress;
 	Address const initFuncAddress;
-	CodeSegment const codeSegment;
+	Segment const codeSegment;
 	SymbolTable const symbolTable;
 
 	static Prol16ExeFile parse(::util::FileBuffer const &buffer, std::string const &filename);

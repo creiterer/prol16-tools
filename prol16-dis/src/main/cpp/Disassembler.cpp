@@ -29,7 +29,7 @@ Disassembler::Disassembler(SourceStream &sourceStream, std::ostream &destination
 void Disassembler::disassemble() {
 	Address const initFuncAddress = prol16ExeFile.getInitFuncAddress();
 	Address const entryPointAddress = prol16ExeFile.getEntryPointAddress();
-	CodeSegment const codeSegment = prol16ExeFile.getCodeSegment();
+	Segment const codeSegment = prol16ExeFile.getCodeSegment();
 
 	if (codeSegment.isAddressValid(initFuncAddress)) {
 		destinationStream << "init func address: " << ::util::formatAsHexNumber(initFuncAddress) << '\n';
@@ -42,6 +42,7 @@ void Disassembler::disassemble() {
 	symbolTable.printTo(destinationStream);
 	destinationStream << '\n';
 
+	// TODO(creiterer): move into helper method (e.g. 'disassembleCodeSegment')
 	// NOLINTNEXTLINE(bugprone-too-small-loop-variable)
 	for (Address address = 0; address < codeSegment.size(); ++address) {
 		Instruction instruction = Instruction::decode(codeSegment.at(address));
@@ -59,6 +60,8 @@ void Disassembler::disassemble() {
 			destinationStream << '\n';
 		}
 	}
+
+	// TODO(creiterer): disassemble data segment (in own helper method like 'disassembleDataSegment')
 }
 
 }	// namespace PROL16

@@ -8,10 +8,10 @@
 #ifndef PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 #define PROL16_TOOLS_PROL16_VM_SRC_MAIN_CPP_VIRTUAL_MEMORY_H_INCLUDED
 
-#include "CodeSegment.h"
 #include "MemoryUtils.h"
 #include "NonCopyable.h"
 #include "Prol16ExeFile.h"
+#include "Segment.h"
 
 #include <array>
 #include <string>
@@ -80,7 +80,7 @@ public:
 	inline bool isCodeAddressValid(Address const address) const noexcept { return address < getCodeSegmentSize(); }
 
 	void initializeFromFile(std::string const &filename);
-	void initializeCodeSegment(util::CodeSegment const &codeSegment);
+	void initializeCodeSegment(util::Segment const &codeSegment);
 
 private:
 	Memory memory{0};

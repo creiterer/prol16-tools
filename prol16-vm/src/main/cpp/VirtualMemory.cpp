@@ -93,7 +93,7 @@ void VirtualMemory::initializeFromFile(std::string const &filename) {
 	codeSegmentSize = buffer.size() / sizeof(Data);
 }
 
-void VirtualMemory::initializeCodeSegment(util::CodeSegment const &codeSegment) {
+void VirtualMemory::initializeCodeSegment(util::Segment const &codeSegment) {
 	if (codeSegment.size() > MaxCodeSegmentSize) {
 		throw std::runtime_error("code segment from file doesn't fit into code segment from memory");
 	}
