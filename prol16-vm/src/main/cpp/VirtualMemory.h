@@ -33,10 +33,9 @@ public:
 	static constexpr Data MagicInitValue = 0xCAFE;	// opcode = 0x32, ra = 23, rb = 30
 
 	static constexpr size_t CodeSegmentOffset = 0;
-	static constexpr size_t MaxCodeSegmentSize = 0x8000;
+	static constexpr size_t MaxCodeAndDataSegmentSize = 0x8000;
 
-	static constexpr size_t DataSegmentOffset = CodeSegmentOffset + MaxCodeSegmentSize;
-	static constexpr size_t HeapStartAddress = DataSegmentOffset;
+	static constexpr size_t HeapStartAddress = CodeSegmentOffset + MaxCodeAndDataSegmentSize;
 	static constexpr size_t StackStartAddress = 0xFFFF;		// starts at the very top of the memory and grows down
 
 	VirtualMemory();
@@ -77,14 +76,17 @@ public:
 
 	inline size_t size() const noexcept { return memory.size(); }
 	inline size_t getCodeSegmentSize() const noexcept { return codeSegmentSize; }
+	inline size_t getDataSegmentSize() const noexcept { return dataSegmentSize; }
 	inline bool isCodeAddressValid(Address const address) const noexcept { return address < getCodeSegmentSize(); }
 
 	void initializeFromFile(std::string const &filename);
 	void initializeCodeSegment(util::Segment const &codeSegment);
+	void initializeDataSegment(util::Segment const &dataSegment);
 
 private:
 	Memory memory{0};
 	size_t codeSegmentSize{0};
+	size_t dataSegmentSize{0};
 	Address heapBreak{HeapStartAddress};
 };
 

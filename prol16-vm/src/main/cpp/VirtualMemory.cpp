@@ -94,12 +94,22 @@ void VirtualMemory::initializeFromFile(std::string const &filename) {
 }
 
 void VirtualMemory::initializeCodeSegment(util::Segment const &codeSegment) {
-	if (codeSegment.size() > MaxCodeSegmentSize) {
-		throw std::runtime_error("code segment from file doesn't fit into code segment from memory");
+	if (codeSegment.size() > MaxCodeAndDataSegmentSize) {
+		throw std::runtime_error("code segment from file doesn't fit into memory");
 	}
 
 	std::copy(codeSegment.cbegin(), codeSegment.cend(), std::next(memory.begin(), CodeSegmentOffset));
 	codeSegmentSize = codeSegment.size();
+}
+
+void VirtualMemory::initializeDataSegment(util::Segment const &dataSegment) {
+	if (codeSegmentSize + dataSegment.size() > MaxCodeAndDataSegmentSize) {
+		throw std::runtime_error("data segment from file doesn't fit into memory");
+	}
+
+	// copy data immediately after code so that no data address relocations are necessary!
+	std::copy(dataSegment.cbegin(), dataSegment.cend(), std::next(memory.begin(), codeSegmentSize));
+	dataSegmentSize = dataSegment.size();
 }
 
 } 	// namespace PROL16

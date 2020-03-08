@@ -45,12 +45,14 @@ public:
 	inline Address getEntryPointAddress() const noexcept { return entryPointAddress; }
 	inline Address getInitFuncAddress() const noexcept { return initFuncAddress; }
 	inline Segment getCodeSegment() const noexcept { return codeSegment; }
+	inline Segment getDataSegment() const noexcept { return dataSegment; }
 	inline SymbolTable getSymbolTable() const noexcept { return symbolTable; }
 
 private:
 	Address const entryPointAddress;
 	Address const initFuncAddress;
 	Segment const codeSegment;
+	Segment const dataSegment;
 	SymbolTable const symbolTable;
 
 	static Prol16ExeFile parse(::util::FileBuffer const &buffer, std::string const &filename);
@@ -58,7 +60,7 @@ private:
 	static void checkFileSize(::util::FileBuffer::size_type const bufferSize, std::string const &filename);
 	static void checkFileStartsWithMagicNumber(::util::FileBuffer const &buffer, std::string const &filename);
 
-	Prol16ExeFile(Address const entryPointAddress, Address const initFuncAddress, CodeSegment codeSegment, SymbolTable symbolTable);
+	Prol16ExeFile(Address const entryPointAddress, Address const initFuncAddress, Segment codeSegment, Segment dataSegment, SymbolTable symbolTable);
 };
 
 }	// namespace util

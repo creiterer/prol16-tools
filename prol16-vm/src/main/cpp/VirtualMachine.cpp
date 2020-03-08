@@ -49,6 +49,7 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 	// needs to be done before setting the program counter due to the
 	// 'if (address >= memory.getCodeSegment()' check
 	memory.initializeCodeSegment(p16ExeFile.getCodeSegment());
+	memory.initializeDataSegment(p16ExeFile.getDataSegment());
 
 	entryPointAddress = p16ExeFile.getEntryPointAddress();
 	initFuncAddress = p16ExeFile.getInitFuncAddress();
@@ -58,7 +59,8 @@ VirtualMachine::VirtualMachine(std::string const &filename, ::util::logging::Log
 	}
 
 	logger << "executing program '" << filename << "' (css=";
-	logger << ::util::formatAsHexNumberWithBase(memory.getCodeSegmentSize()) << ")\n";
+	logger << ::util::formatAsHexNumberWithBase(memory.getCodeSegmentSize());
+	logger << "|dss=" << ::util::formatAsHexNumberWithBase(memory.getDataSegmentSize()) << ")\n";
 }
 
 void VirtualMachine::run() {
